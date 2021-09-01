@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"terraform_state","Source":"../modules/terraform-state","Dir":"../modules/terraform-state"},{"Key":"terraform_state.state_bucket","Source":"../s3/bucket","Dir":"../modules/s3/bucket"},{"Key":"terraform_state.state_lock_table","Source":"../dynamo","Dir":"../modules/dynamo"},{"Key":"","Source":"","Dir":"."}]}
