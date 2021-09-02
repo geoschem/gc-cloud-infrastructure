@@ -1,0 +1,37 @@
+[
+    {
+      "name": "${task_definition_name}",
+      "essential": true,
+      "image": "${docker_image}",
+      "cpu": ${container_cpu},
+      "memory": ${container_memory},
+      "networkMode": "awsvpc",
+      "portMappings": [
+        {
+          "containerPort": ${container_port},
+          "hostPort": ${container_port},
+          "protocol": "tcp"
+        }
+      ],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/ecs/${cluster_name}",
+          "awslogs-region": "${default_region}",
+          "awslogs-stream-prefix": "${task_definition_name}"
+        }
+      },
+      "environment": [
+        {
+          "name": "AWS_ACCESS_KEY_ID",
+          "value": "${service_user_key}"
+        },
+        {
+          "name": "AWS_SECRET_ACCESS_KEY",
+          "value": "${service_user_secret}"
+        }
+      ]
+    }
+  ]
+  
