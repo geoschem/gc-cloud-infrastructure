@@ -1,8 +1,3 @@
-module "ecr_repository" {
-    source = "./repository"
-    repository_name ="${var.ecs_name_prefix}-repository"
-}
-
 module "ecs_service_user" {
     source = "../iam/user"
 
@@ -46,7 +41,7 @@ data "template_file" "task_definition" {
     cluster_name = "${var.ecs_name_prefix}-cluster"
     task_definition_name = "${var.ecs_name_prefix}-task"
     default_region = var.region
-    docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use commit hash?
+    docker_image = var.docker_image
     container_port = 3000 # TODO - port number?
     container_cpu = var.cpu
     container_memory = var.memory

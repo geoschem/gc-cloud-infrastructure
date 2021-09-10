@@ -1,0 +1,27 @@
+{ 
+    "command": [],
+    "environment": [],
+    "image": "${docker_image}",
+    "jobRoleArn": "${job_role}",
+    "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "/aws/batch/${log_group}",
+            "awslogs-region": "${default_region}",
+            "awslogs-stream-prefix": "${log_name}"
+        }
+    },
+    "mountPoints": [],
+    "privileged": true,
+    "resourceRequirements": [ 
+        { 
+            "type": "MEMORY",
+            "value": "${container_memory}"
+        },
+        { 
+            "type": "VCPU",
+            "value": "${container_cpu}"
+        }
+    ],
+    "secrets": []
+}

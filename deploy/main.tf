@@ -30,9 +30,15 @@ terraform {
 # vpc items -- TODO: for now using default vpc and subnets, 
 # but may be good to create purpose built vpc
 # ==============================================================
+data "aws_vpc" "default" {# fetch default vpc
+  default = true
+}
+data "aws_subnet_ids" "all_default_subnets" { # fetch default subnets
+  vpc_id = data.aws_vpc.default.id
+}
 module "benchmarks_security_group" {
     source = "./modules/security-group"
-    vpc_id = "vpc-09cea772"
+    vpc_id = data.aws_vpc.default.id
     name = "benchmarks-cloud-sg"
     description = "security group used for infrastructure related to running benchmarks"
 }
@@ -47,17 +53,37 @@ module "benchmarks_bucket" {
     enable_versioning = false
 }
 
-# ==============================================================
-# ecs item(s)
-# ==============================================================
-module "ecs_artifacts" {
-    source = "./modules/ecs"
-    ecs_name_prefix = "benchmarks-cloud"
-    security_group_id = module.benchmarks_security_group.security_group_id
-    subnet_ids = ["subnet-3198906c", "subnet-66279169"] # TODO - add others?
-    cpu = "48"
-    memory = "96000"
-    task_definition_file = "./modules/ecs/task-definition/task-definition.json"
-    region = data.aws_region.current.name
-    
+module "ecr_repository" { # could potentially make public to save on cost
+    source = "./modules/ecr"
+    repository_name ="benchmarks-cloud-repository"
 }
+module "batch_artifacts" {
+    source = "./modules/batch"
+    name_prefix = "benchmarks-cloud"
+    subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
+    ami_id = "ami-074e5800f929c984d"
+    instance_types = ["c5.12xlarge"]
+    security_group_id = module.benchmarks_security_group.security_group_id
+    timeout_seconds = 86400 # 24 hour timeout for jobs
+    docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use version tag
+    container_cpu = 48
+    container_memory = 98304
+    container_properties_file = "./modules/batch/container-properties/container-properties.json"
+    region = data.aws_region.current.name
+    log_retention_days = 1
+}
+
+# # ==============================================================
+# # ecs item(s)
+# # ==============================================================
+# module "ecs_artifacts" {
+#     source = "./modules/ecs"
+#     ecs_name_prefix = "benchmarks-cloud"
+#     security_group_id = module.benchmarks_security_group.security_group_id
+#     subnet_ids = ["subnet-3198906c", "subnet-66279169"] # TODO - add others?
+#     cpu = "48"
+#     memory = "96000"
+#     task_definition_file = "./modules/ecs/task-definition/task-definition.json"
+#     region = data.aws_region.current.name
+#     docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use version tag
+# }

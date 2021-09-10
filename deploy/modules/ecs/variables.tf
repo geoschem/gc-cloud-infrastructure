@@ -19,3 +19,6 @@ variable "task_definition_file" {
 variable "region" {
     description = "aws region to use for various artifacts"
 }
+variable "docker_image" {
+    description = "docker image url and tag"
+}
