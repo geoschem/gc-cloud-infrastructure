@@ -1,10 +1,10 @@
 resource "aws_batch_compute_environment" "batch_environment" {
-    compute_environment_name = "${var.name_prefix}-batch-environment"
+    compute_environment_name_prefix = "${var.name_prefix}-batch-environment-"
     compute_resources {
         instance_role = aws_iam_instance_profile.ec2_profile.arn
         instance_type = var.instance_types
         image_id = var.ami_id # ami to use
-        max_vcpus = 48
+        max_vcpus = 1024
         security_group_ids = [
             var.security_group_id
         ]
@@ -13,6 +13,9 @@ resource "aws_batch_compute_environment" "batch_environment" {
     }
     service_role = aws_iam_role.batch_role.arn
     type = "MANAGED"
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 resource "aws_batch_job_queue" "job_queue" {

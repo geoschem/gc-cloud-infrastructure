@@ -9,3 +9,6 @@ variable name {
 variable description {
     description = "description for security group"
 }
+variable ingress_cidr_blocks {
+    description = "list of cidr blocks to allow ingress from"
+}

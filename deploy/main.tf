@@ -41,6 +41,8 @@ module "benchmarks_security_group" {
     vpc_id = data.aws_vpc.default.id
     name = "benchmarks-cloud-sg"
     description = "security group used for infrastructure related to running benchmarks"
+    # TODO: tighten to specific ips?
+    ingress_cidr_blocks = ["0.0.0.0/0"]
 }
 
 # ==============================================================
@@ -61,8 +63,8 @@ module "batch_artifacts" {
     source = "./modules/batch"
     name_prefix = "benchmarks-cloud"
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
-    ami_id = "ami-074e5800f929c984d"
-    instance_types = ["c5.12xlarge"]
+    ami_id = null # currently using default ami
+    instance_types = ["c5"]
     security_group_id = module.benchmarks_security_group.security_group_id
     timeout_seconds = 86400 # 24 hour timeout for jobs
     docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use version tag
