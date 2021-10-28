@@ -21,8 +21,8 @@ terraform {
 }
 
 module "terraform_state" {
-    source = "../modules/terraform-state"
+    source = "../../modules/terraform-state"
     
-    bucket_name = "benchmarks-cloud-tfstate"
-    lock_table_name = "gc-benchmarks-tfstate-lock"
+    bucket_name = "washu-cloud-tfstate"
+    lock_table_name = "washu-cloud-tfstate-lock"
 }

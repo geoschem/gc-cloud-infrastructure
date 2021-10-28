@@ -1,9 +1,7 @@
 # ==============================================================
-# cloud provider
+# All common infrastructure inputs should 
+# be declared in this file
 # ==============================================================
-provider "aws" {
-    region = "us-east-1"
-}
 
 data "aws_region" "current" {}
 
@@ -17,13 +15,6 @@ terraform {
             version = ">= 3.56.0" # at least have v3.56.0 of aws provider
             source = "hashicorp/aws"
         }
-    }
-    backend "s3" {
-        bucket = "benchmarks-cloud-tfstate"
-        key = "tfstate/terraform.tfstate"
-        region = "us-east-1"
-        dynamodb_table = "gc-benchmarks-tfstate-lock"
-        encrypt = true
     }
 }
 # ==============================================================
@@ -50,18 +41,18 @@ module "benchmarks_security_group" {
 # ==============================================================
 module "benchmarks_bucket" {
     source = "./modules/s3/bucket"
-    bucket_name = "benchmarks-cloud"
+    bucket_name = var.benchmarks_bucket
     bucket_acl = "private"
     enable_versioning = false
 }
 
 module "ecr_repository" { # could potentially make public to save on cost
     source = "./modules/ecr"
-    repository_name ="benchmarks-cloud-repository"
+    repository_name ="${var.benchmarks_name_prefix}-repository"
 }
 module "batch_artifacts" {
     source = "./modules/batch"
-    name_prefix = "benchmarks-cloud"
+    name_prefix = var.benchmarks_name_prefix
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
     ami_id = null # currently using default ami
     instance_types = ["c5"]
@@ -70,22 +61,7 @@ module "batch_artifacts" {
     docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use version tag
     container_cpu = 48
     container_memory = 98304
-    container_properties_file = "./modules/batch/container-properties/container-properties.json"
+    container_properties_file = "../../modules/batch/container-properties/container-properties.json"
     region = data.aws_region.current.name
     log_retention_days = 1
 }
-
-# # ==============================================================
-# # ecs item(s)
-# # ==============================================================
-# module "ecs_artifacts" {
-#     source = "./modules/ecs"
-#     ecs_name_prefix = "benchmarks-cloud"
-#     security_group_id = module.benchmarks_security_group.security_group_id
-#     subnet_ids = ["subnet-3198906c", "subnet-66279169"] # TODO - add others?
-#     cpu = "48"
-#     memory = "96000"
-#     task_definition_file = "./modules/ecs/task-definition/task-definition.json"
-#     region = data.aws_region.current.name
-#     docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use version tag
-# }

@@ -1,5 +1,9 @@
-# cloud-benchmarks
-This repository is used for the automation and deployment of benchmarks to the cloud
+# gc-cloud-infrastructure
+This repository is used for the automation and deployment of aws infrastructure to the cloud
+## Projects this repository handles
+- aws infrastructure related to the automation of GCClassic and GCHP benchmarks
+- infrastructure for syncing input data to the cloud
+
 ## Setting up your development environment
 ## Pre-requisites
 
@@ -41,7 +45,7 @@ You will be prompted for `AWS Access Key ID`, `AWS Secret Access Key`, `Default 
 To apply the most recent terraform recipes to an environment run the following ...
 
 ```bash
-  $ cd deploy  # eg build\development
+  $ cd deploy/environments/harvard       # or the washu directory
   $ terraform init                       # installs all the necessary modules and plugins for this environment
   $ terraform plan                       # review the anticipated changes
   $ terraform apply                      # creates, updates, or destroys the planned resources on aws  
