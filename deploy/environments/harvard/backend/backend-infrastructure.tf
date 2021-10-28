@@ -20,9 +20,9 @@ terraform {
     }
 }
 
-module "terraform_state" {
-    source = "../../modules/terraform-state"
+module "harvard_terraform_state" {
+    source = "../../../modules/terraform-state"
     
-    bucket_name = "benchmarks-cloud-tfstate"
-    lock_table_name = "gc-benchmarks-tfstate-lock"
+    bucket_name = "gc-cloud-tfstate"
+    lock_table_name = "gc-tfstate-lock"
 }

@@ -15,10 +15,10 @@ provider "aws" {
 # ==============================================================
 terraform {
     backend "s3" {
-        bucket = "benchmarks-cloud-tfstate"
+        bucket = "gc-cloud-tfstate"
         key = "tfstate/terraform.tfstate"
         region = "us-east-1"
-        dynamodb_table = "gc-benchmarks-tfstate-lock"
+        dynamodb_table = "gc-tfstate-lock"
         encrypt = true
     }
 }
