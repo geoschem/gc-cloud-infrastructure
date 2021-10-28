@@ -27,7 +27,7 @@ data "aws_vpc" "default" {# fetch default vpc
 data "aws_subnet_ids" "all_default_subnets" { # fetch default subnets
   vpc_id = data.aws_vpc.default.id
 }
-module "benchmarks_security_group" {
+module "benchmarks_security_group" { # TODO: should change to common sg
     source = "./modules/security-group"
     vpc_id = data.aws_vpc.default.id
     name = "benchmarks-cloud-sg"
@@ -46,11 +46,11 @@ module "benchmarks_bucket" {
     enable_versioning = false
 }
 
-module "ecr_repository" { # could potentially make public to save on cost
+module "benchmarks_ecr_repository" { # could potentially make public to save on cost
     source = "./modules/ecr"
     repository_name ="${var.benchmarks_name_prefix}-repository"
 }
-module "batch_artifacts" {
+module "batch_benchmark_artifacts" {
     source = "./modules/batch"
     name_prefix = var.benchmarks_name_prefix
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
@@ -58,7 +58,27 @@ module "batch_artifacts" {
     instance_types = ["c5"]
     security_group_id = module.benchmarks_security_group.security_group_id
     timeout_seconds = 86400 # 24 hour timeout for jobs
-    docker_image = "${module.ecr_repository.repository_url}:latest" # TODO - use version tag
+    docker_image = "${module.benchmarks_ecr_repository.repository_url}:latest" # TODO - use version tag
+    container_cpu = 48
+    container_memory = 98304
+    container_properties_file = "../../modules/batch/container-properties/container-properties.json"
+    region = data.aws_region.current.name
+    log_retention_days = 1
+}
+
+module "data_sync_ecr_repository" { # could potentially make public to save on cost
+    source = "./modules/ecr"
+    repository_name = "input-data-sync-repository"
+}
+module "batch_data_sync_artifacts" {
+    source = "./modules/batch"
+    name_prefix = "input-data-sync"
+    subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
+    ami_id = null # currently using default ami
+    instance_types = ["c5"]
+    security_group_id = module.benchmarks_security_group.security_group_id
+    timeout_seconds = 86400 # 24 hour timeout for jobs
+    docker_image = "${module.benchmarks_ecr_repository.repository_url}:latest" # TODO - use version tag
     container_cpu = 48
     container_memory = 98304
     container_properties_file = "../../modules/batch/container-properties/container-properties.json"
