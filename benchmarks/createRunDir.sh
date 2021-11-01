@@ -15,7 +15,11 @@ EOF
 cat "run_input.txt" | ./createRunDir.sh
 mkdir /gc-src/build
 cd /gc-src/build
+# NOTE: doesn't work on m1 macbook air due to an issue with qemu
 cmake /gc-src
-cmake . -DRUNDIR="../../gc_default_rundir"
+cmake . -DRUNDIR="../../home/gc_default_rundir"
 make -j
 make -j install
+echo "starting run directory upload"
+aws s3 cp /home/gc_default_rundir $S3_RUNDIR_PATH --recursive --quiet
+echo "Finished run directory upload"
