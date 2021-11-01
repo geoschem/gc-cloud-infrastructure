@@ -3,6 +3,10 @@ description: Installs spack, sets up a compiler, and installs an environment fro
 schemaVersion: 1.0
 
 parameters:
+  - SpackCompiler:
+      type: string
+      default: "intel-oneapi-compilers"
+      description: Spack install spec for desired compiler
   - SpackEnvironmentName:
       type: string
       default: "compute_env"
@@ -15,7 +19,6 @@ phases:
   - name: build
     steps:
       - name: InstallSpack
-        timeoutSeconds: 28800
         action: ExecuteBash
         inputs:
           commands:
@@ -25,10 +28,32 @@ phases:
             - umask 022
             - git clone https://github.com/spack/spack /opt/spack
             - . /opt/spack/share/spack/setup-env.sh
+            - spack compiler find --scope system
+            - spack external find --scope system
+            - spack install {{ SpackCompiler }}
+            - spack load {{ SpackCompiler }}
+            - spack compiler find --scope system
+      - name: InstallSpackEnvironment
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "Downloading spack environment file"
+            - set -x
+            - umask 022
             - curl {{ SpackEnvironmentFile }} -o /spack-manifest.yaml
+            - cat /spack-manifest.yaml
+            - . /opt/spack/share/spack/setup-env.sh
             - spack env create {{ SpackEnvironmentName }} /spack-manifest.yaml
+            - spack load {{ SpackCompiler }}
             - spack env activate {{ SpackEnvironmentName }}
-            - spack concretize
             - spack install
             - spack clean --all
+      - name: AutomaticallyLoadEnvironmentOnLogin
+        action: ExecuteBash
+        inputs:
+          commands:
+            - set -x
+            - echo . /opt/spack/share/spack/setup-env.sh >> /etc/bashrc
+            - echo spack load {{ SpackCompiler }} >> /etc/bashrc
+            - echo spack env activate {{ SpackEnvironmentName }} >> /etc/bashrc
             - chmod -R +r /opt/spack
