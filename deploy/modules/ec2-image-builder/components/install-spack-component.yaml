@@ -1,0 +1,34 @@
+name: InstallSpackEnvironment
+description: Installs spack, sets up a compiler, and installs an environment from a remote manifest file.
+schemaVersion: 1.0
+
+parameters:
+  - SpackEnvironmentName:
+      type: string
+      default: "compute_env"
+      description: Name of spack environment
+  - SpackEnvironmentFile:
+      type: string
+      default: "https://raw.githubusercontent.com/LiamBindle/spack-manifests/main/barebones-intel.yaml"
+      description: Spack environment manifest file
+phases:
+  - name: build
+    steps:
+      - name: InstallSpack
+        timeoutSeconds: 28800
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sudo yum install -y git curl
+            - sudo yum groupinstall -y "Development tools"
+            - set -x
+            - umask 022
+            - git clone https://github.com/spack/spack /opt/spack
+            - . /opt/spack/share/spack/setup-env.sh
+            - curl {{ SpackEnvironmentFile }} -o /spack-manifest.yaml
+            - spack env create {{ SpackEnvironmentName }} /spack-manifest.yaml
+            - spack env activate {{ SpackEnvironmentName }}
+            - spack concretize
+            - spack install
+            - spack clean --all
+            - chmod -R +r /opt/spack
