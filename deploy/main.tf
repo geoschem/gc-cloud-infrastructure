@@ -91,7 +91,7 @@ module "gchp_image_builder" {
     component_name = "InstallSpackEnvironment"
     name_prefix = "spackenv"
     component_platform = "Linux"
-    component_version = "1.0.1"
+    builder_version = "1.0.2" # TODO: figure out a way to stop needing to change this with every update 
     component_file = "../../modules/ec2-image-builder/components/install-spack-component.yaml"
     security_group_id = module.benchmarks_security_group.security_group_id
     subnet_id = tolist(data.aws_subnet_ids.all_default_subnets.ids)[0]

@@ -7,9 +7,10 @@ data "template_file" "component" {
 resource "aws_imagebuilder_component" "component" {
     name = var.component_name
     platform = var.component_platform
-    version = var.component_version
+    version = var.builder_version
     data = data.template_file.component.rendered
     description = "Installs spack, sets up a compiler, and installs an environment from a remote manifest file."
+    lifecycle { create_before_destroy = true }
 }
 
 resource "aws_imagebuilder_image_recipe" "recipe" {
@@ -29,8 +30,11 @@ resource "aws_imagebuilder_image_recipe" "recipe" {
 
   name         = var.recipe_name
   parent_image = "arn:${data.aws_partition.current.partition}:imagebuilder:${data.aws_region.current.name}:aws:image/amazon-linux-2-x86/x.x.x"
-  version      = "1.0.1"
+  version      = var.builder_version
   lifecycle { create_before_destroy = true }
+  depends_on = [
+    aws_imagebuilder_component.component
+  ]
 }
 
 resource "aws_imagebuilder_image_pipeline" "pipeline" {
@@ -38,7 +42,8 @@ resource "aws_imagebuilder_image_pipeline" "pipeline" {
   infrastructure_configuration_arn = aws_imagebuilder_infrastructure_configuration.config.arn
   name                             = "${var.name_prefix}-pipeline"
   depends_on = [
-    aws_imagebuilder_image_recipe.recipe
+    aws_imagebuilder_image_recipe.recipe,
+    aws_imagebuilder_component.component
   ]
 }
 
