@@ -25,7 +25,6 @@ resource "aws_iam_role_policy_attachment" "batch_policy_attachment" {
     role = aws_iam_role.batch_role.name
     policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
 }
-
 # Role for underlying EC2 instances
 resource "aws_iam_role" "ec2_role" {
     name = "${var.name_prefix}-ec2-role"

@@ -9,7 +9,9 @@ resource "aws_batch_compute_environment" "batch_environment" {
             var.security_group_id
         ]
         subnets = var.subnet_ids
-        type = "EC2"
+        type = "SPOT"
+        # TODO: make a variable
+        spot_iam_fleet_role = "arn:aws:iam::753979222379:role/aws-service-role/spotfleet.amazonaws.com/AWSServiceRoleForEC2SpotFleet"
     }
     service_role = aws_iam_role.batch_role.arn
     type = "MANAGED"
@@ -49,6 +51,7 @@ data "template_file" "container_properties" {
         job_role = aws_iam_role.job_role.arn
         log_group = var.name_prefix
         log_name = "${var.name_prefix}-batch-job"
+        s3_path = var.s3_path
     }
 }
 

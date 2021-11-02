@@ -4,7 +4,7 @@ variable component_file {
 variable component_name {
     description = "name of the component"
 }
-variable component_version {
+variable builder_version {
     description = "which component version you are using (eg. 1.0)"
 }
 variable component_platform {

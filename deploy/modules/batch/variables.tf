@@ -34,3 +34,6 @@ variable "region" {
 variable "log_retention_days" {
     description = "number of days to retain logs in cloudwatch"
 }
+variable "s3_path" {
+    description = "path to upload run directory to"
+}

@@ -1,6 +1,11 @@
 { 
     "command": [],
-    "environment": [],
+    "environment": [
+        { 
+            "name": "S3_RUNDIR_PATH",
+            "value": "${s3_path}/rundir/"
+        }
+    ],
     "image": "${docker_image}",
     "jobRoleArn": "${job_role}",
     "logConfiguration": {

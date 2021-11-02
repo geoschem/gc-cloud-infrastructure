@@ -46,10 +46,14 @@ module "benchmarks_bucket" {
     enable_versioning = false
 }
 
+# ==============================================================
+# benchmark items
+# ==============================================================
 module "benchmarks_ecr_repository" { # could potentially make public to save on cost
     source = "./modules/ecr"
     repository_name ="${var.benchmarks_name_prefix}-repository"
 }
+
 module "batch_benchmark_artifacts" {
     source = "./modules/batch"
     name_prefix = var.benchmarks_name_prefix
@@ -64,8 +68,12 @@ module "batch_benchmark_artifacts" {
     container_properties_file = "../../modules/batch/container-properties/container-properties.json"
     region = data.aws_region.current.name
     log_retention_days = 1
+    s3_path = "s3://${var.benchmarks_bucket}" 
 }
 
+# ==============================================================
+# input data sync items
+# ==============================================================
 module "data_sync_ecr_repository" { # could potentially make public to save on cost
     source = "./modules/ecr"
     repository_name = "input-data-sync-repository"
@@ -84,14 +92,18 @@ module "batch_data_sync_artifacts" {
     container_properties_file = "../../modules/batch/container-properties/container-properties.json"
     region = data.aws_region.current.name
     log_retention_days = 1
+    s3_path = "s3://${var.benchmarks_bucket}" # TODO: update batch module to be more flexible 
 }
 
+# ==============================================================
+# image builder items
+# ==============================================================
 module "gchp_image_builder" {
     source = "./modules/ec2-image-builder"
     component_name = "InstallSpackEnvironment"
     name_prefix = "spackenv"
     component_platform = "Linux"
-    component_version = "1.0.1"
+    builder_version = "1.0.2" # TODO: figure out a way to stop needing to change this with every update 
     component_file = "../../modules/ec2-image-builder/components/install-spack-component.yaml"
     security_group_id = module.benchmarks_security_group.security_group_id
     subnet_id = tolist(data.aws_subnet_ids.all_default_subnets.ids)[0]
