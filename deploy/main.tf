@@ -74,13 +74,9 @@ module "batch_benchmark_artifacts" {
 # ==============================================================
 # input data sync items
 # ==============================================================
-module "data_sync_ecr_repository" { # could potentially make public to save on cost
-    source = "./modules/ecr"
-    repository_name = "input-data-sync-repository"
-}
-module "batch_data_sync_artifacts" {
+module "batch_multinode_run" {
     source = "./modules/batch"
-    name_prefix = "input-data-sync"
+    name_prefix = "gchp-multinode"
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
     ami_id = null # currently using default ami
     instance_types = ["c5"]
@@ -92,8 +88,34 @@ module "batch_data_sync_artifacts" {
     container_properties_file = "../../modules/batch/container-properties/container-properties.json"
     region = data.aws_region.current.name
     log_retention_days = 1
-    s3_path = "s3://${var.benchmarks_bucket}" # TODO: update batch module to be more flexible 
+    s3_path = "s3://${var.benchmarks_bucket}" 
+    job_type = "multinode"
+    spot_iam_fleet_role = null
+    compute_type = "EC2"
 }
+# ==============================================================
+# input data sync items
+# ==============================================================
+module "data_sync_ecr_repository" { # could potentially make public to save on cost
+    source = "./modules/ecr"
+    repository_name = "input-data-sync-repository"
+}
+# module "batch_data_sync_artifacts" {
+#     source = "./modules/batch"
+#     name_prefix = "input-data-sync"
+#     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
+#     ami_id = null # currently using default ami
+#     instance_types = ["c5"]
+#     security_group_id = module.benchmarks_security_group.security_group_id
+#     timeout_seconds = 86400 # 24 hour timeout for jobs
+#     docker_image = "${module.benchmarks_ecr_repository.repository_url}:latest" # TODO - use version tag
+#     container_cpu = 48
+#     container_memory = 98304
+#     container_properties_file = "../../modules/batch/container-properties/container-properties.json"
+#     region = data.aws_region.current.name
+#     log_retention_days = 1
+#     s3_path = "s3://${var.benchmarks_bucket}" # TODO: update batch module to be more flexible 
+# }
 
 # ==============================================================
 # image builder items
