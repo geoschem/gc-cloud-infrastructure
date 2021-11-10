@@ -18,6 +18,7 @@ resource "aws_batch_compute_environment" "batch_environment" {
     lifecycle {
         create_before_destroy = true
     }
+    depends_on = [aws_iam_role_policy_attachment.batch_policy_attachment]
 }
 
 resource "aws_batch_job_queue" "job_queue" {
