@@ -24,4 +24,5 @@ module "washu" {
     source = "../.."
     benchmarks_bucket = "washu-benchmarks-cloud"
     benchmarks_name_prefix = "washu-benchmarks-cloud"
+    organization = "washu"
 }
