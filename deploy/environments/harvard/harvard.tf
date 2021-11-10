@@ -27,4 +27,5 @@ module "harvard" {
     source = "../.."
     benchmarks_bucket = "benchmarks-cloud"
     benchmarks_name_prefix = "benchmarks-cloud"
+    organization = "harvard"
 }
