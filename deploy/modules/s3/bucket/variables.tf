@@ -4,6 +4,11 @@ variable bucket_name {
 
 variable bucket_acl {
     description = "The canned ACL to apply. Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write."
+    default = null
+}
+variable bucket_policy {
+    description = "json policy for bucket"
+    default = null
 }
 
 variable enable_versioning {

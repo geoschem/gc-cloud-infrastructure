@@ -2,6 +2,7 @@ resource "aws_s3_bucket" "bucket" {
     bucket = var.bucket_name
 
     acl = var.bucket_acl
+    policy = var.bucket_policy
     versioning {
         enabled = var.enable_versioning
     }
