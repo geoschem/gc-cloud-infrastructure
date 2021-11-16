@@ -37,3 +37,16 @@ variable "log_retention_days" {
 variable "s3_path" {
     description = "path to upload run directory to"
 }
+variable "job_type" {
+    description = "type of batch job (eg. container or multinode)"
+    default = "container"
+}
+variable "compute_type" {
+    description = "type of ec2 instances (eg. SPOT or EC2)"
+    default = "SPOT"
+}
+variable "spot_iam_fleet_role" {
+    description = "role for launching spot resources (only use for SPOT jobs)"
+    default = "arn:aws:iam::753979222379:role/aws-service-role/spotfleet.amazonaws.com/AWSServiceRoleForEC2SpotFleet"
+}
+

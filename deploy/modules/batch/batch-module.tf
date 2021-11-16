@@ -9,15 +9,16 @@ resource "aws_batch_compute_environment" "batch_environment" {
             var.security_group_id
         ]
         subnets = var.subnet_ids
-        type = "SPOT"
+        type = var.compute_type
         # TODO: make a variable
-        spot_iam_fleet_role = "arn:aws:iam::753979222379:role/aws-service-role/spotfleet.amazonaws.com/AWSServiceRoleForEC2SpotFleet"
+        spot_iam_fleet_role = var.spot_iam_fleet_role
     }
     service_role = aws_iam_role.batch_role.arn
     type = "MANAGED"
     lifecycle {
         create_before_destroy = true
     }
+    depends_on = [aws_iam_role_policy_attachment.batch_policy_attachment]
 }
 
 resource "aws_batch_job_queue" "job_queue" {
@@ -32,7 +33,7 @@ resource "aws_batch_job_queue" "job_queue" {
 
 resource "aws_batch_job_definition" "job" {
     name = "${var.name_prefix}-batch-job"
-    type = "container"
+    type = var.job_type
     parameters = {}
     timeout {
         attempt_duration_seconds = var.timeout_seconds
