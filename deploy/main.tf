@@ -108,7 +108,6 @@ module "batch_multinode_run" {
     region = data.aws_region.current.name
     log_retention_days = 1
     s3_path = "s3://${var.benchmarks_bucket}" 
-    spot_iam_fleet_role = null
     compute_type = "EC2"
 }
 # ==============================================================
