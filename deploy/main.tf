@@ -77,7 +77,7 @@ module "batch_benchmark_artifacts" {
     name_prefix = var.benchmarks_name_prefix
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
     ami_id = null # currently using default ami
-    instance_types = ["c5"]
+    instance_types = ["optimal"]
     security_group_id = module.default_security_group[0].security_group_id
     timeout_seconds = 86400 # 24 hour timeout for jobs
     docker_image = "${module.benchmarks_ecr_repository[0].repository_url}:latest" # TODO - use version tag
@@ -87,6 +87,7 @@ module "batch_benchmark_artifacts" {
     region = data.aws_region.current.name
     log_retention_days = 1
     s3_path = "s3://${var.benchmarks_bucket}" 
+    ec2_key_pair = "lestrada_keypair"
 }
 
 # ==============================================================
