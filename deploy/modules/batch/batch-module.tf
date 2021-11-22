@@ -12,6 +12,9 @@ resource "aws_batch_compute_environment" "batch_environment" {
         type = var.compute_type
         ec2_key_pair = var.ec2_key_pair
         spot_iam_fleet_role = var.compute_type == "SPOT" ? aws_iam_role.spot_fleet_role[0].arn : null
+        launch_template {
+            launch_template_id = aws_launch_template.launch_template.id
+        } 
     }
     service_role = aws_iam_role.batch_role.arn
     type = "MANAGED"
@@ -61,4 +64,19 @@ data "template_file" "container_properties" {
 resource "aws_cloudwatch_log_group" "log_group" {
   name = "/aws/batch/${var.name_prefix}"
   retention_in_days = var.log_retention_days
+}
+
+resource "aws_launch_template" "launch_template" {
+  name_prefix = var.name_prefix
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      delete_on_termination = true
+      volume_size = var.volume_size
+      volume_type = "gp2"
+    }
+  }
+  ebs_optimized = true
+  instance_initiated_shutdown_behavior = "terminate"
 }

@@ -49,4 +49,7 @@ variable "ec2_key_pair" {
     description = "name of ec2 key pair if you want to be able to ssh into batch instances (eg. your_key.pem)"
     default = null
 }
+variable "volume_size" {
+    description = "size of the ebs volume for batch job in GB (eg. 200)"
+}
 

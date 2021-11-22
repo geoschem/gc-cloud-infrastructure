@@ -88,6 +88,7 @@ module "batch_benchmark_artifacts" {
     log_retention_days = 1
     s3_path = "s3://${var.benchmarks_bucket}" 
     ec2_key_pair = "lestrada_keypair"
+    volume_size = 200
 }
 
 # ==============================================================
@@ -110,6 +111,7 @@ module "batch_multinode_run" {
     log_retention_days = 1
     s3_path = "s3://${var.benchmarks_bucket}" 
     compute_type = "EC2"
+    volume_size = 30
 }
 # ==============================================================
 # input data sync items
@@ -135,6 +137,7 @@ module "batch_data_sync_artifacts" {
     region = data.aws_region.current.name
     log_retention_days = 1
     s3_path = "s3://${var.benchmarks_bucket}" # TODO: update batch module to be more flexible 
+    volume_size = 30
 }
 
 # ==============================================================
