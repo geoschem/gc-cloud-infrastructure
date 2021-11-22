@@ -56,7 +56,7 @@ module "default_security_group" { # TODO: should change to common sg
 # ==============================================================
 module "benchmarks_bucket" {
     source = "./modules/s3/bucket"
-    count = local.only_harvard
+    count = local.all_environments
     bucket_name = var.benchmarks_bucket
     bucket_acl = "private"
     enable_versioning = false
@@ -67,13 +67,13 @@ module "benchmarks_bucket" {
 # ==============================================================
 module "benchmarks_ecr_repository" { # could potentially make public to save on cost
     source = "./modules/ecr"
-    count = local.only_harvard
+    count = local.all_environments
     repository_name ="${var.benchmarks_name_prefix}-repository"
 }
 
 module "batch_benchmark_artifacts" {
     source = "./modules/batch"
-    count = local.only_harvard
+    count = local.all_environments
     name_prefix = var.benchmarks_name_prefix
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
     ami_id = null # currently using default ami
@@ -173,11 +173,22 @@ module "AQACF_bucket" {
          },
          "Action": [
             "s3:GetBucketLocation",
-            "s3:ListBucket",
-            "s3:GetObject"
+            "s3:ListBucket"
          ],
          "Resource": [
             "arn:aws:s3:::${var.organization}-aqacf-data"
+         ]
+      },
+      {
+         "Effect": "Allow",
+         "Principal": {
+            "AWS": "arn:aws:iam::${local.AQACF_account_number}:root"
+         },
+         "Action": [
+            "s3:GetObject"
+         ],
+         "Resource": [
+            "arn:aws:s3:::${var.organization}-aqacf-data/*"
          ]
       }
    ]
