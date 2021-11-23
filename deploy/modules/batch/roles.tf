@@ -125,6 +125,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "spot_fleet_policy_attachment" {
+  count = var.compute_type == "SPOT" ? 1 : 0
   role = aws_iam_role.spot_fleet_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole"
 }

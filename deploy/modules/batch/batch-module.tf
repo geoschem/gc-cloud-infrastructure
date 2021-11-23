@@ -1,3 +1,6 @@
+locals {
+    total_cores = var.num_cores_per_node * var.num_nodes
+}
 resource "aws_batch_compute_environment" "batch_environment" {
     compute_environment_name_prefix = "${var.name_prefix}-batch-environment-"
     compute_resources {
@@ -57,6 +60,12 @@ data "template_file" "container_properties" {
         log_group = var.name_prefix
         log_name = "${var.name_prefix}-batch-job"
         s3_path = var.s3_path
+        shared_memory_size = var.shared_memory_size
+        resolution = var.resolution
+        num_cores_per_node = var.num_cores_per_node
+        total_cores = local.total_cores
+        num_nodes = var.num_nodes
+        tag_name = var.tag_name
     }
 }
 
