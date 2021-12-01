@@ -1,0 +1,220 @@
+{
+    "Comment": "Run Automated Benchmarks",
+    "StartAt": "Evaluate_RunType",
+    "States": {
+      "Evaluate_RunType": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.event.runType",
+            "StringEquals": "GCC",
+            "Next": "Invoke_CreateRunDirectoryGCC"
+          },
+          {
+            "Variable": "$.event.runType",
+            "StringEquals": "GCHP",
+            "Next": "Invoke_CreateRunDirectoryGCHP"
+          }
+        ],
+        "Default": "WorkflowFailed"
+      },
+      "Invoke_CreateRunDirectoryGCC": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::batch:submitJob.sync",
+        "Parameters": {
+          "JobDefinition": "${job_definition_name}",
+          "JobName.$": "States.Format('Invoke_CreateRunDirectoryGCC_{}', $.event.nameSuffix)",
+          "JobQueue": "${job_queue}",
+          "Timeout": {
+            "AttemptDurationSeconds": 12000
+          },
+          "ContainerOverrides": {
+            "Environment": [{ 
+             "Name": "TAG_NAME",
+             "Value.$": "$.event.tag"
+            }],
+            "Command": ["./scripts/createRunDirGCClassic.sh"]
+          }
+        },
+        "ResultPath": "$.event.invokeCreateRunDirGCC",
+        "Next": "Evaluate_RunDir"
+      },
+      "Evaluate_RunDir": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And":[
+              {
+                "Variable": "$.event.runType",
+                "StringEquals": "GCC"
+              },
+              {
+                "Variable": "$.event.invokeCreateRunDirGCC.Status",
+                "StringEquals": "SUCCEEDED"
+              }
+            ],
+            "Next": "Invoke_RunBenchmarkGCC"
+          },
+          {
+            "And":[
+              {
+                "Variable": "$.event.runType",
+                "StringEquals": "GCHP"
+              },
+              {
+                "Variable": "$.event.invokeCreateRunDirGCC.Status",
+                "StringEquals": "SUCCEEDED"
+              }
+            ],
+            "Next": "Invoke_RunBenchmarkGCHP"
+          }
+        ],
+        "Default": "WorkflowFailed"
+      },
+      "Invoke_RunBenchmarkGCC": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::batch:submitJob.sync",
+        "Parameters": {
+          "JobDefinition": "${job_definition_name}",
+          "JobName.$": "States.Format('Invoke_RunBenchmarkGCC_{}', $.event.nameSuffix)",
+          "JobQueue": "${job_queue}",
+          "Parameters.$": "$.batchjob.parameters",
+          "Timeout": {
+            "AttemptDurationSeconds": 12000
+          },
+          "ContainerOverrides": {
+            "ResourceRequirements": [
+              {
+                "Type": "VCPU",
+                "Value.$": "$.event.numCores"
+              },
+              {
+                "Type": "MEMORY",
+                "Value.$": "$.event.memory"
+              }
+            ],
+            "Environment": [
+              { 
+                "Name": "TAG_NAME",
+                "Value.$": "$.event.tag"
+              }
+            ],
+            "Command": ["./scripts/runGCClassic.sh"]
+          }
+        },
+        "ResultPath": "$.event.invokeRunBenchmarkGCC",
+        "Next": "Evaluate_Benchmark"
+      },
+      "Invoke_CreateRunDirectoryGCHP": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::batch:submitJob.sync",
+        "Parameters": {
+          "JobDefinition": "${job_definition_name}",
+          "JobName.$": "States.Format('Invoke_CreateRunDirectoryGCHP_{}', $.event.nameSuffix)",
+          "JobQueue": "${job_queue}",
+          "Parameters.$": "$.batchjob.parameters",
+          "Timeout": {
+            "AttemptDurationSeconds": 12000
+          },
+          "ContainerOverrides": {
+            "ResourceRequirements": [
+              {
+                "Type": "VCPU",
+                "Value.$": "$.event.numCores"
+              },
+              {
+                "Type": "MEMORY",
+                "Value.$": "$.event.memory"
+              }
+            ],
+            "Environment": [
+              { 
+                "Name": "TAG_NAME",
+                "Value.$": "$.event.tag"
+              },
+              { 
+                "Name": "NUM_CORES_PER_NODE",
+                "Value.$": "$.event.numCores"
+              },
+              { 
+                "Name": "TOTAL_CORES",
+                "Value.$": "$.event.numCores"
+              },
+              { 
+                "Name": "CS_RES",
+                "Value.$": "$.event.resolution"
+              }
+            ],
+            "Command": ["./scripts/createRunDirGCHP.sh"]
+          }
+        },
+        "ResultPath": "$.event.invokeCreateRunDirGCHP",
+        "Next": "Evaluate_RunDir"
+      },
+      "Invoke_RunBenchmarkGCHP": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::batch:submitJob.sync",
+        "Parameters": {
+          "JobDefinition": "${job_definition_name}",
+          "JobName.$": "States.Format('Invoke_RunBenchmarkGCHP_{}', $.event.nameSuffix)",
+          "JobQueue": "${job_queue}",
+          "Parameters.$": "$.batchjob.parameters",
+          "Timeout": {
+            "AttemptDurationSeconds": 12000
+          },
+          "ContainerOverrides": {
+            "ResourceRequirements": [
+              {
+                "Type": "VCPU",
+                "Value": "48"
+              },
+              {
+                "Type": "MEMORY",
+                "Value": "16000"
+              }
+            ],
+            "Environment": [{ 
+             "Name": "TAG_NAME",
+             "Value.$": "$.event.tag"
+            }],
+            "Command": ["./scripts/runGCClassic.sh"]
+          }
+        },
+        "ResultPath": "$.event.invokeRunBenchmarkGCHP",
+        "Next": "Evaluate_Benchmark"
+      },
+      "Evaluate_Benchmark": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.event.invokeRunBenchmarkGCHP",
+            "StringEquals": "SUCCEEDED",
+            "Next": "WorkflowComplete"
+          },
+          {
+            "Variable": "$.event.invokeRunBenchmarkGCC",
+            "StringEquals": "SUCCEEDED",
+            "Next": "WorkflowComplete"
+          },
+          {
+            "Variable": "$.event.invokeRunBenchmarkGCC",
+            "StringEquals": "FAILED",
+            "Next": "WorkflowFailed"
+          },
+          {
+            "Variable": "$.event.invokeRunBenchmarkGCHP",
+            "StringEquals": "FAILED",
+            "Next": "WorkflowFailed"
+          }
+        ],
+        "Default": "WorkflowFailed"
+      },
+      "WorkflowComplete": {
+        "Type": "Pass",
+        "End": true
+      },
+      "WorkflowFailed": {
+        "Type": "Fail"
+      }
+    }
+  }

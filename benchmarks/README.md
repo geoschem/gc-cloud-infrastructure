@@ -12,3 +12,18 @@ The items in this directory are intended for an automated benchmarking workflow 
 `$ ssh -i "lestrada_keypair.pem" ec2-user@public-ip`
 - exec into docker container:
 `$ docker exec -it <docker-image-id> bash`
+
+### Running a benchmark step function
+The input data format for step functions is the following:
+```
+{
+    "event": {
+      "nameSuffix": "{commit-hash?}",
+      "runType": "GCC", # or GHCP
+      "tag": "13.2.1",  # accepts tags, branch names, or commits
+      "numCores": "48", # number of cores to deploy with
+      "memory": "16000" # amount of memory to deploy with
+      "resolution": "24" # resolution to run at (GCHP only)
+    }
+}
+```

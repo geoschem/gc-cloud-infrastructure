@@ -93,6 +93,8 @@ module "batch_benchmark_artifacts" {
     compute_type = "EC2"
     resolution = 24
     num_cores_per_node = 6
+    step_fn_definition_file = "../../modules/step-function/state-machine-definitions/cloud-benchmarks.json"
+    enable_step_function = true
 }
 
 # ==============================================================

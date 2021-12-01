@@ -71,21 +71,32 @@ data "template_file" "container_properties" {
 
 # logging 
 resource "aws_cloudwatch_log_group" "log_group" {
-  name = "/aws/batch/${var.name_prefix}"
-  retention_in_days = var.log_retention_days
+    name = "/aws/batch/${var.name_prefix}"
+    retention_in_days = var.log_retention_days
 }
 
 resource "aws_launch_template" "launch_template" {
-  name_prefix = var.name_prefix
-  block_device_mappings {
-    device_name = "/dev/xvda"
+    name_prefix = var.name_prefix
+    block_device_mappings {
+        device_name = "/dev/xvda"
 
-    ebs {
-      delete_on_termination = true
-      volume_size = var.volume_size
-      volume_type = "gp2"
+        ebs {
+            delete_on_termination = true
+            volume_size = var.volume_size
+            volume_type = "gp2"
+        }
     }
-  }
-  ebs_optimized = true
-  instance_initiated_shutdown_behavior = "terminate"
+    ebs_optimized = true
+    instance_initiated_shutdown_behavior = "terminate"
+}
+
+module "step_function" {
+    source = "../step-function"
+    count = var.enable_step_function ? 1 : 0
+    name = "${var.name_prefix}-workflow"
+    definition_file = var.step_fn_definition_file
+    state_machine_definition_vars = {
+        job_definition_name = aws_batch_job_definition.job.name
+        job_queue = aws_batch_job_queue.job_queue.name
+    }
 }

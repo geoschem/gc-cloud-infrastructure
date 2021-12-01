@@ -17,19 +17,19 @@ RUN cd home && \
 ENV PATH="/home/.bashdatacatalog:${PATH}"
 
 # copy various run scripts
-COPY createRunDir.sh /createRunDir.sh
-COPY runForever.sh /runForever.sh
-COPY runBenchmark.sh /runBenchmark.sh
-COPY gchp_source.env gchp_source.env
-COPY gchp.cloud.run gchp.cloud.run
+ADD scripts /scripts
+ADD environments /environments
 
 # make files executable
-RUN chmod +x /createRunDir.sh \ 
-    && chmod +x /runForever.sh \
-    && chmod +x /runBenchmark.sh
+RUN chmod +x /scripts/createRunDirGCHP.sh \ 
+    && chmod +x /scripts/createRunDirGCClassic.sh \
+    && chmod +x /scripts/runForever.sh \
+    && chmod +x /scripts/runGCClassic.sh \
+    && chmod +x /scripts/runGCHP.sh
     
 ENV SPACK_ROOT="/opt/spack"
-# default does nothing
-CMD [ "./runForever.sh" ]
+
+# default command does nothing -- this is useful for testing
+CMD [ "./scripts/runForever.sh" ]
 
 # TODO switch to using non-root user

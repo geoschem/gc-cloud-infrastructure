@@ -72,4 +72,12 @@ variable "tag_name" {
     description = "tag name for git checkout"
     default = "13.2.1"
 }
+variable "enable_step_function" {
+    description = "Whether to create a step function with the batch job"
+    default = false
+}
+variable "step_fn_definition_file" {
+    description = "path to step function definition"
+    default = null
+}
 

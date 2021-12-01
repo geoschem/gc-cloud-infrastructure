@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-source /gchp_source.env
+cd /
+source /environments/gchp_source.env
 # checkout the specified version if given
-if [[ -z "${TAG_NAME}" ]]; then
+if [[ ! -z "${TAG_NAME}" ]]; then
   rm -rf /gc-src
   git clone https://github.com/geoschem/GCHP.git /gc-src
   cd /gc-src
@@ -17,12 +18,12 @@ cat << 'EOF' > run_input.txt
 2
 1
 /home
-gc_default_rundir
+default_rundir
 n
 EOF
 cat "run_input.txt" | ./createRunDir.sh
-mkdir /home/gc_default_rundir/build
-cd /home/gc_default_rundir/build
+mkdir /home/default_rundir/build
+cd /home/default_rundir/build
 
 # NOTE: doesn't work on m1 macbook air due to an issue with qemu
 cmake ../CodeDir
@@ -38,5 +39,5 @@ sed -i "s/CS_RES=48/CS_RES=${CS_RES}/" runConfig.sh
 sed -i "s/NUM_CORES_PER_NODE=48/NUM_CORES_PER_NODE=${NUM_CORES_PER_NODE}/" runConfig.sh
 
 echo "starting run directory upload"
-aws s3 cp /home/gc_default_rundir "${S3_RUNDIR_PATH}rundir" --recursive --quiet
+aws s3 cp /home/default_rundir "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir" --recursive --quiet
 echo "Finished run directory upload"
