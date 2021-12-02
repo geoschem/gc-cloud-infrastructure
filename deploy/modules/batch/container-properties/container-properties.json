@@ -3,7 +3,27 @@
     "environment": [
         { 
             "name": "S3_RUNDIR_PATH",
-            "value": "${s3_path}/rundir/"
+            "value": "${s3_path}/benchmarks/"
+        },
+        { 
+            "name": "NUM_CORES_PER_NODE",
+            "value": "${num_cores_per_node}"
+        },
+        { 
+            "name": "TOTAL_CORES",
+            "value": "${total_cores}"
+        },
+        { 
+            "name": "NUM_NODES",
+            "value": "${num_nodes}"
+        },
+        { 
+            "name": "TAG_NAME",
+            "value": "${tag_name}"
+        },
+        { 
+            "name": "CS_RES",
+            "value": "${resolution}"
         }
     ],
     "image": "${docker_image}",
@@ -28,5 +48,8 @@
             "value": "${container_cpu}"
         }
     ],
-    "secrets": []
+    "secrets": [],
+    "linuxParameters": {
+        "sharedMemorySize": ${shared_memory_size}
+    }
 }

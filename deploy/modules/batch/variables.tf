@@ -45,8 +45,39 @@ variable "compute_type" {
     description = "type of ec2 instances (eg. SPOT or EC2)"
     default = "SPOT"
 }
-variable "spot_iam_fleet_role" {
-    description = "role for launching spot resources (only use for SPOT jobs)"
-    default = "arn:aws:iam::753979222379:role/aws-service-role/spotfleet.amazonaws.com/AWSServiceRoleForEC2SpotFleet"
+variable "ec2_key_pair" {
+    description = "name of ec2 key pair if you want to be able to ssh into batch instances (eg. your_key.pem)"
+    default = null
+}
+variable "volume_size" {
+    description = "size of the ebs volume for batch job in GB (eg. 200)"
+}
+variable "shared_memory_size" {
+    description = "size of the shared memory volume for batch job in MB (eg. 64)"
+    default = 64
+}
+variable "resolution" {
+    description = "Primary resolution is an integer value (eg. 24 ~ 4x5, 48 ~ 2x2.25, 90 ~ 1x1.25, 180 ~ 1/2 deg, 360 ~ 1/4 deg)"
+    default = 48
+}
+variable "num_cores_per_node" {
+    description = "number of cores per node (eg. 6)"
+    default = 48
+}
+variable "num_nodes" {
+    description = "number of nodes -- currently can only do 1"
+    default = 1
+}
+variable "tag_name" {
+    description = "tag name for git checkout"
+    default = "13.2.1"
+}
+variable "enable_step_function" {
+    description = "Whether to create a step function with the batch job"
+    default = false
+}
+variable "step_fn_definition_file" {
+    description = "path to step function definition"
+    default = null
 }
 

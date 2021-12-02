@@ -104,3 +104,28 @@ resource "aws_iam_role_policy_attachment" "job_policy_attachment" {
   policy_arn = aws_iam_policy.job_policy.arn
 }
 
+resource "aws_iam_role" "spot_fleet_role" {
+    count = var.compute_type == "SPOT" ? 1 : 0
+    name   = "${var.name_prefix}-spot-fleet-role"
+    assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement":
+    [
+        {
+            "Action": "sts:AssumeRole",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "spotfleet.amazonaws.com"
+            }
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "spot_fleet_policy_attachment" {
+  count = var.compute_type == "SPOT" ? 1 : 0
+  role = aws_iam_role.spot_fleet_role[0].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole"
+}

@@ -1,3 +1,6 @@
+locals {
+    total_cores = var.num_cores_per_node * var.num_nodes
+}
 resource "aws_batch_compute_environment" "batch_environment" {
     compute_environment_name_prefix = "${var.name_prefix}-batch-environment-"
     compute_resources {
@@ -10,14 +13,18 @@ resource "aws_batch_compute_environment" "batch_environment" {
         ]
         subnets = var.subnet_ids
         type = var.compute_type
-        # TODO: make a variable
-        spot_iam_fleet_role = var.spot_iam_fleet_role
+        ec2_key_pair = var.ec2_key_pair
+        spot_iam_fleet_role = var.compute_type == "SPOT" ? aws_iam_role.spot_fleet_role[0].arn : null
+        launch_template {
+            launch_template_id = aws_launch_template.launch_template.id
+        } 
     }
     service_role = aws_iam_role.batch_role.arn
     type = "MANAGED"
     lifecycle {
         create_before_destroy = true
     }
+    # prevents race condition that causes failure to delete compute environment
     depends_on = [aws_iam_role_policy_attachment.batch_policy_attachment]
 }
 
@@ -53,11 +60,43 @@ data "template_file" "container_properties" {
         log_group = var.name_prefix
         log_name = "${var.name_prefix}-batch-job"
         s3_path = var.s3_path
+        shared_memory_size = var.shared_memory_size
+        resolution = var.resolution
+        num_cores_per_node = var.num_cores_per_node
+        total_cores = local.total_cores
+        num_nodes = var.num_nodes
+        tag_name = var.tag_name
     }
 }
 
 # logging 
 resource "aws_cloudwatch_log_group" "log_group" {
-  name = "/aws/batch/${var.name_prefix}"
-  retention_in_days = var.log_retention_days
+    name = "/aws/batch/${var.name_prefix}"
+    retention_in_days = var.log_retention_days
+}
+
+resource "aws_launch_template" "launch_template" {
+    name_prefix = var.name_prefix
+    block_device_mappings {
+        device_name = "/dev/xvda"
+
+        ebs {
+            delete_on_termination = true
+            volume_size = var.volume_size
+            volume_type = "gp2"
+        }
+    }
+    ebs_optimized = true
+    instance_initiated_shutdown_behavior = "terminate"
+}
+
+module "step_function" {
+    source = "../step-function"
+    count = var.enable_step_function ? 1 : 0
+    name = "${var.name_prefix}-workflow"
+    definition_file = var.step_fn_definition_file
+    state_machine_definition_vars = {
+        job_definition_name = aws_batch_job_definition.job.name
+        job_queue = aws_batch_job_queue.job_queue.name
+    }
 }
