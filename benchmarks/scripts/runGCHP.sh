@@ -29,7 +29,7 @@ then
     mkdir catalogs
     cd catalogs
     # TODO replace hardcoded path
-    wget -r -nH --cut-dirs=3 -np -A "*.csv" geoschemdata.wustl.edu/ExtData/DataCatalogs/13.2/
+    wget -r -nH --cut-dirs=3 -np -A "*.csv" geoschemdata.wustl.edu/ExtData/DataCatalogs/13.3/
     rm InitialConditions.csv # restarts are too big
     cd ..
     bashdatacatalog catalogs/*.csv fetch

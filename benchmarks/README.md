@@ -31,5 +31,6 @@ The input data format for step functions is the following:
     }
 }
 ```
+Note: you must remove the comments before submitting
 1. Once started, you can monitor the progress of the overall workflow via the step function visualization
 1. Progress of individual steps can be monitored via cloudwatch in the /aws/batch/benchmarks-cloud log group
