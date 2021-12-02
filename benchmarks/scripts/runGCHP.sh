@@ -14,7 +14,6 @@ if [[ ! -z "${TAG_NAME}" ]]; then
 fi
 
 mkdir /home/ExtData
-SKIP_INPUT_DATA_DOWNLOAD=1
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
 aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir/" /home/default_rundir --recursive --quiet
@@ -23,7 +22,7 @@ echo "finished downloading run directory from s3"
 # get input data
 echo "downloading input data"
 aws s3 cp s3://benchmarks-cloud/ExtData/ /home/ExtData/ --quiet --recursive
-if [ $SKIP_INPUT_DATA_DOWNLOAD -gt 0 ]
+if [ $INPUT_DATA_DOWNLOAD -gt 0 ]
 then
     echo "running bashdatacatalog"
     cd /home/ExtData
@@ -53,7 +52,7 @@ ln -s /home/ExtData/GEOS_0.5x0.625/MERRA2/ MetDir
 ln -s /home/ExtData/HEMCO/ HcoDir
 ln -s /gc-src/ CodeDir
 ln -s /home/ExtData/CHEM_INPUTS/ ChemDir
-ln -s /scripts/gchp_source.env gchp.env
+ln -s /environments/gchp_source.env gchp.env
 
 # copy over local run script
 cp /scripts/gchp.cloud.run gchp.cloud.run

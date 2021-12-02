@@ -186,6 +186,10 @@
               { 
                 "Name": "CS_RES",
                 "Value.$": "$.event.resolution"
+              },
+              { 
+                "Name": "INPUT_DATA_DOWNLOAD",
+                "Value.$": "$.event.updateInputData"
               }
             ],
             "Command": ["./scripts/runGCHP.sh"]
