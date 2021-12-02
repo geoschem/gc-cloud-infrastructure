@@ -13,7 +13,7 @@ The items in this directory are intended for an automated benchmarking workflow 
 - exec into docker container:
 `$ docker exec -it <docker-image-id> bash`
 
-### Running a benchmark step function
+### Running an automated benchmark via step functions
 1. Log onto the aws console and navigate via the search bar to 'Step Functions' Service
 1. Go to State Machines > benchmarks-cloud-workflow
 1. Click "Start Execution" and enter in the following json replacing values for your needs
