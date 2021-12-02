@@ -14,16 +14,19 @@ The items in this directory are intended for an automated benchmarking workflow 
 `$ docker exec -it <docker-image-id> bash`
 
 ### Running a benchmark step function
+1. Log onto the aws console and navigate via the search bar to 'Step Functions' Service
+1. Go to State Machines > benchmarks-cloud-workflow
+1. Click "Start Execution" and enter in the following json replacing values for your needs
 The input data format for step functions is the following:
 ```
 {
     "event": {
-      "nameSuffix": "{commit-hash?}",
-      "runType": "GCC", # or GHCP
-      "tag": "13.2.1",  # accepts tags, branch names, or commits
-      "numCores": "48", # number of cores to deploy with
-      "memory": "16000" # amount of memory to deploy with
-      "resolution": "24" # resolution to run at (GCHP only)
+      "nameSuffix": "{commit-hash?}", // can't use tag because punctuation is not accepted
+      "runType": "GCC", // or GHCP
+      "tag": "13.2.1",  // accepts tags, branch names, or commits
+      "numCores": "48", // number of cores to deploy with
+      "memory": "16000", // amount of memory to deploy with
+      "resolution": "24" // resolution to run at (GCHP only)
     }
 }
 ```

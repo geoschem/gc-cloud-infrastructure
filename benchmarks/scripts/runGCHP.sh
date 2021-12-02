@@ -35,7 +35,7 @@ then
     cd ..
     bashdatacatalog catalogs/*.csv fetch
     bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-08-01 \
-     | sed 's#./\(.*\)#aws s3 cp s3://benchmarks-cloud/ExtData/\1 /home/ExtData/\1#g' \ 
+     | sed 's#./\(.*\)#aws s3 cp s3://gcgrid/\1 /home/ExtData/\1 --request-payer#g' \
      | bash
     # for catalog in `ls *.csv`; do
     #     echo "fetching input data for catalog: $catalog"
@@ -53,7 +53,7 @@ ln -s /home/ExtData/GEOS_0.5x0.625/MERRA2/ MetDir
 ln -s /home/ExtData/HEMCO/ HcoDir
 ln -s /gc-src/ CodeDir
 ln -s /home/ExtData/CHEM_INPUTS/ ChemDir
-ln -s /gchp_source.env gchp.env
+ln -s /scripts/gchp_source.env gchp.env
 
 # copy over local run script
 cp /scripts/gchp.cloud.run gchp.cloud.run
