@@ -27,7 +27,7 @@ The input data format for step functions is the following:
       "numCores": "48", // number of cores to deploy with
       "memory": "16000", // amount of memory to deploy with
       "resolution": "24" // resolution to run at (GCHP only)
-      "updateInputData": "0" // updates GCHP input data with bashdatacatalog 0 for false, 1 for true
+      "updateInputData": "0" // updates GCHP input data with bashdatacatalog. 0 for false, 1 for true
     }
 }
 ```
