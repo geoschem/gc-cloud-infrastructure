@@ -73,9 +73,9 @@ echo "running gchp"
 ./gchp.cloud.run
 echo "finished running gchp"
 echo "uploading output dir"
-aws s3 cp gchp.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/outputDir/gchp.log"
-aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/outputDir/HEMCO.log"
-aws s3 cp outputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/outputDir" --recursive
+aws s3 cp gchp.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/gchp.log"
+aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/HEMCO.log"
+aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir" --recursive
 echo "finished uploading output dir"
 
 #TODO on exit code 0 throw an error

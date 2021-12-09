@@ -4,6 +4,7 @@
 # ==============================================================
 
 data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
 
 # ==============================================================
 # terraform state persistence
@@ -85,7 +86,7 @@ module "batch_benchmark_artifacts" {
     container_memory = 98304
     container_properties_file = "../../modules/batch/container-properties/container-properties.json"
     region = data.aws_region.current.name
-    log_retention_days = 1
+    log_retention_days = 5
     s3_path = "s3://${var.benchmarks_bucket}" 
     ec2_key_pair = "lestrada_keypair"
     volume_size = 300
@@ -203,4 +204,25 @@ module "AQACF_bucket" {
    ]
 }
 POLICY
+}
+
+# ==============================================================
+# Billing alarm items
+# ==============================================================
+module "gcst_sns_topic" {
+    source = "./modules/sns"
+    count = local.only_harvard
+    sns_topic_name = "gcst-sns-topic"
+}
+module "cloudwatch_cost_alarm" {
+    source = "./modules/cloudwatch/alarms"
+    count = local.only_harvard
+    alarm_name = "account-billing-alarm"
+    metric_name = "EstimatedCharges"
+    metric_namespace = "AWS/Billing"
+    currency = "USD"
+    threshold = "450" 
+    description = "This metric monitors total estimated monthly costs"
+    sns_topic_arn = module.gcst_sns_topic[0].arn
+    account_number = data.aws_caller_identity.current.account_id
 }

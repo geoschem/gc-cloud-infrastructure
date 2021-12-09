@@ -32,10 +32,10 @@ ln -s /gc-src/ CodeDir
 
 # execute scripts
 echo "running gcclassic"
-./gcclassic | tee gcclasic.log
+./gcclassic | tee gcclassic.log
 echo "finished running gcclassic"
 echo "uploading output dir"
-aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/outputDir/gcclassic.log"
-aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/outputDir/HEMCO.log"
-aws s3 cp outputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/outputDir" --recursive
+aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/gcclassic.log"
+aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/HEMCO.log"
+aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir" --recursive
 echo "finished uploading output dir"
