@@ -73,7 +73,7 @@ module "benchmarks_ecr_repository" { # could potentially make public to save on 
 }
 
 module "batch_benchmark_artifacts" {
-    source = "./modules/batch"
+    source = "./modules/benchmarks"
     count = local.all_environments
     name_prefix = var.benchmarks_name_prefix
     subnet_ids = data.aws_subnet_ids.all_default_subnets.ids
@@ -91,7 +91,6 @@ module "batch_benchmark_artifacts" {
     ec2_key_pair = "lestrada_keypair"
     volume_size = 300
     shared_memory_size = 10000
-    compute_type = "EC2"
     resolution = 24
     num_cores_per_node = 6
     step_fn_definition_file = "../../modules/step-function/state-machine-definitions/cloud-benchmarks.json"

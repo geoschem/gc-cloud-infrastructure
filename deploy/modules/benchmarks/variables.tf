@@ -1,3 +1,4 @@
+
 variable "name_prefix" {
     description = "name prefix for batch items"
 }
@@ -41,10 +42,6 @@ variable "job_type" {
     description = "type of batch job (eg. container or multinode)"
     default = "container"
 }
-variable "compute_type" {
-    description = "type of ec2 instances (eg. SPOT or EC2)"
-    default = "SPOT"
-}
 variable "ec2_key_pair" {
     description = "name of ec2 key pair if you want to be able to ssh into batch instances (eg. your_key.pem)"
     default = null
@@ -72,4 +69,11 @@ variable "tag_name" {
     description = "tag name for git checkout"
     default = "13.2.1"
 }
-
+variable "enable_step_function" {
+    description = "Whether to create a step function with the batch job"
+    default = false
+}
+variable "step_fn_definition_file" {
+    description = "path to step function definition"
+    default = null
+}
