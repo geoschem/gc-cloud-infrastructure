@@ -106,6 +106,16 @@
             "AttemptDurationSeconds": 12000
           },
           "ContainerOverrides": {
+            "ResourceRequirements": [
+              {
+                "Type": "VCPU",
+                "Value": "4"
+              },
+              {
+                "Type": "MEMORY",
+                "Value": "16384"
+              }
+            ],
             "Environment": [{ 
               "Name": "TAG_NAME",
               "Value.$": "$.event.tag"
@@ -135,11 +145,11 @@
             "ResourceRequirements": [
               {
                 "Type": "VCPU",
-                "Value.$": "$.event.numCores"
+                "Value": "4"
               },
               {
                 "Type": "MEMORY",
-                "Value.$": "$.event.memory"
+                "Value": "16384"
               }
             ],
             "Environment": [

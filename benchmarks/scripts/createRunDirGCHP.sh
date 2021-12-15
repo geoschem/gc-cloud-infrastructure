@@ -38,6 +38,8 @@ sed -i "s/NUM_NODES=2/NUM_NODES=${NUM_NODES}/" runConfig.sh
 sed -i "s/CS_RES=48/CS_RES=${CS_RES}/" runConfig.sh
 sed -i "s/NUM_CORES_PER_NODE=48/NUM_CORES_PER_NODE=${NUM_CORES_PER_NODE}/" runConfig.sh
 
+echo "File added to prevent s3 auto deletion of empty OutputDir" > OutputDir/README.md
+
 echo "starting run directory upload"
 aws s3 cp /home/default_rundir "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir" --recursive --quiet
 echo "Finished run directory upload"
