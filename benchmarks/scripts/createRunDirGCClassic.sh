@@ -36,6 +36,12 @@ make -j
 make install
 cd ..
 
+# check what time period to use -- default is 1Mon
+if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
+  echo "creating rundir for 1Day time period"
+  sed -i "s/End   YYYYMMDD, hhmmss  : {DATE2} {TIME2}/End   YYYYMMDD, hhmmss  : 20190801 000000/" input.geos
+  sed -i "s/DiagnFreq:                   Monthly/DiagnFreq:                   End/" HEMCO_Config.rc
+fi
 echo "starting run directory upload"
 aws s3 cp /home/default_rundir "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" --recursive --quiet
 echo "Finished run directory upload"

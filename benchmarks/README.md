@@ -24,11 +24,13 @@ The input data format for step functions is the following:
       "nameSuffix": "{commit-hash?}", // can't use tag because punctuation is not accepted
       "simulationType": "GCC", // or GHCP
       "runType": "SPOT", // or DEMAND
+      "timePeriod": "1Day" // or 1Mon, default is 1Mon
       "tag": "13.2.1",  // accepts tags, branch names, or commits
       "numCores": "48", // number of cores to deploy with
       "memory": "16000", // amount of memory to deploy with
-      "resolution": "24" // resolution to run at (GCHP only)
-      "updateInputData": "0" // updates GCHP input data with bashdatacatalog. 0 for false, 1 for true
+      "resolution": "24", // resolution to run at (GCHP only)
+      "updateInputData": "0", // updates GCHP input data with bashdatacatalog. 0 for false, 1 for true
+      "skipCreateRunDir": "true" // optional parameter, defaults to false
     }
 }
 ```

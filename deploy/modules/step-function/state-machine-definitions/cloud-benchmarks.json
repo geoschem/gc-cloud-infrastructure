@@ -1,7 +1,24 @@
 {
     "Comment": "Run Automated Benchmarks",
-    "StartAt": "Evaluate_RunType",
+    "StartAt": "Evaluate_StartPoint",
     "States": {
+      "Evaluate_StartPoint": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.event.skipCreateRunDir",
+            "IsPresent": false,
+            "Next": "Set_skipCreateRunDir"
+          }
+        ],
+        "Default": "Evaluate_RunType"
+      },
+      "Set_skipCreateRunDir": {
+        "Type": "Pass",
+        "Result": "false",
+        "ResultPath": "$.event.skipCreateRunDir",
+        "Next": "Evaluate_RunType"
+      },
       "Evaluate_RunType": {
         "Type": "Choice",
         "Choices": [
@@ -40,6 +57,32 @@
         "Type": "Choice",
         "Choices": [
           {
+            "And":[
+              {
+                "Variable": "$.event.simulationType",
+                "StringEquals": "GCC"
+              },
+              {
+                "Variable": "$.event.skipCreateRunDir",
+                "StringEquals": "true"
+              }
+            ],
+            "Next": "Invoke_RunBenchmarkGCC"
+          },
+          {
+            "And":[
+              {
+                "Variable": "$.event.simulationType",
+                "StringEquals": "GCHP"
+              },
+              {
+                "Variable": "$.event.skipCreateRunDir",
+                "StringEquals": "true"
+              }
+            ],
+            "Next": "Invoke_RunBenchmarkGCHP"
+          },
+          {
             "Variable": "$.event.simulationType",
             "StringEquals": "GCC",
             "Next": "Invoke_CreateRunDirectoryGCC"
@@ -64,9 +107,14 @@
           },
           "ContainerOverrides": {
             "Environment": [{ 
-             "Name": "TAG_NAME",
-             "Value.$": "$.event.tag"
-            }],
+              "Name": "TAG_NAME",
+              "Value.$": "$.event.tag"
+            },
+            { 
+              "Name": "TIME_PERIOD",
+              "Value.$": "$.event.timePeriod"
+            }
+          ],
             "Command": ["./scripts/createRunDirGCClassic.sh"]
           }
         },
@@ -154,9 +202,9 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
-          "JobDefinition": "$.event.batch_info.job_definition",
+          "JobDefinition.$": "$.event.batch_info.job_definition",
           "JobName.$": "States.Format('Invoke_RunBenchmarkGCC_{}', $.event.nameSuffix)",
-          "JobQueue": "$.event.batch_info.job_queue",
+          "JobQueue.$": "$.event.batch_info.job_queue",
           "Timeout": {
             "AttemptDurationSeconds": 120000
           },
@@ -187,9 +235,9 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
-          "JobDefinition": "$.event.batch_info.job_definition",
+          "JobDefinition.$": "$.event.batch_info.job_definition",
           "JobName.$": "States.Format('Invoke_RunBenchmarkGCHP_{}', $.event.nameSuffix)",
-          "JobQueue": "$.event.batch_info.job_queue",
+          "JobQueue.$": "$.event.batch_info.job_queue",
           "Timeout": {
             "AttemptDurationSeconds": 120000
           },
