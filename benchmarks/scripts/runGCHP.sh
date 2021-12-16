@@ -21,7 +21,6 @@ echo "finished downloading run directory from s3"
 
 # get input data
 echo "downloading input data"
-aws s3 cp s3://benchmarks-cloud/ExtData/ /home/ExtData/ --quiet --recursive
 if [ $INPUT_DATA_DOWNLOAD -gt 0 ]
 then
     echo "running bashdatacatalog"
@@ -33,9 +32,18 @@ then
     rm InitialConditions.csv # restarts are too big
     cd ..
     bashdatacatalog catalogs/*.csv fetch
-    bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-08-01 \
-     | sed 's#./\(.*\)#aws s3 cp s3://gcgrid/\1 /home/ExtData/\1 --request-payer#g' \
-     | bash
+
+    if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
+      echo "downloading data for 1Day time period"
+      bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-07-02 \
+      | sed 's#./\(.*\)#aws s3 cp s3://gcgrid/\1 /home/ExtData/\1 --request-payer#g' \
+      | bash
+    else
+      echo "downloading data for 1Mon time period"
+      bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-08-01 \
+      | sed 's#./\(.*\)#aws s3 cp s3://gcgrid/\1 /home/ExtData/\1 --request-payer#g' \
+      | bash
+    fi
     # for catalog in `ls *.csv`; do
     #     echo "fetching input data for catalog: $catalog"
     #     bashdatacatalog $catalog fetch

@@ -168,6 +168,10 @@
               { 
                 "Name": "CS_RES",
                 "Value.$": "$.event.resolution"
+              },
+              { 
+                "Name": "TIME_PERIOD",
+                "Value.$": "$.event.timePeriod"
               }
             ],
             "Command": ["./scripts/createRunDirGCHP.sh"]
