@@ -2,16 +2,12 @@
 # setup environment
 err=0
 trap 'err=1' ERR
-cd /
 source /environments/gchp_source.env
 
-if [[ ! -z "${TAG_NAME}" ]]; then
-  rm -rf /gc-src
-  git clone https://github.com/geoschem/GCHP.git /gc-src
-  cd /gc-src
-  git checkout ${TAG_NAME}
-  git submodule update --init --recursive
-fi
+REPO_PATH="/gc-src"
+
+# clone and checkout the specified version
+/scripts/utils/get-repo.sh GCHP $REPO_PATH
 
 mkdir /home/ExtData
 # fetch the created/compiled run directory
@@ -58,7 +54,7 @@ cd /home/default_rundir
 ln -s "/home/ExtData/GEOSCHEM_RESTARTS/GC_13.0.0/GCHP.Restart.fullchem.20190701_0000z.c${CS_RES}.nc4" "initial_GEOSChem_rst.c${CS_RES}_fullchem.nc"
 ln -s /home/ExtData/GEOS_0.5x0.625/MERRA2/ MetDir
 ln -s /home/ExtData/HEMCO/ HcoDir
-ln -s /gc-src/ CodeDir
+ln -s "$REPO_PATH/" CodeDir
 ln -s /home/ExtData/CHEM_INPUTS/ ChemDir
 ln -s /environments/gchp_source.env gchp.env
 

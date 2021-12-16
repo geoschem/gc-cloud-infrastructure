@@ -2,19 +2,11 @@
 # setup environment
 err=0
 trap 'err=1' ERR
-cd /
 source /environments/gchp_source.env
+REPO_PATH="/gc-src"
 
-rm -rf /gc-src
-git clone https://github.com/geoschem/GCClassic.git /gc-src
-cd /gc-src
-
-# if supplied checkout the relevant tag
-if [[ ! -z "${TAG_NAME}" ]]; then
-  git checkout ${TAG_NAME}
-fi
-
-git submodule update --init --recursive
+# clone and checkout the specified version
+/scripts/utils/get-repo.sh GCC $REPO_PATH
 
 mkdir /home/ExtData
 # fetch the created/compiled run directory
@@ -30,7 +22,7 @@ echo "downloading input data"
 ./download_data.py log.dryrun aws
 echo "finished downloading input data"
 # create a symlinks
-ln -s /gc-src/ CodeDir
+ln -s "$REPO_PATH/" CodeDir
 
 # execute scripts
 echo "running gcclassic"

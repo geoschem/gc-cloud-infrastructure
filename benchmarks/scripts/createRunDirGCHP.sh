@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
 err=0
 trap 'err=1' ERR
-cd /
 source /environments/gchp_source.env
-# checkout the specified version if given
-if [[ ! -z "${TAG_NAME}" ]]; then
-  rm -rf /gc-src
-  git clone https://github.com/geoschem/GCHP.git /gc-src
-  cd /gc-src
-  git checkout ${TAG_NAME}
-  git submodule update --init --recursive
-fi
+REPO_PATH="/gc-src"
+
+# clone and checkout the specified version
+/scripts/utils/get-repo.sh GCHP $REPO_PATH
 
 mkdir /home/ExtData
-cd /gc-src/run
+cd "$REPO_PATH/run"
 cat << 'EOF' > run_input.txt
 /home/ExtData
 1
