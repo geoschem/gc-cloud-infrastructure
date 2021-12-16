@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
+# Description: This script is designed for automated benchmarking on aws 
+# within a docker container deployed by aws batch. It will download a given 
+# GCC run directory from s3, download the necessary input data for the time 
+# period specified, run the simulation, and upload the output to s3. 
+
 # setup environment
 err=0
 trap 'err=1' ERR
 source /environments/gchp_source.env
+
+# set default paths
 REPO_PATH="/gc-src"
 RUNDIR="/home/default_rundir"
 
@@ -14,14 +21,11 @@ mkdir /home/ExtData
 echo "downloading run directory from s3"
 aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" $RUNDIR --recursive --quiet
 echo "finished downloading run directory from s3"
+
 # get input data
 cd $RUNDIR
-chmod +x gcclassic
-chmod +x download_data.py
-echo "downloading input data"
-./gcclassic --dryrun | tee log.dryrun
-./download_data.py log.dryrun aws
-echo "finished downloading input data"
+/scripts/utils/get-input-data.sh GCC
+
 # create a symlinks
 ln -s "$REPO_PATH/" CodeDir
 
@@ -29,6 +33,8 @@ ln -s "$REPO_PATH/" CodeDir
 echo "running gcclassic"
 ./gcclassic | tee gcclassic.log
 echo "finished running gcclassic"
+
+# upload result 
 echo "uploading output dir"
 aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/gcclassic.log"
 aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/HEMCO.log"
