@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # setup environment
+err=0
+trap 'err=1' ERR
 cd /
 source /environments/gchp_source.env
 
@@ -39,3 +41,5 @@ aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/gcclassic.lo
 aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/HEMCO.log"
 aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir" --recursive
 echo "finished uploading output dir"
+test $err = 0 # Return non-zero if any command failed
+exit $err

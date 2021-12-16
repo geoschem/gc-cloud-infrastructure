@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+err=0
+trap 'err=1' ERR
 cd /
 source /environments/gchp_source.env
 # checkout the specified version if given
@@ -50,3 +52,5 @@ echo "File added to prevent s3 auto deletion of empty OutputDir" > OutputDir/REA
 echo "starting run directory upload"
 aws s3 cp /home/default_rundir "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir" --recursive --quiet
 echo "Finished run directory upload"
+test $err = 0 # Return non-zero if any command failed
+exit $err

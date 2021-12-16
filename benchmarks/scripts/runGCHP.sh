@@ -86,6 +86,5 @@ aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/HEMCO.log"
 aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir" --recursive
 echo "finished uploading output dir"
 
-#TODO on exit code 0 throw an error
 test $err = 0 # Return non-zero if any command failed
 exit $err
