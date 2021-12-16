@@ -4,6 +4,7 @@ err=0
 trap 'err=1' ERR
 source /environments/gchp_source.env
 REPO_PATH="/gc-src"
+RUNDIR="/home/default_rundir"
 
 # clone and checkout the specified version
 /scripts/utils/get-repo.sh GCC $REPO_PATH
@@ -11,10 +12,10 @@ REPO_PATH="/gc-src"
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" /home/default_rundir --recursive --quiet
+aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" $RUNDIR --recursive --quiet
 echo "finished downloading run directory from s3"
 # get input data
-cd /home/default_rundir
+cd $RUNDIR
 chmod +x gcclassic
 chmod +x download_data.py
 echo "downloading input data"
