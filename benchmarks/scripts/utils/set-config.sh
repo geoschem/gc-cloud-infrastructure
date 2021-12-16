@@ -9,7 +9,7 @@
 #       rundir-path: path to clone the repo to (eg. /gc-src
 
 cd $2
-echo "File added to prevent s3 auto deletion of empty OutputDir" > OutputDir/README.md
+echo "File added to prevent s3 auto deletion of empty OutputDir" > "${RUNDIR}/OutputDir/README.md"
 
 echo "Setting simulation settings for $1"
 

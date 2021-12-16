@@ -15,7 +15,7 @@ if [[ "x$1" == "xGCHP" ]]; then
   mkdir catalogs
   cd catalogs
   # TODO replace hardcoded path
-  wget -r -nH --cut-dirs=3 -np -A "*.csv" geoschemdata.wustl.edu/ExtData/DataCatalogs/13.3/
+  wget -r -nH --cut-dirs=3 -np -A "*.csv" "geoschemdata.wustl.edu/ExtData/DataCatalogs/${DATA_CATALOG_VERSION}/"
   rm InitialConditions.csv # don't download restarts -- too big
   cd ..
   bashdatacatalog catalogs/*.csv fetch

@@ -41,8 +41,6 @@ make -j install
 # configure simulation settings
 /scripts/utils/set-config.sh GCHP $RUNDIR
 
-echo "File added to prevent s3 auto deletion of empty OutputDir" > OutputDir/README.md
-
 echo "starting run directory upload"
 aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir" --recursive --quiet
 echo "Finished run directory upload"
