@@ -3,10 +3,16 @@
 # within a docker container deployed by aws batch. It will download a given 
 # GCHP run directory from s3, download the necessary input data for the time 
 # period specified, run the simulation, and upload the output to s3.
+report() {
+  err=1
+  echo -n "error at line ${BASH_LINENO[0]}, in call to "
+  sed -n ${BASH_LINENO[0]}p $0
+} >&2
+
+err=0
+trap report ERR
 
 # setup environment
-err=0
-trap 'err=1' ERR
 source /environments/gchp_source.env
 
 # set default paths
@@ -19,7 +25,7 @@ RUNDIR="/home/default_rundir"
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir/" $RUNDIR --recursive --quiet
+aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir/" $RUNDIR --recursive --only-show-errors
 echo "finished downloading run directory from s3"
 
 # get input data
@@ -52,6 +58,4 @@ aws s3 cp gchp.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/gchp.log"
 aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/HEMCO.log"
 aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir" --recursive
 echo "finished uploading output dir"
-
-test $err = 0 # Return non-zero if any command failed
 exit $err

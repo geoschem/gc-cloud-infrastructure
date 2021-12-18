@@ -6,10 +6,10 @@
 # Usage:
 #   ./set-config.sh <simulation-type> <rundir-path>
 #       simulation-type: either GCC or GCHP. Determines which git repo to clone
-#       rundir-path: path to clone the repo to (eg. /gc-src
-
+#       rundir-path: path to rundir
+trap 'echo "Error in set-config.sh"' ERR
 cd $2
-echo "File added to prevent s3 auto deletion of empty OutputDir" > "${RUNDIR}/OutputDir/README.md"
+echo "File added to prevent s3 auto deletion of empty OutputDir" > "$2/OutputDir/README.md"
 
 echo "Setting simulation settings for $1"
 
@@ -24,7 +24,7 @@ if [[ "x$1" == "xGCHP" ]]; then
   # check what time period to use -- default is 1Mon
   if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
     echo "creating rundir for 1Day time period"
-    sed -i 's/End_Time="20190801 000000"/"End_Time=20190702 000000"/' runConfig.sh
+    sed -i 's/End_Time="20190801 000000"/End_Time="20190702 000000"/' runConfig.sh
     sed -i 's/Duration="00000100 000000"/Duration="00000001 000000"/' runConfig.sh
   fi
 

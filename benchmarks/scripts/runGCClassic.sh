@@ -4,9 +4,16 @@
 # GCC run directory from s3, download the necessary input data for the time 
 # period specified, run the simulation, and upload the output to s3. 
 
-# setup environment
+report() {
+  err=1
+  echo -n "error at line ${BASH_LINENO[0]}, in call to "
+  sed -n ${BASH_LINENO[0]}p $0
+} >&2
+
 err=0
-trap 'err=1' ERR
+trap report ERR
+
+# setup environment
 source /environments/gchp_source.env
 
 # set default paths
@@ -19,7 +26,7 @@ RUNDIR="/home/default_rundir"
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" $RUNDIR --recursive --quiet
+aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" $RUNDIR --recursive --only-show-errors
 echo "finished downloading run directory from s3"
 
 # get input data
@@ -40,5 +47,4 @@ aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/gcclassic.lo
 aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/HEMCO.log"
 aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir" --recursive
 echo "finished uploading output dir"
-test $err = 0 # Return non-zero if any command failed
 exit $err

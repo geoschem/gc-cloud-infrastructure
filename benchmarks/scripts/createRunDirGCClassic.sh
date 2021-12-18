@@ -3,9 +3,14 @@
 # within a docker container deployed by aws batch. It will download a given 
 # version of GCClassic, create and compile a run directory with the specified 
 # configuration, and upload the run directory to s3. 
+report() {
+  err=1
+  echo -n "error at line ${BASH_LINENO[0]}, in call to "
+  sed -n ${BASH_LINENO[0]}p $0
+} >&2
 
 err=0
-trap 'err=1' ERR
+trap report ERR
 source /environments/gchp_source.env
 
 # set default paths
@@ -43,7 +48,6 @@ make install
 /scripts/utils/set-config.sh GCC $RUNDIR
 
 echo "starting run directory upload"
-aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" --recursive --quiet
+aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" --recursive --only-show-errors
 echo "Finished run directory upload"
-test $err = 0 # Return non-zero if any command failed
 exit $err
