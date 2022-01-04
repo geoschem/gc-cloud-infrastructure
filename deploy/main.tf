@@ -71,6 +71,12 @@ module "benchmarks_ecr_repository" { # could potentially make public to save on 
     count = local.all_environments
     repository_name ="${var.benchmarks_name_prefix}-repository"
 }
+module "github_service_user" { # could potentially make public to save on cost
+    source = "./modules/iam/user"
+    count = local.only_harvard
+    name ="${var.benchmarks_name_prefix}-github-user"
+    permitted_services = "\"states:*\""
+}
 
 module "batch_benchmark_artifacts" {
     source = "./modules/benchmarks"

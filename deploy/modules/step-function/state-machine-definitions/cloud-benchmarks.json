@@ -286,6 +286,10 @@
               { 
                 "Name": "INPUT_DATA_DOWNLOAD",
                 "Value.$": "$.event.updateInputData"
+              },
+              { 
+                "Name": "DATA_CATALOG_VERSION",
+                "Value.$": "$.event.catalogVersion"
               }
             ],
             "Command": ["./scripts/runGCHP.sh"]

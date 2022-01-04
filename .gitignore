@@ -3,3 +3,4 @@
 .DS_Store
 .env
 registry.terraform.io*
+**/modules.json
