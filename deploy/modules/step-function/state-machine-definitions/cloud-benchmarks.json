@@ -1,17 +1,94 @@
 {
     "Comment": "Run Automated Benchmarks",
-    "StartAt": "Evaluate_RunType",
+    "StartAt": "Evaluate_StartPoint",
     "States": {
+      "Evaluate_StartPoint": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.event.skipCreateRunDir",
+            "IsPresent": false,
+            "Next": "Set_skipCreateRunDir"
+          }
+        ],
+        "Default": "Evaluate_RunType"
+      },
+      "Set_skipCreateRunDir": {
+        "Type": "Pass",
+        "Result": "false",
+        "ResultPath": "$.event.skipCreateRunDir",
+        "Next": "Evaluate_RunType"
+      },
       "Evaluate_RunType": {
         "Type": "Choice",
         "Choices": [
           {
             "Variable": "$.event.runType",
+            "StringEquals": "DEMAND",
+            "Next": "Set_OnDemand"
+          },
+          {
+            "Variable": "$.event.runType",
+            "StringEquals": "SPOT",
+            "Next": "Set_SpotInstance"
+          }
+        ],
+        "Default": "WorkflowFailed"
+      },
+      "Set_OnDemand": {
+        "Type": "Pass",
+        "Result": {
+          "job_queue": "${job_queue_on_demand}",
+          "job_definition": "${job_definition_name_on_demand}"
+        },
+        "ResultPath": "$.event.batch_info",
+        "Next": "Evaluate_SimulationType"
+      },
+      "Set_SpotInstance": {
+        "Type": "Pass",
+        "Result": {
+          "job_queue": "${job_queue_spot}",
+          "job_definition": "${job_definition_name_spot}"
+        },
+        "ResultPath": "$.event.batch_info",
+        "Next": "Evaluate_SimulationType"
+      },
+      "Evaluate_SimulationType": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "And":[
+              {
+                "Variable": "$.event.simulationType",
+                "StringEquals": "GCC"
+              },
+              {
+                "Variable": "$.event.skipCreateRunDir",
+                "StringEquals": "true"
+              }
+            ],
+            "Next": "Invoke_RunBenchmarkGCC"
+          },
+          {
+            "And":[
+              {
+                "Variable": "$.event.simulationType",
+                "StringEquals": "GCHP"
+              },
+              {
+                "Variable": "$.event.skipCreateRunDir",
+                "StringEquals": "true"
+              }
+            ],
+            "Next": "Invoke_RunBenchmarkGCHP"
+          },
+          {
+            "Variable": "$.event.simulationType",
             "StringEquals": "GCC",
             "Next": "Invoke_CreateRunDirectoryGCC"
           },
           {
-            "Variable": "$.event.runType",
+            "Variable": "$.event.simulationType",
             "StringEquals": "GCHP",
             "Next": "Invoke_CreateRunDirectoryGCHP"
           }
@@ -22,17 +99,32 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
-          "JobDefinition": "${job_definition_name}",
+          "JobDefinition": "${job_definition_name_spot}",
           "JobName.$": "States.Format('Invoke_CreateRunDirectoryGCC_{}', $.event.nameSuffix)",
-          "JobQueue": "${job_queue}",
+          "JobQueue": "${job_queue_spot}",
           "Timeout": {
             "AttemptDurationSeconds": 12000
           },
           "ContainerOverrides": {
+            "ResourceRequirements": [
+              {
+                "Type": "VCPU",
+                "Value": "4"
+              },
+              {
+                "Type": "MEMORY",
+                "Value": "16384"
+              }
+            ],
             "Environment": [{ 
-             "Name": "TAG_NAME",
-             "Value.$": "$.event.tag"
-            }],
+              "Name": "TAG_NAME",
+              "Value.$": "$.event.tag"
+            },
+            { 
+              "Name": "TIME_PERIOD",
+              "Value.$": "$.event.timePeriod"
+            }
+          ],
             "Command": ["./scripts/createRunDirGCClassic.sh"]
           }
         },
@@ -43,9 +135,9 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
-          "JobDefinition": "${job_definition_name}",
+          "JobDefinition": "${job_definition_name_spot}",
           "JobName.$": "States.Format('Invoke_CreateRunDirectoryGCHP_{}', $.event.nameSuffix)",
-          "JobQueue": "${job_queue}",
+          "JobQueue": "${job_queue_spot}",
           "Timeout": {
             "AttemptDurationSeconds": 12000
           },
@@ -53,11 +145,11 @@
             "ResourceRequirements": [
               {
                 "Type": "VCPU",
-                "Value.$": "$.event.numCores"
+                "Value": "4"
               },
               {
                 "Type": "MEMORY",
-                "Value.$": "$.event.memory"
+                "Value": "16384"
               }
             ],
             "Environment": [
@@ -76,6 +168,10 @@
               { 
                 "Name": "CS_RES",
                 "Value.$": "$.event.resolution"
+              },
+              { 
+                "Name": "TIME_PERIOD",
+                "Value.$": "$.event.timePeriod"
               }
             ],
             "Command": ["./scripts/createRunDirGCHP.sh"]
@@ -90,7 +186,7 @@
           {
             "And":[
               {
-                "Variable": "$.event.runType",
+                "Variable": "$.event.simulationType",
                 "StringEquals": "GCC"
               },
               {
@@ -103,7 +199,7 @@
           {
             "And":[
               {
-                "Variable": "$.event.runType",
+                "Variable": "$.event.simulationType",
                 "StringEquals": "GCHP"
               },
               {
@@ -120,9 +216,9 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
-          "JobDefinition": "${job_definition_name}",
+          "JobDefinition.$": "$.event.batch_info.job_definition",
           "JobName.$": "States.Format('Invoke_RunBenchmarkGCC_{}', $.event.nameSuffix)",
-          "JobQueue": "${job_queue}",
+          "JobQueue.$": "$.event.batch_info.job_queue",
           "Timeout": {
             "AttemptDurationSeconds": 120000
           },
@@ -153,9 +249,9 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
-          "JobDefinition": "${job_definition_name}",
+          "JobDefinition.$": "$.event.batch_info.job_definition",
           "JobName.$": "States.Format('Invoke_RunBenchmarkGCHP_{}', $.event.nameSuffix)",
-          "JobQueue": "${job_queue}",
+          "JobQueue.$": "$.event.batch_info.job_queue",
           "Timeout": {
             "AttemptDurationSeconds": 120000
           },
@@ -190,6 +286,10 @@
               { 
                 "Name": "INPUT_DATA_DOWNLOAD",
                 "Value.$": "$.event.updateInputData"
+              },
+              { 
+                "Name": "DATA_CATALOG_VERSION",
+                "Value.$": "$.event.catalogVersion"
               }
             ],
             "Command": ["./scripts/runGCHP.sh"]

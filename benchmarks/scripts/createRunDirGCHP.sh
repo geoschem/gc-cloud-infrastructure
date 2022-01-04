@@ -1,17 +1,29 @@
 #!/usr/bin/env bash
-cd /
+# Description: This script is designed for automated benchmarking on aws 
+# within a docker container deployed by aws batch. It will download a given 
+# version of GCHP, create and compile a run directory with the specified 
+# configuration, and upload the run directory to s3. 
+report() {
+  err=1
+  echo -n "error at line ${BASH_LINENO[0]}, in call to "
+  sed -n ${BASH_LINENO[0]}p $0
+} >&2
+
+err=0
+trap report ERR
 source /environments/gchp_source.env
-# checkout the specified version if given
-if [[ ! -z "${TAG_NAME}" ]]; then
-  rm -rf /gc-src
-  git clone https://github.com/geoschem/GCHP.git /gc-src
-  cd /gc-src
-  git checkout ${TAG_NAME}
-  git submodule update --init --recursive
-fi
+
+# set default paths
+REPO_PATH="/gc-src"
+RUNDIR="/home/default_rundir"
+
+# clone and checkout the specified version
+/scripts/utils/get-repo.sh GCHP $REPO_PATH
 
 mkdir /home/ExtData
-cd /gc-src/run
+cd "$REPO_PATH/run"
+
+# create run directory
 cat << 'EOF' > run_input.txt
 /home/ExtData
 1
@@ -22,22 +34,22 @@ default_rundir
 n
 EOF
 cat "run_input.txt" | ./createRunDir.sh
-mkdir /home/default_rundir/build
-cd /home/default_rundir/build
+mkdir "$RUNDIR/build"
+cd "$RUNDIR/build"
 
+# compile code
 # NOTE: doesn't work on m1 macbook air due to an issue with qemu
 cmake ../CodeDir
 cmake . -DRUNDIR=".."
 make -j
 make -j install
 
-# configure runConfig
-cd ..
-sed -i "s/TOTAL_CORES=96/TOTAL_CORES=${TOTAL_CORES}/" runConfig.sh
-sed -i "s/NUM_NODES=2/NUM_NODES=${NUM_NODES}/" runConfig.sh
-sed -i "s/CS_RES=48/CS_RES=${CS_RES}/" runConfig.sh
-sed -i "s/NUM_CORES_PER_NODE=48/NUM_CORES_PER_NODE=${NUM_CORES_PER_NODE}/" runConfig.sh
+# configure simulation settings
+/scripts/utils/set-config.sh GCHP $RUNDIR
+if [ $err -gt 0 ]; then  
+  exit $err
+fi
 
 echo "starting run directory upload"
-aws s3 cp /home/default_rundir "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir" --recursive --quiet
+aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir" --recursive --only-show-errors
 echo "Finished run directory upload"

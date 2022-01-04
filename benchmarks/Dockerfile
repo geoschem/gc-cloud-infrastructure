@@ -20,12 +20,11 @@ ENV PATH="/home/.bashdatacatalog:${PATH}"
 ADD scripts /scripts
 ADD environments /environments
 
-# make files executable
-RUN chmod +x /scripts/createRunDirGCHP.sh \ 
-    && chmod +x /scripts/createRunDirGCClassic.sh \
-    && chmod +x /scripts/runForever.sh \
-    && chmod +x /scripts/runGCClassic.sh \
-    && chmod +x /scripts/runGCHP.sh
+# remove old gc code
+RUN rm -rf /gc-src
+
+# make run scripts executable
+RUN chmod -R +x /scripts/
     
 ENV SPACK_ROOT="/opt/spack"
 

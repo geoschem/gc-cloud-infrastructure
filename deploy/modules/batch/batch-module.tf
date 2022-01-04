@@ -89,14 +89,3 @@ resource "aws_launch_template" "launch_template" {
     ebs_optimized = true
     instance_initiated_shutdown_behavior = "terminate"
 }
-
-module "step_function" {
-    source = "../step-function"
-    count = var.enable_step_function ? 1 : 0
-    name = "${var.name_prefix}-workflow"
-    definition_file = var.step_fn_definition_file
-    state_machine_definition_vars = {
-        job_definition_name = aws_batch_job_definition.job.name
-        job_queue = aws_batch_job_queue.job_queue.name
-    }
-}

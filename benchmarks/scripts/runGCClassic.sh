@@ -1,41 +1,50 @@
 #!/usr/bin/env bash
+# Description: This script is designed for automated benchmarking on aws 
+# within a docker container deployed by aws batch. It will download a given 
+# GCC run directory from s3, download the necessary input data for the time 
+# period specified, run the simulation, and upload the output to s3. 
+
+report() {
+  err=1
+  echo -n "error at line ${BASH_LINENO[0]}, in call to "
+  sed -n ${BASH_LINENO[0]}p $0
+} >&2
+
+err=0
+trap report ERR
+
 # setup environment
-cd /
 source /environments/gchp_source.env
 
-rm -rf /gc-src
-git clone https://github.com/geoschem/GCClassic.git /gc-src
-cd /gc-src
+# set default paths
+REPO_PATH="/gc-src"
+RUNDIR="/home/default_rundir"
 
-# if supplied checkout the relevant tag
-if [[ ! -z "${TAG_NAME}" ]]; then
-  git checkout ${TAG_NAME}
-fi
-
-git submodule update --init --recursive
+# clone and checkout the specified version
+/scripts/utils/get-repo.sh GCC $REPO_PATH
 
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" /home/default_rundir --recursive --quiet
+aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/rundir" $RUNDIR --recursive --only-show-errors
 echo "finished downloading run directory from s3"
+
 # get input data
-cd /home/default_rundir
-chmod +x gcclassic
-chmod +x download_data.py
-echo "downloading input data"
-./gcclassic --dryrun | tee log.dryrun
-./download_data.py log.dryrun aws
-echo "finished downloading input data"
+cd $RUNDIR
+/scripts/utils/get-input-data.sh GCC
+
 # create a symlinks
-ln -s /gc-src/ CodeDir
+ln -s "$REPO_PATH/" CodeDir
 
 # execute scripts
 echo "running gcclassic"
-./gcclassic | tee gcclasic.log
+./gcclassic | tee gcclassic.log
 echo "finished running gcclassic"
+
+# upload result 
 echo "uploading output dir"
-aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/outputDir/gcclassic.log"
-aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/outputDir/HEMCO.log"
-aws s3 cp outputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/outputDir" --recursive
+aws s3 cp gcclassic.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/gcclassic.log"
+aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir/HEMCO.log"
+aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gcc/OutputDir" --recursive
 echo "finished uploading output dir"
+exit $err
