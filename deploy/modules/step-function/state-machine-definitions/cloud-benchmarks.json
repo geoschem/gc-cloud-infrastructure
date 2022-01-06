@@ -33,7 +33,7 @@
             "Next": "Set_SpotInstance"
           }
         ],
-        "Default": "WorkflowFailed"
+        "Default": "Evaluate_Failed_Workflow"
       },
       "Set_OnDemand": {
         "Type": "Pass",
@@ -93,7 +93,7 @@
             "Next": "Invoke_CreateRunDirectoryGCHP"
           }
         ],
-        "Default": "WorkflowFailed"
+        "Default": "Evaluate_Failed_Workflow"
       },
       "Invoke_CreateRunDirectoryGCC": {
         "Type": "Task",
@@ -128,8 +128,13 @@
             "Command": ["./scripts/createRunDirGCClassic.sh"]
           }
         },
+        "Catch": [ {
+          "ErrorEquals": [ "States.ALL" ],
+          "ResultPath": "$.event.createRunDir",
+          "Next": "Evaluate_Failed_Workflow"
+        } ],
         "ResultPath": "$.event.createRunDir",
-        "Next": "Evaluate_RunDir"
+        "Next": "Invoke_RunBenchmarkGCC"
       },
       "Invoke_CreateRunDirectoryGCHP": {
         "Type": "Task",
@@ -177,40 +182,13 @@
             "Command": ["./scripts/createRunDirGCHP.sh"]
           }
         },
+        "Catch": [ {
+          "ErrorEquals": [ "States.ALL" ],
+          "ResultPath": "$.event.createRunDir",
+          "Next": "Evaluate_Failed_Workflow"
+        } ],
         "ResultPath": "$.event.createRunDir",
-        "Next": "Evaluate_RunDir"
-      },
-      "Evaluate_RunDir": {
-        "Type": "Choice",
-        "Choices": [
-          {
-            "And":[
-              {
-                "Variable": "$.event.simulationType",
-                "StringEquals": "GCC"
-              },
-              {
-                "Variable": "$.event.createRunDir.Status",
-                "StringEquals": "SUCCEEDED"
-              }
-            ],
-            "Next": "Invoke_RunBenchmarkGCC"
-          },
-          {
-            "And":[
-              {
-                "Variable": "$.event.simulationType",
-                "StringEquals": "GCHP"
-              },
-              {
-                "Variable": "$.event.createRunDir.Status",
-                "StringEquals": "SUCCEEDED"
-              }
-            ],
-            "Next": "Invoke_RunBenchmarkGCHP"
-          }
-        ],
-        "Default": "WorkflowFailed"
+        "Next": "Invoke_RunBenchmarkGCHP"
       },
       "Invoke_RunBenchmarkGCC": {
         "Type": "Task",
@@ -242,8 +220,13 @@
             "Command": ["./scripts/runGCClassic.sh"]
           }
         },
+        "Catch": [ {
+          "ErrorEquals": [ "States.ALL" ],
+          "ResultPath": "$.event.runBenchmark",
+          "Next": "Evaluate_Failed_Workflow"
+        } ],
         "ResultPath": "$.event.runBenchmark",
-        "Next": "Evaluate_Benchmark"
+        "Next": "Evaluate_Successful_Workflow"
       },
       "Invoke_RunBenchmarkGCHP": {
         "Type": "Task",
@@ -295,19 +278,55 @@
             "Command": ["./scripts/runGCHP.sh"]
           }
         },
+        "Catch": [ {
+          "ErrorEquals": [ "States.ALL" ],
+          "ResultPath": "$.event.runBenchmark",
+          "Next": "Evaluate_Failed_Workflow"
+        } ],
         "ResultPath": "$.event.runBenchmark",
-        "Next": "Evaluate_Benchmark"
+        "Next": "Evaluate_Successful_Workflow"
       },
-      "Evaluate_Benchmark": {
+      "Evaluate_Failed_Workflow": {
         "Type": "Choice",
         "Choices": [
           {
-            "Variable": "$.event.runBenchmark.Status",
-            "StringEquals": "SUCCEEDED",
-            "Next": "WorkflowComplete"
+            "Variable": "$.event.sendEmailNotification",
+            "IsPresent": true,
+            "Next": "Invoke_SendFailureEmail"
           }
         ],
         "Default": "WorkflowFailed"
+      },
+      "Evaluate_Successful_Workflow": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.event.sendEmailNotification",
+            "IsPresent": true,
+            "Next": "Invoke_SendSuccessEmail"
+          }
+        ],
+        "Default": "WorkflowComplete"
+      },
+      "Invoke_SendFailureEmail": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sns:publish",
+        "Parameters": {
+          "TopicArn": "${sns_topic_arn}",
+          "Subject": "Benchmark run failed!",
+          "Message.$": "States.Format('Benchmark run failed for {} commit: {}! Check the state machine status at: https://console.aws.amazon.com/states/home?region=us-east-1#/statemachines \n\n Step Function Details: \n{}', $.event.simulationType, $.event.tag, $.event)"
+        },
+        "Next": "WorkflowFailed"
+      },
+      "Invoke_SendSuccessEmail": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::sns:publish",
+        "Parameters": {
+          "TopicArn": "${sns_topic_arn}",
+          "Subject": "Benchmark run finished!",
+          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.tag, $.event.simulationType)"
+        },
+        "Next": "WorkflowComplete"
       },
       "WorkflowComplete": {
         "Type": "Pass",

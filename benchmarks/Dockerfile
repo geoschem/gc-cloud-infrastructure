@@ -1,4 +1,4 @@
-FROM geoschem/gchp:13.2.1
+FROM geoschem/gchp:13.3.4
 
 # install some prereqs
 RUN apt-get update \
@@ -16,6 +16,11 @@ RUN cd home && \
     git clone https://github.com/LiamBindle/bashdatacatalog.git .bashdatacatalog
 ENV PATH="/home/.bashdatacatalog:${PATH}"
 
+# update spack and install gettext
+ENV SPACK_ROOT="/opt/spack"
+RUN cd /opt/spack && git pull
+RUN . /opt/spack/share/spack/setup-env.sh && spack install --reuse gettext
+
 # copy various run scripts
 ADD scripts /scripts
 ADD environments /environments
@@ -26,8 +31,6 @@ RUN rm -rf /gc-src
 # make run scripts executable
 RUN chmod -R +x /scripts/
     
-ENV SPACK_ROOT="/opt/spack"
-
 # default command does nothing -- this is useful for testing
 CMD [ "./scripts/runForever.sh" ]
 

@@ -34,7 +34,7 @@ resource "aws_iam_policy" "sfn_policy" {
     {
       "Action": [
         "batch:*",
-        "sqs:*",
+        "sns:*",
         "iam:PassRole",
         "logs:*",
         "events:*"

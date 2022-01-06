@@ -8,6 +8,7 @@
 #   ./get-repo.sh <simulation-type> <directory-path>
 #       simulation-type: either GCC or GCHP. Determines which git repo to clone
 #       directory-path: path to clone the repo to (eg. /gc-src
+trap 'echo "Error in get-repo.sh"; exit 1' ERR
 
 if [[ "x$1" == "xGCHP" ]]; then
   REPO="https://github.com/geoschem/GCHP.git"

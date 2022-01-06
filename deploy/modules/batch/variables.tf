@@ -72,4 +72,8 @@ variable "tag_name" {
     description = "tag name for git checkout"
     default = "13.2.1"
 }
+variable "allocation_strategy" {
+    description = "allocation strategy for ec2 instance deployment (eg. price, capacity)"
+    default = "BEST_FIT"
+}
 

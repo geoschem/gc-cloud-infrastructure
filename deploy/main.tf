@@ -101,6 +101,7 @@ module "batch_benchmark_artifacts" {
     num_cores_per_node = 6
     step_fn_definition_file = "../../modules/step-function/state-machine-definitions/cloud-benchmarks.json"
     enable_step_function = true
+    sns_topic = module.gcst_sns_topic[0].arn
 }
 
 # ==============================================================
