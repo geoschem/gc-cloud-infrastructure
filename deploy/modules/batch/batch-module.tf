@@ -14,6 +14,7 @@ resource "aws_batch_compute_environment" "batch_environment" {
         subnets = var.subnet_ids
         type = var.compute_type
         ec2_key_pair = var.ec2_key_pair
+        allocation_strategy = var.allocation_strategy
         spot_iam_fleet_role = var.compute_type == "SPOT" ? aws_iam_role.spot_fleet_role[0].arn : null
         launch_template {
             launch_template_id = aws_launch_template.launch_template.id

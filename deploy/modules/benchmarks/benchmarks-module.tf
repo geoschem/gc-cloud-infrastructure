@@ -8,6 +8,7 @@ module "step_function" {
         job_queue_on_demand = module.benchmarks_on_demand.batch_job_queue_name
         job_definition_name_spot = module.benchmarks_spot.batch_job_definition_name
         job_queue_spot = module.benchmarks_spot.batch_job_queue_name
+        sns_topic_arn = var.sns_topic
     }
 }
 module "benchmarks_on_demand" {
@@ -52,4 +53,5 @@ module "benchmarks_spot" {
     shared_memory_size = var.shared_memory_size
     resolution = var.resolution
     num_cores_per_node = var.num_cores_per_node
+    allocation_strategy = "SPOT_CAPACITY_OPTIMIZED" # lowers chance of interruptions
 }
