@@ -32,6 +32,9 @@ module "benchmarks_on_demand" {
     compute_type = "EC2"
     resolution = var.resolution
     num_cores_per_node = var.num_cores_per_node
+    compute_resource_tags = {
+        Name = "cloud-benchmarks-on-demand"
+    }
 }
 module "benchmarks_spot" {
     source = "../batch"
@@ -54,4 +57,7 @@ module "benchmarks_spot" {
     resolution = var.resolution
     num_cores_per_node = var.num_cores_per_node
     allocation_strategy = "SPOT_CAPACITY_OPTIMIZED" # lowers chance of interruptions
+    compute_resource_tags = {
+        Name = "cloud-benchmarks-spot"
+    }
 }
