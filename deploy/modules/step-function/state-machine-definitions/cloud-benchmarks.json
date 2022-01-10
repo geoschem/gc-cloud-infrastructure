@@ -215,6 +215,10 @@
               { 
                 "Name": "TAG_NAME",
                 "Value.$": "$.event.tag"
+              },
+              { 
+                "Name": "TIME_PERIOD",
+                "Value.$": "$.event.timePeriod"
               }
             ],
             "Command": ["./scripts/runGCClassic.sh"]
@@ -273,6 +277,10 @@
               { 
                 "Name": "DATA_CATALOG_VERSION",
                 "Value.$": "$.event.catalogVersion"
+              },
+              { 
+                "Name": "TIME_PERIOD",
+                "Value.$": "$.event.timePeriod"
               }
             ],
             "Command": ["./scripts/runGCHP.sh"]
