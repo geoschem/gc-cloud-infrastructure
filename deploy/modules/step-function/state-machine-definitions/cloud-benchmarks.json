@@ -332,7 +332,7 @@
         "Parameters": {
           "TopicArn": "${sns_topic_arn}",
           "Subject": "Benchmark run finished!",
-          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.tag, $.event.simulationType)"
+          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod ,$.event.tag, $.event.simulationType)"
         },
         "Next": "WorkflowComplete"
       },
