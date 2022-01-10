@@ -61,6 +61,10 @@ module "benchmarks_bucket" {
     bucket_name = var.benchmarks_bucket
     bucket_acl = "private"
     enable_versioning = false
+    expiration_settings = [{
+        prefix = "benchmarks/1Day/"
+        days = 90
+    }]
 }
 
 # ==============================================================
