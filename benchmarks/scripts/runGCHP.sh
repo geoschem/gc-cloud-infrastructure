@@ -25,7 +25,7 @@ RUNDIR="/home/default_rundir"
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/rundir/" $RUNDIR --recursive --only-show-errors
+aws s3 cp "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/gchp/rundir/" $RUNDIR --recursive --only-show-errors
 echo "finished downloading run directory from s3"
 
 # get input data
@@ -52,10 +52,13 @@ echo "running gchp"
 ./gchp.cloud.run
 echo "finished running gchp"
 
+# move needed files to output dir
+mv GEOSChem.Restart.* OutputDir/
+mv gchp.log OutputDir/gchp.log
+mv HEMCO.log OutputDir/HEMCO.log
+
 # upload result
 echo "uploading output dir"
-aws s3 cp gchp.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/gchp.log"
-aws s3 cp HEMCO.log "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir/HEMCO.log"
-aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TAG_NAME}/gchp/OutputDir" --recursive
+aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/gchp/OutputDir" --recursive
 echo "finished uploading output dir"
 exit $err
