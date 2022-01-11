@@ -1,3 +1,7 @@
+module "benchmarks_sns_topic" {
+    source = "../sns"
+    sns_topic_name = "${var.name_prefix}-sns-topic"
+}
 module "step_function" {
     source = "../step-function"
     count = var.enable_step_function ? 1 : 0
@@ -8,7 +12,7 @@ module "step_function" {
         job_queue_on_demand = module.benchmarks_on_demand.batch_job_queue_name
         job_definition_name_spot = module.benchmarks_spot.batch_job_definition_name
         job_queue_spot = module.benchmarks_spot.batch_job_queue_name
-        sns_topic_arn = var.sns_topic
+        sns_topic_arn = module.benchmarks_sns_topic.arn
     }
 }
 module "benchmarks_on_demand" {
@@ -32,6 +36,9 @@ module "benchmarks_on_demand" {
     compute_type = "EC2"
     resolution = var.resolution
     num_cores_per_node = var.num_cores_per_node
+    compute_resource_tags = {
+        Name = "cloud-benchmarks-on-demand"
+    }
 }
 module "benchmarks_spot" {
     source = "../batch"
@@ -54,4 +61,7 @@ module "benchmarks_spot" {
     resolution = var.resolution
     num_cores_per_node = var.num_cores_per_node
     allocation_strategy = "SPOT_CAPACITY_OPTIMIZED" # lowers chance of interruptions
+    compute_resource_tags = {
+        Name = "cloud-benchmarks-spot"
+    }
 }

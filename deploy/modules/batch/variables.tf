@@ -76,4 +76,8 @@ variable "allocation_strategy" {
     description = "allocation strategy for ec2 instance deployment (eg. price, capacity)"
     default = "BEST_FIT"
 }
+variable "compute_resource_tags" {
+    description = "tag used to name ec2 instances (eg. lae_ec2_instance)"
+    default = null
+}
 

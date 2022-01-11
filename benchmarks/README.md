@@ -1,5 +1,7 @@
 # Batch Benchmarking workflow
-The items in this directory are intended for an automated benchmarking workflow on the cloud. All AWS infrastructure code is contained in the top level deploy directory. This directory contains the rest (eg. Dockerfiles, automation scripts, etc.)
+The items in this directory are intended for an automated benchmarking workflow on the cloud. All AWS infrastructure code is contained in the top level deploy directory. This directory contains the rest (eg. Dockerfiles, automation scripts, etc.).
+
+Benchmarks are triggered by github actions in the [GCClassic](https://github.com/geoschem/GCClassic/tree/dev) and [GCHP](https://github.com/geoschem/GCHP/tree/dev) repositories, but you can trigger cloud benchmarks manually as well (see below for details).
 ### Deploying the dockerfile to ecr
 1. `$ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 753979222379.dkr.ecr.us-east-1.amazonaws.com`
 2. `$ docker build -t benchmarks-cloud-repository .`

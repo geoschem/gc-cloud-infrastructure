@@ -19,3 +19,7 @@ variable encryption_algorithm {
     description = "set array to either [\"AES256\"] or [\"aws:kms\"] to enable server-side encryption for the bucket"
     default = []
 }
+variable expiration_settings {
+    description = "settings for object expiration in the bucket. Each object in array must contain a prefix and days attribute"
+    default = []
+}
