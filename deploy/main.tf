@@ -29,6 +29,7 @@ locals {
     only_harvard = var.organization == "harvard" ? 1 : 0
     all_environments = 1
     AQACF_account_number = "" #TODO replace with real account #
+    washu_account_number = "445683239525"
 }
 
 
@@ -65,6 +66,44 @@ module "benchmarks_bucket" {
         prefix = "benchmarks/1Day/"
         days = 90
     }]
+}
+module "benchmarks_bucket_policy" { # give washu account access to benchmarks bucket
+    source = "./modules/s3/policy"
+    count = local.only_harvard
+    bucket_id = module.benchmarks_bucket[0].bucket_id
+    policy = <<POLICY
+{
+   "Version": "2012-10-17",
+   "Statement": [
+      {
+         "Sid": "washu permissions",
+         "Effect": "Allow",
+         "Principal": {
+            "AWS": "arn:aws:iam::${local.washu_account_number}:root"
+         },
+         "Action": [
+            "s3:GetBucketLocation",
+            "s3:ListBucket"
+         ],
+         "Resource": [
+            "arn:aws:s3:::${var.benchmarks_bucket}"
+         ]
+      },
+      {
+         "Effect": "Allow",
+         "Principal": {
+            "AWS": "arn:aws:iam::${local.washu_account_number}:root"
+         },
+         "Action": [
+            "s3:GetObject"
+         ],
+         "Resource": [
+            "arn:aws:s3:::${var.benchmarks_bucket}/*"
+         ]
+      }
+   ]
+}
+POLICY
 }
 
 # ==============================================================
@@ -105,7 +144,6 @@ module "batch_benchmark_artifacts" {
     num_cores_per_node = 6
     step_fn_definition_file = "../../modules/step-function/state-machine-definitions/cloud-benchmarks.json"
     enable_step_function = true
-    sns_topic = module.gcst_sns_topic[0].arn
 }
 
 # ==============================================================
