@@ -28,8 +28,6 @@ locals {
     only_washu = var.organization == "washu" ? 1 : 0
     only_harvard = var.organization == "harvard" ? 1 : 0
     all_environments = 1
-    AQACF_account_number = "" #TODO replace with real account #
-    washu_account_number = "445683239525"
 }
 
 
@@ -79,7 +77,7 @@ module "benchmarks_bucket_policy" { # give washu account access to benchmarks bu
          "Sid": "washu permissions",
          "Effect": "Allow",
          "Principal": {
-            "AWS": "arn:aws:iam::${local.washu_account_number}:root"
+            "AWS": "arn:aws:iam::${module.washu_account_number[0].secret_json["account_number"]}:root"
          },
          "Action": [
             "s3:GetBucketLocation",
@@ -92,7 +90,7 @@ module "benchmarks_bucket_policy" { # give washu account access to benchmarks bu
       {
          "Effect": "Allow",
          "Principal": {
-            "AWS": "arn:aws:iam::${local.washu_account_number}:root"
+            "AWS": "arn:aws:iam::${module.washu_account_number[0].secret_json["account_number"]}:root"
          },
          "Action": [
             "s3:GetObject"
@@ -227,7 +225,7 @@ module "AQACF_bucket" {
          "Sid": "AQACF permissions",
          "Effect": "Allow",
          "Principal": {
-            "AWS": "arn:aws:iam::${local.AQACF_account_number}:root"
+            "AWS": "arn:aws:iam::${module.AQACF_account_number[0].secret_json["account_number"]}:root"
          },
          "Action": [
             "s3:GetBucketLocation",
@@ -240,7 +238,7 @@ module "AQACF_bucket" {
       {
          "Effect": "Allow",
          "Principal": {
-            "AWS": "arn:aws:iam::${local.AQACF_account_number}:root"
+            "AWS": "arn:aws:iam::${module.AQACF_account_number[0].secret_json["account_number"]}:root"
          },
          "Action": [
             "s3:GetObject"
@@ -253,6 +251,7 @@ module "AQACF_bucket" {
 }
 POLICY
 }
+
 
 # ==============================================================
 # Billing alarm items
@@ -273,4 +272,18 @@ module "cloudwatch_cost_alarm" {
     description = "This metric monitors total estimated monthly costs"
     sns_topic_arn = module.gcst_sns_topic[0].arn
     account_number = data.aws_caller_identity.current.account_id
+}
+
+# ==============================================================
+# secret items
+# ==============================================================
+module "washu_account_number" {
+   source = "./modules/secrets-manager"
+   count = local.only_harvard
+   secret_arn = "arn:aws:secretsmanager:us-east-1:${data.aws_caller_identity.current.account_id}:secret:washu_account_number-i0BftT"
+}
+module "AQACF_account_number" {
+   source = "./modules/secrets-manager"
+   count = local.only_washu
+   secret_arn = "" # TODO fill in with arn once secret is created
 }
