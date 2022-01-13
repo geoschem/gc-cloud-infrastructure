@@ -23,4 +23,4 @@ esac
 
 # move OutputDir to artifacts directory
 mkdir -p ${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR}/run-directory
-mv OutputDir -p ${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR}/run-directory
+mv OutputDir ${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR}/run-directory
