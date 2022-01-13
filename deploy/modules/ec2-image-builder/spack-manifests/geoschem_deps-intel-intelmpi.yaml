@@ -1,0 +1,16 @@
+# GEOS-Chem Spack environment for Intel compilers and Intel MPI.
+# Preconditions: spack install intel-oneapi-compilers@2021.3.0
+
+spack:
+  packages:
+    all:
+      target: [x86_64]
+  specs:
+    - cmake
+    - libfabric@1.14.0 fabrics=sockets,tcp,udp,efa,mlx,shm
+    - intel-mpi@2019.10.317%intel@2021.3.0 +external-libfabric
+    - hdf5%intel@2021.3.0 -mpi -tools
+    - netcdf-c%intel@2021.3.0
+    - netcdf-fortran%intel@2021.3.0
+    - esmf@8.0.1%intel@2021.3.0 -pnetcdf -xerces -pio
+  concretization: together

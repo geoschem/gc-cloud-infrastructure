@@ -1,0 +1,16 @@
+# This is a spack environment manifest file for GCHP dependencies using Intel compilers and Intel MPI.
+# Preconditions: spack install gcc@11.2.0
+
+spack:
+  packages:
+    all:
+      target: [x86_64]
+  specs:
+    - cmake@3.22.1
+    - libfabric@1.14.0 fabrics=sockets,tcp,udp,efa,mlx,shm
+    - openmpi@3.0.5%gcc@4.1.2 +lustre +gpfs fabrics=auto
+    - hdf5@1.12.1%gcc@11.2.0 -mpi -tools
+    - netcdf-c@4.8.1%gcc@11.2.0
+    - netcdf-fortran@4.5.3%gcc@11.2.0
+    - esmf@8.2.0%gcc@11.2.0 -pnetcdf -xerces -pio
+  concretization: together

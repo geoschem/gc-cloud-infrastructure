@@ -1,0 +1,39 @@
+name: CreateEntryPoint
+description: This component creates an entrypoint for a docker container
+schemaVersion: 1.0
+
+parameters:
+  - SpackCompiler:
+      type: string
+      default: "intel-oneapi-compilers"
+      description: Spack install spec for desired compiler
+  - SpackEnvironmentName:
+      type: string
+      default: "compute_env"
+      description: Name of spack environment
+  - ExtraSetup:
+      type: string
+      default: ""
+      description: Optional one-liner for other setup
+  - EntrypointFile:
+      type: string
+      default: "/entrypoint.sh"
+      description: Path to the desired entrypoint
+phases:
+  - name: build
+    steps:
+      - name: CreateEntrypoint
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "#!/bin/bash" > {{ EntrypointFile }}
+            - echo "echo '-- Loading spack'" >> {{ EntrypointFile }}
+            - echo ". /opt/spack/share/spack/setup-env.sh" >> {{ EntrypointFile }}
+            - echo "echo '-- Loading compilers'" >> {{ EntrypointFile }}
+            - echo "spack load" {{ SpackCompiler }} >> {{ EntrypointFile }}
+            - echo "echo '-- Loading software stack'" >> {{ EntrypointFile }}
+            - echo "spack env activate" {{ SpackEnvironmentName }} >> {{ EntrypointFile }}
+            - echo {{ ExtraSetup }} >> {{ EntrypointFile }}
+            - echo "echo '-- Done'" >> {{ EntrypointFile }}
+            - echo '$@' >> {{ EntrypointFile }}
+            - chmod +x {{ EntrypointFile }}

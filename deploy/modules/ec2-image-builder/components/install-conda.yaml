@@ -1,0 +1,19 @@
+name: InstallConda
+description: This component install miniconda
+schemaVersion: 1.0
+
+parameters:
+  - MinicondaInstallURL:
+      type: string
+      default: "https://repo.anaconda.com/miniconda/Miniconda3-py38_4.10.3-Linux-x86_64.sh"
+      description: URL of miniconda installer
+phases:
+  - name: build
+    steps:
+      - name: Install
+        action: ExecuteBash
+        inputs:
+          commands:
+            - curl --silent {{ MinicondaInstallURL }} --output Miniconda3-Linux-x86_64.sh
+            - bash Miniconda3-Linux-x86_64.sh -b -p /opt/conda
+            - echo ". /opt/conda/bin/activate" >> /etc/bashrc

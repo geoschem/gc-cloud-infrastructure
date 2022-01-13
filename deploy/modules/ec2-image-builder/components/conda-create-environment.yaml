@@ -1,0 +1,31 @@
+name: CreateEnvironment
+description: This component creates a new conda environment
+schemaVersion: 1.0
+
+parameters:
+  - CondaActivatePath:
+      type: string
+      default: "/opt/conda/bin/activate"
+      description: Path to conda activate script
+  - PythonVersion:
+      type: string
+      default: "3.8"
+      description: Python version to use
+  - EnvironmentName:
+      type: string
+      default: "py38"
+      description: Name of conda environment
+  - ExtraInstalls:
+      type: string
+      default: "geoschem-gcpy awscli -c conda-forge"
+      description: Name of conda environment
+phases:
+  - name: build
+    steps:
+      - name: CreateEnv
+        action: ExecuteBash
+        inputs:
+          commands:
+            - . {{ CondaActivatePath }}
+            - conda create -n {{ EnvironmentName }} python={{ PythonVersion }} {{ ExtraInstalls }} -y
+            - echo "conda activate " {{ EnvironmentName }} >> /etc/bashrc
