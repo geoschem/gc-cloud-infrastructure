@@ -8,7 +8,7 @@
 	            "description": "GEOS-Chem dependencies.",
 	            "targetRepository": {
 	                "service": "ECR",
-	                "repositoryName": "public.ecr.aws/geoschem-wustl/geoschem_deps"
+	                "repositoryName": "geoschem_deps"
 	            },
 	            "containerTags": ["latest-<BUILD_TAG>", "{{imagebuilder:buildDate}}-<BUILD_TAG>"]
 	        }

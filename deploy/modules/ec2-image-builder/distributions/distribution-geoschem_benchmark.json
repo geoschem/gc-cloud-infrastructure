@@ -8,7 +8,7 @@
 	            "description": "GEOS-Chem benchmarking dependencies.",
 	            "targetRepository": {
 	                "service": "ECR",
-	                "repositoryName": "public.ecr.aws/geoschem-wustl/geoschem_benchmark"
+	                "repositoryName": "geoschem_benchmark"
 	            },
 	            "containerTags": ["latest", "{{imagebuilder:buildDate}}"]
 	        }
