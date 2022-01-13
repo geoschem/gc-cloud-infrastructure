@@ -1,16 +1,16 @@
 {
-	"name": "distribution-geoschem_deps-<BUILD_TAG>",
+	"name": "distribution-geoschem_benchmark",
 	"description": "Distributes container image to Amazon ECR repository.",
 	"distributions": [
 	    {
 	        "region": "us-east-1",
 	        "containerDistributionConfiguration": {
-	            "description": "GEOS-Chem dependencies.",
+	            "description": "GEOS-Chem benchmarking dependencies.",
 	            "targetRepository": {
 	                "service": "ECR",
-	                "repositoryName": "public.ecr.aws/geoschem-wustl/geoschem_deps"
+	                "repositoryName": "public.ecr.aws/geoschem-wustl/geoschem_benchmark"
 	            },
-	            "containerTags": ["latest-<BUILD_TAG>", "{{imagebuilder:buildDate}}-<BUILD_TAG>"]
+	            "containerTags": ["latest", "{{imagebuilder:buildDate}}"]
 	        }
 	    }
 	]
