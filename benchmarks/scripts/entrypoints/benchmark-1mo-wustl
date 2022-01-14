@@ -1,0 +1,38 @@
+
+if [ "$#" -ne 1 ]; then
+    >&2 echo "error: commit id wasn't provided"
+    exit 1
+fi
+
+commit_id=$1
+
+bsub << EOF
+#BSUB -Is
+#BSUB -n 60
+#BSUB -R 'rusage[mem=256GB] span[ptile=30]'
+#BSUB -q rvmartin
+#BSUB -a 'docker(registry.gsc.wustl.edu/sleong/base-engineering-gcc)'
+#BSUB -g /liam.bindle/gcst-benchmarks
+#BSUB -o /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExternalShare/GCST/Benchmarking/Logs/${commit_it}-%J.txt
+
+ulimit -c 0                      # coredumpsize
+ulimit -l unlimited              # memorylocked
+ulimit -u 50000                  # maxproc
+ulimit -v unlimited              # vmemoryuse
+ulimit -s unlimited              # stacksize
+
+set -u
+set -e
+
+export GEOSCHEM_BENCHMARK_COMMIT_ID=${commit_it}
+export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud/artifacts
+export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
+export GEOSCHEM_BENCHMARK_SITE=WUSTL
+export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/
+export GEOSCHEM_BENCHMARK_START_DATE=20190701
+export GEOSCHEM_BENCHMARK_END_DATE=20190801
+export GEOSCHEM_BENCHMARK_DURATION=00000100
+
+./helpers/run-stage ./stages/set-up-gchp-rundir "SetUpRunDirectory"
+./helpers/run-stage ./stages/run-gchp "RunGCHP"
+EOF
