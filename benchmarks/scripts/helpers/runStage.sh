@@ -24,6 +24,7 @@ function download_artifacts() {
     if aws s3 ls ${s3_artifacts_dir} &> /dev/null ; then
         aws s3 cp ${s3_artifacts_dir}/ . --recursive --exclude "*" --include "${GEOSCHEM_BENCHMARK_INSTANCE_ID}-*.tar.gz"
         for artifact_file in *.tar.gz; do
+            [ -e ${artifact_file} ] || continue
             tar -xvzf ${artifact_file}
         done
     fi

@@ -64,9 +64,9 @@ function configure_run_directory() {
         sed -i "s/Start_Time=\"[0-9][0-9]* 000000\"/Start_Time=\"${GEOSCHEM_BENCHMARK_START_DATE} 000000\"/" runConfig.sh
         sed -i "s/End_Time=\"[0-9][0-9]* 000000\"/End_Time=\"${GEOSCHEM_BENCHMARK_END_DATE} 000000\"/" runConfig.sh
         sed -i "s/Duration=\"[0-9][0-9]* 000000\"/Duration=\"${GEOSCHEM_BENCHMARK_DURATION} 000000\"/" runConfig.sh
-
+        
         # reconfigure
-       ./runConfig.sh --silent
+        ./runConfig.sh --silent || echo 'Ignoring error in runConfig.sh'
     )
 }
 

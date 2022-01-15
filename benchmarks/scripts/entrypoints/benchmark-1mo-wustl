@@ -4,19 +4,19 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-commit_id=$1
+GEOSCHEM_BENCHMARK_COMMIT_ID=${1}
+GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}.bm
 
 bsub << EOF
-#BSUB -Is
 #BSUB -n 60
 #BSUB -R 'rusage[mem=256GB] span[ptile=30]'
 #BSUB -q rvmartin
-#BSUB -J Benchmark-${commit_it}
+#BSUB -J ${GEOSCHEM_BENCHMARK_INSTANCE_ID}
 #BSUB -a 'docker(public.ecr.aws/geoschem-wustl/geoschem_benchmark:latest)'
 #BSUB -g /liam.bindle/gcst-benchmarks
-#BSUB -o /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExternalShare/GCST/Benchmarking/Logs/${commit_it}-%J.txt
+#BSUB -o /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExternalShare/GCST/Benchmarking/Logs/%J-${GEOSCHEM_BENCHMARK_INSTANCE_ID}.txt
 #BSUB -Ne
-#BSUB -u liam.bindle@wustl.edu
+#BSUB -u benchmarks-cloud-aaaafk3osaonk4ruw4st4nibiq@harvard.org.slack.com 
 
 ulimit -c 0                      # coredumpsize
 ulimit -l unlimited              # memorylocked
@@ -27,9 +27,9 @@ ulimit -s unlimited              # stacksize
 set -u
 set -e
 
-export GEOSCHEM_BENCHMARK_COMMIT_ID=${commit_it}
+export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
+export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_INSTANCE_ID}
 export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud/artifacts
-export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
 export GEOSCHEM_BENCHMARK_SITE=WUSTL
 export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/
 export GEOSCHEM_BENCHMARK_START_DATE=20190701
@@ -40,6 +40,6 @@ export CC=icc
 export CXX=icpc
 export FC=ifort
 
-./helpers/run-stage ./stages/set-up-gchp-rundir "SetUpRunDirectory"
-./helpers/run-stage ./stages/run-gchp "RunGCHP"
+./helpers/runStage.sh ./stages/setupRunDirGCHP.sh "SetUpRunDirectory"
+./helpers/runStage.sh ./stages/runGCHP.sh "RunGCHP"
 EOF
