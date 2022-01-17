@@ -1,8 +1,12 @@
+#!/bin/bash
 
 if [ "$#" -ne 1 ]; then
     >&2 echo "error: commit id wasn't provided"
     exit 1
 fi
+
+set -u
+cd ${GEOSCHEM_BENCHMARK_SCRIPTS}
 
 GEOSCHEM_BENCHMARK_COMMIT_ID=${1}
 GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}.bm
@@ -16,7 +20,9 @@ bsub << EOF
 #BSUB -g /liam.bindle/gcst-benchmarks
 #BSUB -o /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExternalShare/GCST/Benchmarking/Logs/%J-${GEOSCHEM_BENCHMARK_INSTANCE_ID}.txt
 #BSUB -Ne
-#BSUB -u benchmarks-cloud-aaaafk3osaonk4ruw4st4nibiq@harvard.org.slack.com 
+##BSUB -u benchmarks-cloud-aaaafk3osaonk4ruw4st4nibiq@harvard.org.slack.com 
+
+. /etc/bashrc
 
 ulimit -c 0                      # coredumpsize
 ulimit -l unlimited              # memorylocked
@@ -26,6 +32,7 @@ ulimit -s unlimited              # stacksize
 
 set -u
 set -e
+set -x
 
 export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
 export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_INSTANCE_ID}
@@ -40,6 +47,9 @@ export CC=icc
 export CXX=icpc
 export FC=ifort
 
+pwd
+
 ./helpers/runStage.sh ./stages/setupRunDirGCHP.sh "SetUpRunDirectory"
 ./helpers/runStage.sh ./stages/runGCHP.sh "RunGCHP"
 EOF
+

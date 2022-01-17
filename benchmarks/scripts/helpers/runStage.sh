@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export TMPDIR=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX:-${TMPDIR}}  # prefix of temporary directories (if specified)
+
 temp_dir=$(mktemp --directory)
 export GEOSCHEM_BENCHMARK_WORKING_DIR=${GEOSCHEM_BENCHMARK_WORKING_DIR:=${temp_dir}}    # working directory for this stage
 export GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR=$(mktemp --directory)                     # directory whose contents are saved as artifacts
@@ -22,7 +24,7 @@ function stage_has_already_run() {
 
 function download_artifacts() {
     if aws s3 ls ${s3_artifacts_dir} &> /dev/null ; then
-        aws s3 cp ${s3_artifacts_dir}/ . --recursive --exclude "*" --include "${GEOSCHEM_BENCHMARK_INSTANCE_ID}-*.tar.gz"
+        aws s3 cp ${s3_artifacts_dir}/ . --recursive --exclude "*" --include "${GEOSCHEM_BENCHMARK_INSTANCE_ID}-*.tar.gz" --only-show-errors
         for artifact_file in *.tar.gz; do
             [ -e ${artifact_file} ] || continue
             tar -xvzf ${artifact_file}
@@ -32,12 +34,12 @@ function download_artifacts() {
 
 function upload_artifacts() {
     tar -cvzf ${stage_artifact_filename} --directory=${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR} .
-    aws s3 cp ${stage_artifact_filename} ${s3_artifacts_dir}/${stage_artifact_filename}
+    aws s3 cp ${stage_artifact_filename} ${s3_artifacts_dir}/${stage_artifact_filename} --only-show-errors
     rm -f ${stage_artifact_filename}
 }
 
 function upload_log_file() {
-    aws s3 cp ${log_file} ${s3_artifacts_dir}/logs/${stage_short_name}.txt
+    aws s3 cp ${log_file} ${s3_artifacts_dir}/logs/${stage_short_name}.txt --only-show-errors
 }
 
 if ! stage_has_already_run; then
