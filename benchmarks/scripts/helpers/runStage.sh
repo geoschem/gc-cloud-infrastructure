@@ -1,63 +1,144 @@
 #!/usr/bin/env bash
 
-export TMPDIR=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX:-${TMPDIR}}  # prefix of temporary directories (if specified)
+if [ "$#" -ne 1 ]; then
+    >&2 echo "error: no stage name was given"
+    exit 1
+fi
 
+export TMPDIR=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX:-${TMPDIR}}  # prefix of temporary directories (if specified)
 temp_dir=$(mktemp --directory)
 export GEOSCHEM_BENCHMARK_WORKING_DIR=${GEOSCHEM_BENCHMARK_WORKING_DIR:=${temp_dir}}    # working directory for this stage
-export GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR=$(mktemp --directory)                     # directory whose contents are saved as artifacts
-log_file=$(mktemp)
 
-set -e  # exit on any error
-set -u  # treat undefined variables as an error
+set -e  
+set -u
 
-: "${GEOSCHEM_BENCHMARK_S3_BUCKET}" "${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
+# required variables
+: "${GEOSCHEM_BENCHMARK_S3_BUCKET}"     # S3 bucket URI (for artifact upload)
+: "${GEOSCHEM_BENCHMARK_INSTANCE_ID}"   # Unique ID of test (commit_id + test_code)
+: "${GEOSCHEM_BENCHMARK_TABLE_NAME}"    # DynamoDB table name
 
-stage_script=$(realpath $1)  # script that will be executed
-stage_short_name=$2          # name of this stage (one word)
+# local environment variables (for use in function/subshells)
+export STAGE_SHORT_NAME=$1              # name of this stage (one word)
 
-s3_artifacts_dir=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}      # s3 path to artifact files
-stage_artifact_filename=${GEOSCHEM_BENCHMARK_INSTANCE_ID}-${stage_short_name}.tar.gz    # file name of this stage's artifact file
+# initialize stage_json
+stage_json=$(cat << EOF
+{
+    "M": {
+        "Name": { "S": "${STAGE_SHORT_NAME}" },
+        "Completed": {"BOOL": false },
+        "Log": {"S": "" },
+        "Artifacts": {"L": [] }
+    }
+}
+EOF
+)
 
-function stage_has_already_run() {
-    aws s3 ls ${s3_artifacts_dir}/${stage_artifact_filename} &> /dev/null
+function db_query_stage_is_completed() {
+    # return code: 0 if the stage is previously completed, otherwise non-zero
+    aws dynamodb get-item \
+        --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
+        --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
+        --attributes-to-get "Stages" \
+    | jq -e ".Item.Stages.L[] | select((.M.Name.S == \"${STAGE_SHORT_NAME}\") and (.M.Completed.BOOL == true))" &> /dev/null
 }
 
-function download_artifacts() {
-    if aws s3 ls ${s3_artifacts_dir} &> /dev/null ; then
-        aws s3 cp ${s3_artifacts_dir}/ . --recursive --exclude "*" --include "${GEOSCHEM_BENCHMARK_INSTANCE_ID}-*.tar.gz" --only-show-errors
-        for artifact_file in *.tar.gz; do
-            [ -e ${artifact_file} ] || continue
-            tar -xvzf ${artifact_file}
-        done
+function db_get_stage_index() {
+    # return code: 0 if the stage is registerd, otherwise non-zero
+    # stdout: the stage's index
+    aws dynamodb get-item \
+        --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
+        --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
+        --attributes-to-get "Stages" \
+    | jq -e ".Item.Stages.L | map(.M.Name.S == \"${STAGE_SHORT_NAME}\") | index(true)"
+}
+
+function db_update_stage() {
+    if stage_index=$(db_get_stage_index) ; then
+        # stage exist in db
+        update_expression="SET #s[${stage_index}] = :val"
+        expression_attribute_values="{\":val\": ${stage_json} }"
+    else
+        # stage doesn't exist in db
+        update_expression="SET #s = list_append(#s, :val)"
+        expression_attribute_values="{\":val\":{\"L\":[ ${stage_json} ]}}"
     fi
+    aws dynamodb update-item \
+        --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
+        --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
+        --update-expression "${update_expression}" \
+        --expression-attribute-names '{"#s": "Stages"}' \
+        --expression-attribute-values "${expression_attribute_values}"
 }
 
 function upload_artifacts() {
-    tar -cvzf ${stage_artifact_filename} --directory=${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR} .
-    aws s3 cp ${stage_artifact_filename} ${s3_artifacts_dir}/${stage_artifact_filename} --only-show-errors
-    rm -f ${stage_artifact_filename}
+    # arguments: artifact_name file1 [file2..]
+    artifact_file_name=${STAGE_SHORT_NAME}_${1}.tar.gz
+    artifact_uri=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}/${artifact_file_name}
+    shift
+    tar -cvzf ${artifact_file_name} $@
+    aws s3 cp ${artifact_file_name} ${artifact_uri} --only-show-errors
+    stage_json=$(echo "${stage_json}" | jq ".M.Artifacts.L[.M.Artifacts.L | length] |= . + {\"S\": \"${artifact_uri}\"}")
+}
+export -f upload_artifacts
+
+function download_artifacts() {
+    artifacts=$(
+        aws dynamodb get-item \
+            --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
+            --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
+            --attributes-to-get "Stages" \
+        | jq -r ".Item.Stages.L[] | select(.M.Name.S != \"${STAGE_SHORT_NAME}\") | .M.Artifacts.L[].S"
+    )
+    for artifact_uri in ${artifacts}; do
+        aws s3 cp ${artifact_uri} artifact.tar.gz --only-show-errors
+        tar -xvzf artifact.tar.gz
+        rm -f artifact.tar.gz
+    done
 }
 
 function upload_log_file() {
-    aws s3 cp ${log_file} ${s3_artifacts_dir}/logs/${stage_short_name}.txt --only-show-errors
+    # arguments: log_file
+    log_file_name=${1}
+    log_file_uri=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}/${log_file_name}
+    aws s3 cp ${log_file_name} ${log_file_uri} --only-show-errors
+    stage_json=$(echo "${stage_json}" | jq ".M.Log.S=\"${log_file_uri}\"")
 }
 
-if ! stage_has_already_run; then
-    echo "Running stage '${stage_short_name}'"
+# runStage.sh logic
+if ! db_query_stage_is_completed ; then
+    # change to temporary directory
+    cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
 
-    # subshell so we return to cwd afterwards
-    (
-        set -x  # print commands to log file
-        cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
-        download_artifacts
+    # redirect stdout and stderr to log file
+    log_file=${STAGE_SHORT_NAME}.txt
+    exec > >(tee -i ${log_file})
+    exec 2>&1
+    echo "Running '${STAGE_SHORT_NAME}' in ${GEOSCHEM_BENCHMARK_WORKING_DIR}"
+
+    # tasks before the stage runs
+    db_update_stage     # set empty
+    download_artifacts
+
+    # use an exit trap to upload the log file, update the database, and remove the temporary files
+    function exit_hook() {
+        if [ "$1" -eq "0" ]; then
+            # stage script exited successfully
+            stage_json=$(echo "${stage_json}" | jq ".M.Completed.BOOL=true")
+        fi
+        upload_log_file ${log_file}
+        db_update_stage
         
-        set -o pipefail        
-        ${stage_script} 2>&1 | tee ${log_file} && upload_artifacts
-        set +o pipefail
-    )
+        # Clean up temporary files
+        exec &>/dev/tty
 
-    upload_log_file
+        cd ${TMPDIR}
+        rm -rf ${temp_dir}
+    }
+    trap 'exit_hook $?' EXIT
+
 else 
-    echo "Stage '${stage_short_name}' is already complete"
+    echo "Skipping '${STAGE_SHORT_NAME}' (already completed)"
+    cd ${TMPDIR}
+    rm -rf ${temp_dir}
+    exit 0
 fi
-rm -rf ${temp_dir} ${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR} ${log_file}
