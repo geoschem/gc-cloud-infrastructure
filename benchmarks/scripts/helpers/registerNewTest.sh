@@ -1,5 +1,3 @@
-attribute_not_exists 
-
 #!/usr/bin/env bash
 set -u
 set -e
