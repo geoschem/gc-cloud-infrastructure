@@ -45,10 +45,13 @@ export GEOSCHEM_BENCHMARK_DURATION=00000001
 export GEOSCHEM_BENCHMARK_RESOLUTION=24
 export GEOSCHEM_BENCHMARK_NUM_NODES=1
 export GEOSCHEM_BENCHMARK_PROC_PER_NODE=18
+export GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX}
 
 export CC=icc
 export CXX=icpc
 export FC=ifort
+
+./helpers/registerNewTest.sh || echo "Test instance exists. Resuming test."
 
 ./helpers/runStage.sh ./stages/setupRunDirGCHP.sh "SetUpRunDirectory"
 ./helpers/runStage.sh ./stages/runGCHP.sh "RunGCHP"

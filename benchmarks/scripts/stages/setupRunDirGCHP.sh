@@ -14,7 +14,7 @@ function download_code() {
     git clone https://github.com/geoschem/GCHP.git
     cd GCHP
     git checkout ${GEOSCHEM_BENCHMARK_COMMIT_ID}
-    git submodule update --init --recursive
+    git submodule update --init --recursive --depth 1
 }
 
 
