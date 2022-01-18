@@ -11,6 +11,6 @@ export GEOSCHEM_BENCHMARK_SITE=WUSTL
 
 pwd
 
-./helpers/runStage.sh ./stages/testStages/stage1.sh "Stage1"
-./helpers/runStage.sh ./stages/testStages/stage2.sh "Stage2"
-./helpers/runStage.sh ./stages/testStages/stage3.sh "Stage3"
+./helpers/runStage.sh ./testing/stage1.sh "Stage1"
+./helpers/runStage.sh ./testing/stage2.sh "Stage2"
+./helpers/runStage.sh ./testing/stage3.sh "Stage3"
