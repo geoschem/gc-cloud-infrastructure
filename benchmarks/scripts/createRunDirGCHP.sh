@@ -13,6 +13,10 @@ err=0
 trap report ERR
 source /environments/gchp_source.env
 
+# reduce number of nodes by 6 to fix issue running with docker
+export NUM_CORES_PER_NODE="$(($NUM_CORES_PER_NODE-6))"
+export TOTAL_CORES="$(($TOTAL_CORES-6))"
+
 # set default paths
 REPO_PATH="/gc-src"
 RUNDIR="/home/default_rundir"
@@ -51,5 +55,5 @@ if [ $err -gt 0 ]; then
 fi
 
 echo "starting run directory upload"
-aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/gchp/rundir" --recursive --only-show-errors
+aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCHP/rundir" --recursive --only-show-errors
 echo "Finished run directory upload"

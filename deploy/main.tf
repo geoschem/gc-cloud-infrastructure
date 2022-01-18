@@ -13,7 +13,7 @@ terraform {
     required_version = ">= 1.0.5" # at least have v1.0.5 of terraform
     required_providers {
         aws = {
-            version = ">= 3.63.0" # at least have v3.56.0 of aws provider
+            version = ">= 3.72.0" # at least have v3.56.0 of aws provider
             source = "hashicorp/aws"
         }
     }
@@ -136,7 +136,7 @@ module "batch_benchmark_artifacts" {
     log_retention_days = 5
     s3_path = "s3://${var.benchmarks_bucket}" 
     ec2_key_pair = "lestrada_keypair"
-    volume_size = 300
+    volume_size = 400
     shared_memory_size = 10000
     resolution = 24
     num_cores_per_node = 6
@@ -286,4 +286,16 @@ module "AQACF_account_number" {
    source = "./modules/secrets-manager"
    count = local.only_washu
    secret_arn = "" # TODO fill in with arn once secret is created
+}
+
+# ==============================================================
+# vpc peering connection
+# ==============================================================
+module "vpc_peering_connection_with_washu" {
+   source = "./modules/vpc/peering"
+   count = local.only_harvard
+   peer_account_id = "051282792181" #TODO replace with washu
+   peer_vpc_id = "vpc-0abb447af690e3477"
+   requester_vpc_id = data.aws_vpc.default.id
+   tags = { Name = "washu-harvard-vpc-peering" }
 }

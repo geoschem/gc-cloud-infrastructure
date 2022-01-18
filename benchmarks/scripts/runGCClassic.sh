@@ -26,7 +26,7 @@ RUNDIR="/home/default_rundir"
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/gcc/rundir" $RUNDIR --recursive --only-show-errors
+aws s3 cp "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCC/rundir" $RUNDIR --recursive --only-show-errors
 echo "finished downloading run directory from s3"
 
 # get input data
@@ -38,7 +38,7 @@ ln -s "$REPO_PATH/" CodeDir
 
 # execute scripts
 echo "running gcclassic"
-./gcclassic | tee gcclassic.log
+time ./gcclassic | tee gcclassic.log
 echo "finished running gcclassic"
 
 # move needed files to output dir
@@ -48,6 +48,6 @@ mv HEMCO.log OutputDir/HEMCO.log
 
 # upload result 
 echo "uploading output dir"
-aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/gcc/OutputDir" --recursive
+aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCC/OutputDir" --recursive
 echo "finished uploading output dir"
 exit $err

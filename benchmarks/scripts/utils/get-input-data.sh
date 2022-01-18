@@ -22,12 +22,12 @@ if [[ "x$1" == "xGCHP" ]]; then
   if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
     echo "downloading data for 1Day time period"
     bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-07-02 \
-    | sed "s#./\(.*\)#aws s3 cp s3://gcgrid/\1 $2/\1 --request-payer#g" \
+    | sed "s#./\(.*\)#aws s3 cp s3://gcgrid/\1 $2/\home/ExtData/\1 --request-payer#g" \
     | bash
   else
     echo "downloading data for 1Mon time period"
     bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-08-01 \
-    | sed "s#./\(.*\)#aws s3 cp s3://gcgrid/\1 $2/\1 --request-payer#g" \
+    | sed "s#./\(.*\)#aws s3 cp s3://gcgrid/\1 $2/\home/ExtData/\1 --request-payer#g" \
     | bash
   fi
 
