@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ./helpers/runStage.sh
+. ./helpers/runStage.sh "Stage1"
 
 set -e
 set -u
