@@ -6,6 +6,8 @@ export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 export GEOSCHEM_BENCHMARK_SITE=WUSTL
 
 ./helpers/dbCreateTest.sh
+
+set -e
 ./testing/stage1.sh
 ./testing/stage2.sh
 ./testing/stage3.sh

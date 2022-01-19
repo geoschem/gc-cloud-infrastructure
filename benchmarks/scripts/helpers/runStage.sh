@@ -111,7 +111,8 @@ if ! db_query_stage_is_completed ; then
 
     # redirect stdout and stderr to log file
     log_file=${STAGE_SHORT_NAME}.txt
-    exec &>${log_file}
+    exec > >(tee -i ${log_file})
+    exec 2>&1
     echo "Running '${STAGE_SHORT_NAME}' in ${GEOSCHEM_BENCHMARK_WORKING_DIR}"
 
     # tasks before the stage runs
