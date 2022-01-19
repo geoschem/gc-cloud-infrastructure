@@ -107,6 +107,7 @@ function upload_log_file() {
 # runStage.sh logic
 if ! db_query_stage_is_completed ; then
     log_file=${STAGE_SHORT_NAME}.txt
+    exec &>${log_file}
 
     echo "Running '${STAGE_SHORT_NAME}' in ${GEOSCHEM_BENCHMARK_WORKING_DIR}"
 
@@ -124,6 +125,8 @@ if ! db_query_stage_is_completed ; then
         db_update_stage
         
         # Clean up temporary files
+        exec &>/dev/tty
+
         cd ${TMPDIR}
         rm -rf ${temp_dir}
     }
