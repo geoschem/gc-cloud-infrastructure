@@ -106,16 +106,19 @@ function upload_log_file() {
 
 # runStage.sh logic
 if ! db_query_stage_is_completed ; then
+    # change to temporary directory
+    cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
+
+    # redirect stdout and stderr to log file
     log_file=${STAGE_SHORT_NAME}.txt
     exec &>${log_file}
-
     echo "Running '${STAGE_SHORT_NAME}' in ${GEOSCHEM_BENCHMARK_WORKING_DIR}"
 
-    cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
+    # tasks before the stage runs
     db_update_stage     # set empty
     download_artifacts
 
-    # set an exit trap to upload the log file + update the database
+    # use an exit trap to upload the log file, update the database, and remove the temporary files
     function exit_hook() {
         if [ "$1" -eq "0" ]; then
             # stage script exited successfully
