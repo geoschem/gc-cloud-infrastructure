@@ -88,4 +88,5 @@ if ! stage_has_already_run; then
 else 
     echo "Stage '${STAGE_SHORT_NAME}' is already complete"
 fi
-rm -rf ${temp_dir} ${log_file}
+set +e
+rm -rf ${temp_dir} ${log_file} 
