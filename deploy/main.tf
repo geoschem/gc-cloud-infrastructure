@@ -135,7 +135,6 @@ module "batch_benchmark_artifacts" {
     region = data.aws_region.current.name
     log_retention_days = 5
     s3_path = "s3://${var.benchmarks_bucket}" 
-    ec2_key_pair = "lestrada_keypair"
     volume_size = 300
     shared_memory_size = 10000
     resolution = 24
@@ -263,8 +262,8 @@ module "gcst_sns_topic" {
 }
 module "cloudwatch_cost_alarm" {
     source = "./modules/cloudwatch/alarms"
-    count = local.only_harvard
-    alarm_name = "account-billing-alarm"
+    count = local.all_environments
+    alarm_name =  "account-billing-alarm"
     metric_name = "EstimatedCharges"
     metric_namespace = "AWS/Billing"
     currency = "USD"
@@ -285,5 +284,5 @@ module "washu_account_number" {
 module "AQACF_account_number" {
    source = "./modules/secrets-manager"
    count = local.only_washu
-   secret_arn = "" # TODO fill in with arn once secret is created
+   secret_arn = "arn:aws:secretsmanager:us-east-1:${data.aws_caller_identity.current.account_id}:secret:aqacf_account_number-KhNkAJ"
 }
