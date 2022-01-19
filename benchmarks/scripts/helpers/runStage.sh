@@ -111,6 +111,8 @@ if ! db_query_stage_is_completed ; then
 
     # redirect stdout and stderr to log file
     log_file=${STAGE_SHORT_NAME}.txt
+    exec 3>&1  # reference to original stdout
+    exec 4>&2  # reference to original stderr
     exec > >(tee -i ${log_file})
     exec 2>&1
     echo "Running '${STAGE_SHORT_NAME}' in ${GEOSCHEM_BENCHMARK_WORKING_DIR}"
@@ -129,10 +131,14 @@ if ! db_query_stage_is_completed ; then
         db_update_stage
         
         # Clean up temporary files
-        exec &>/dev/null
+        exec 1>&3  # restore stdout
+        exec 2>&4  # restore stderr
+        exec 3>&-
+        exec 4>&-
 
         cd ${TMPDIR}
-        rm -rf ${temp_dir}
+        rm -rf ${temp_dir} || echo "${temp_dir}" >> ${TMPDIR}/failed_delete_tempdirs.txt
+        exit $1
     }
     trap 'exit_hook $?' EXIT
 
