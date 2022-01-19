@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ${GEOSCHEM_BENCHMARK_SCRIPTS}/runStage.sh "SetupRunDirectory"
+. ${GEOSCHEM_BENCHMARK_SCRIPTS}/helpers/runStage.sh "SetupRunDirectory"
 
 set -e
 set -u
@@ -85,4 +85,4 @@ configure_run_directory
 install_geoschem_to_run_directory
 
 cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
-upload_artifacts run-directory/*
+upload_artifacts RunDirectory run-directory/*

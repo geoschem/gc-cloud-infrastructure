@@ -129,7 +129,7 @@ if ! db_query_stage_is_completed ; then
         db_update_stage
         
         # Clean up temporary files
-        exec &>/dev/tty
+        exec &>/dev/null
 
         cd ${TMPDIR}
         rm -rf ${temp_dir}
