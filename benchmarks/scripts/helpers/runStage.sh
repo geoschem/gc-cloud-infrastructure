@@ -13,8 +13,8 @@ set -x
 : "${GEOSCHEM_BENCHMARK_S3_BUCKET}" "${GEOSCHEM_BENCHMARK_INSTANCE_ID}" "${GEOSCHEM_BENCHMARK_TABLE_NAME}"
 
 stage_script=$(realpath $1)  # script that will be executed
-stage_short_name=$2          # name of this stage (one word)
 
+export STAGE_SHORT_NAME=$2          # name of this stage (one word)
 export S3_ARTIFACTS_DIR=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}/Artifacts
 export S3_LOGS_DIR=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}/Logs
 
@@ -22,19 +22,22 @@ function stage_has_already_run() {
     aws dynamodb get-item \
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
         --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
-        --attributes-to-get "StagesCompleted" | jq -e ".Item.StagesCompleted.L[] | select(.S == \"${stage_short_name}\")" &> /dev/null
+        --attributes-to-get "StagesCompleted" | jq -e ".Item.StagesCompleted.L[] | select(.S == \"${STAGE_SHORT_NAME}\")" &> /dev/null
 }
 
 function download_artifacts() {
     if aws s3 ls ${S3_ARTIFACTS_DIR} &> /dev/null ; then
-        aws s3 cp ${S3_ARTIFACTS_DIR}/ . --recursive --only-show-errors
+        aws s3 cp ${S3_ARTIFACTS_DIR}/ . --recursive --exclude "*" --include "${GEOSCHEM_BENCHMARK_INSTANCE_ID}-*.tar.gz" --only-show-errors
+        for artifact_file in *.tar.gz; do
+            [ -e ${artifact_file} ] || continue
+            tar -xvzf ${artifact_file}
+        done
     fi
 }
 
 function upload_artifacts() {
-    for file_path in "$@"; do
-        aws s3 cp ${file_path} ${S3_ARTIFACTS_DIR}/${file_path} --only-show-errors
-    done
+    tar -cvzf artifacts.tar.gz $@
+    aws s3 cp artifacts.tar.gz ${S3_ARTIFACTS_DIR}/${STAGE_SHORT_NAME}.tar.gz
 }
 export -f upload_artifacts
 
@@ -61,7 +64,7 @@ function exec_stage() {
 }
 
 function upload_log_file() {
-    s3_log_file_name=${S3_LOGS_DIR}/${stage_short_name}.txt
+    s3_log_file_name=${S3_LOGS_DIR}/${STAGE_SHORT_NAME}.txt
     aws s3 cp ${log_file} ${s3_log_file_name} --only-show-errors
     aws dynamodb update-item \
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
@@ -72,17 +75,17 @@ function upload_log_file() {
 }
 
 if ! stage_has_already_run; then
-    echo "Running stage '${stage_short_name}'"
+    echo "Running stage '${STAGE_SHORT_NAME}'"
 
     if exec_stage ; then
-        register_stage_completed "${stage_short_name}"
+        register_stage_completed "${STAGE_SHORT_NAME}"
         upload_log_file
     else
-        echo "Stage '${stage_short_name}' failed. Exiting."
+        echo "Stage '${STAGE_SHORT_NAME}' failed. Exiting."
         upload_log_file
         exit 1
     fi
 else 
-    echo "Stage '${stage_short_name}' is already complete"
+    echo "Stage '${STAGE_SHORT_NAME}' is already complete"
 fi
 rm -rf ${temp_dir} ${log_file}
