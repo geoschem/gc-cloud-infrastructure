@@ -52,9 +52,7 @@ export CC=icc
 export CXX=icpc
 export FC=ifort
 
-./helpers/registerNewTest.sh || echo "Test instance exists. Resuming test."
-
-./helpers/runStage.sh ./stages/setupRunDirGCHP.sh "SetUpRunDirectory"
-./helpers/runStage.sh ./stages/runGCHP.sh "RunGCHP"
+./helpers/dbCreateTest.sh || echo "Test already exists"
+./stages/setupRunDirGCHP.sh
+./helpers/runStage.sh
 EOF
-

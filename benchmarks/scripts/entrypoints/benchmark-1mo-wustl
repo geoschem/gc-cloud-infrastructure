@@ -51,7 +51,7 @@ export FC=ifort
 
 pwd
 
-./helpers/runStage.sh ./stages/setupRunDirGCHP.sh "SetUpRunDirectory"
-./helpers/runStage.sh ./stages/runGCHP.sh "RunGCHP"
+./helpers/dbCreateTest.sh || echo "Test already exists"
+./stages/setupRunDirGCHP.sh
+./helpers/runStage.sh
 EOF
-

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. ${GEOSCHEM_BENCHMARK_SCRIPTS}/runStage.sh "RunGCHP"
+
 set -e
 set -u
 set -x
