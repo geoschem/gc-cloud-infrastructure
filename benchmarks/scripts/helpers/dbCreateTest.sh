@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -u
+set -e
+
+: "${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
+: "${GEOSCHEM_BENCHMARK_SITE}"
+: "${GEOSCHEM_BENCHMARK_TABLE_NAME}"
+
+item=$(cat << EOF
+{
+    "InstanceID": {"S":"${GEOSCHEM_BENCHMARK_INSTANCE_ID}"},
+    "Site": {"S":"${GEOSCHEM_BENCHMARK_SITE}"},
+    "Stages": {"L": [] }
+}
+EOF
+)
+
+set -x
+aws dynamodb put-item \
+    --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
+    --item "${item}" \
+    --condition-expression "attribute_not_exists(InstanceID)"

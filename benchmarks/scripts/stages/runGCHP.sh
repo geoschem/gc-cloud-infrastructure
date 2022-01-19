@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+. ${GEOSCHEM_BENCHMARK_SCRIPTS}/runStage.sh "RunGCHP"
+
 set -e
 set -u
 set -x
 
-: "${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR}"  # directory for stage artifacts
-: "${GEOSCHEM_BENCHMARK_SITE}"                 # which site is this running at
+: "${GEOSCHEM_BENCHMARK_WORKING_DIR}"  # working directory
+: "${GEOSCHEM_BENCHMARK_SITE}"         # which site is this running at
 
 
 function wustl_create_temporary_extdata() {
@@ -40,6 +42,5 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
         ;;
 esac
 
-# move OutputDir to artifacts directory
-mkdir -p ${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR}/run-directory
-mv OutputDir ${GEOSCHEM_BENCHMARK_STAGE_ARTIFACTS_DIR}/run-directory
+cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
+upload_artifacts run-directory/OutputDir/*

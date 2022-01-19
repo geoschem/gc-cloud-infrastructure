@@ -36,7 +36,7 @@ set -x
 
 export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
 export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_INSTANCE_ID}
-export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud/artifacts
+export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud
 export GEOSCHEM_BENCHMARK_SITE=WUSTL
 export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/
 export GEOSCHEM_BENCHMARK_START_DATE=20190701
@@ -45,12 +45,14 @@ export GEOSCHEM_BENCHMARK_DURATION=00000001
 export GEOSCHEM_BENCHMARK_RESOLUTION=24
 export GEOSCHEM_BENCHMARK_NUM_NODES=1
 export GEOSCHEM_BENCHMARK_PROC_PER_NODE=18
+export GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX}
+export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 
 export CC=icc
 export CXX=icpc
 export FC=ifort
 
-./helpers/runStage.sh ./stages/setupRunDirGCHP.sh "SetUpRunDirectory"
-./helpers/runStage.sh ./stages/runGCHP.sh "RunGCHP"
+./helpers/dbCreateTest.sh || echo "Test already exists"
+./stages/setupRunDirGCHP.sh
+./helpers/runStage.sh
 EOF
-
