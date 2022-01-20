@@ -53,5 +53,6 @@ pwd
 
 ./helpers/dbCreateTest.sh || echo "Test already exists"
 ./stages/setupRunDirGCHP.sh
-./helpers/runStage.sh
+./stages/runGCHP.sh
+
 EOF

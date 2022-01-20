@@ -43,4 +43,4 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
 esac
 
 cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
-upload_artifacts run-directory/OutputDir/*
+upload_artifacts OutputDir run-directory/OutputDir/*

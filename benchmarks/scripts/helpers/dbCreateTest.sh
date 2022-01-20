@@ -5,12 +5,14 @@ set -e
 : "${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
 : "${GEOSCHEM_BENCHMARK_SITE}"
 : "${GEOSCHEM_BENCHMARK_TABLE_NAME}"
+: "${GEOSCHEM_BENCHMARK_S3_BUCKET}"
 
 item=$(cat << EOF
 {
     "InstanceID": {"S":"${GEOSCHEM_BENCHMARK_INSTANCE_ID}"},
     "Site": {"S":"${GEOSCHEM_BENCHMARK_SITE}"},
-    "Stages": {"L": [] }
+    "Stages": {"L": [] },
+    "S3Uri": {"S": "${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}" }
 }
 EOF
 )
