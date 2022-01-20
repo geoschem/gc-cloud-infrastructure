@@ -139,7 +139,7 @@ module "batch_benchmark_artifacts" {
   region                    = data.aws_region.current.name
   log_retention_days        = 5
   s3_path                   = "s3://${var.benchmarks_bucket}"
-  ec2_key_pair              = var.orginization == "harvard" ? "lestrada_keypair" : null
+  ec2_key_pair              = var.organization == "harvard" ? "lestrada_keypair" : null
   volume_size               = 400
   shared_memory_size        = 10000
   resolution                = 24
