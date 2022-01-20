@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. ${GEOSCHEM_BENCHMARK_SCRIPTS}/runStage.sh "SetupRunDirectory"
+. ${GEOSCHEM_BENCHMARK_SCRIPTS}/helpers/runStage.sh "SetupRunDirectory"
 
 set -e
 set -u
