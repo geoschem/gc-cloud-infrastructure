@@ -157,10 +157,11 @@ module "batch_benchmark_artifacts" {
 # ==============================================================
 module "fsx_lustre_instance" {
   source = "./modules/fsx-lustre"
-  count = local.only_harvard
-  subnet_ids = tolist(module.batch_benchmark_artifacts[0].subnet_ids)[0]
+  count = local.only_washu
+  subnet_ids = (var.organization == "harvard" 
+    ? tolist(module.batch_benchmark_artifacts[0].subnet_ids)[0] 
+    : tolist(module.batch_benchmark_artifacts[0].subnet_ids)[1]) # subnet AZ us-east-1e does not have fsx support
   security_group_ids = [module.batch_benchmark_artifacts[0].security_group_id]
-  import_path = "s3://imi-testing"
 }
 
 # ==============================================================
@@ -255,7 +256,7 @@ POLICY
 # ==============================================================
 module "gcst_sns_topic" {
   source         = "./modules/sns"
-  count          = local.only_harvard
+  count          = local.all_environments
   sns_topic_name = "gcst-sns-topic"
 }
 module "cloudwatch_cost_alarm" {
@@ -280,7 +281,7 @@ module "peer_account_info" { # fetch the account info of peer account
   secret_arn = (
     var.organization == "harvard" 
     ? "arn:aws:secretsmanager:us-east-1:${data.aws_caller_identity.current.account_id}:secret:washu_account_info-t14Lkb" 
-    : "TODO fill in for washu"
+    : "arn:aws:secretsmanager:us-east-1:${data.aws_caller_identity.current.account_id}:secret:harvard_account_info-IsgZ0t"
   )
 }
 module "AQACF_account_number" {
