@@ -13,7 +13,7 @@ terraform {
   required_version = ">= 1.0.5" # at least have v1.0.5 of terraform
   required_providers {
     aws = {
-      version = ">= 3.71.0" # at least have v3.56.0 of aws provider
+      version = ">= 3.63.0" # at least have v3.56.0 of aws provider
       source  = "hashicorp/aws"
     }
   }
