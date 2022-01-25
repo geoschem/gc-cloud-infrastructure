@@ -32,8 +32,7 @@ locals {
 
 
 # ==============================================================
-# vpc items -- TODO: for now using default vpc and subnets, 
-# but may be good to create purpose built vpc
+# vpc items
 # ==============================================================
 data "aws_vpc" "default" { # fetch default vpc
   default = true
@@ -41,7 +40,7 @@ data "aws_vpc" "default" { # fetch default vpc
 data "aws_subnet_ids" "all_default_subnets" { # fetch default subnets
   vpc_id = data.aws_vpc.default.id
 }
-module "default_security_group" { # TODO: should change to common sg
+module "default_security_group" {
   count       = local.all_environments
   source      = "./modules/security-group"
   vpc_id      = data.aws_vpc.default.id
@@ -150,6 +149,10 @@ module "batch_benchmark_artifacts" {
   peer_account_number       = module.peer_account_info[0].secret_json["account_number"]
   peer_security_group_id    = module.peer_account_info[0].secret_json["security_group_id"]
   peering_connection_id     = var.organization == "harvard" ? module.vpc_peering_connection_with_washu[0].connection_id : null
+  # harvard stores the fsx ip address in secrets manager
+  fsx_address               = (var.organization == "harvard"
+                                ? module.peer_account_info[0].secret_json["fsx_ip_address"] 
+                                : module.fsx_lustre_instance[0].fsx_dns)
 }
 
 # ==============================================================
@@ -187,7 +190,7 @@ module "batch_data_sync_artifacts" {
   container_properties_file = "../../modules/batch/container-properties/container-properties.json"
   region                    = data.aws_region.current.name
   log_retention_days        = 1
-  s3_path                   = "s3://${var.benchmarks_bucket}" # TODO: update batch module to be more flexible 
+  s3_path                   = "s3://${var.benchmarks_bucket}"
   volume_size               = 30
 }
 

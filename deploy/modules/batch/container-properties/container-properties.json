@@ -39,15 +39,15 @@
     "volumes": [
         {
             "host": {
-                "sourcePath": "/scratch"
+                "sourcePath": "${input_data_path}"
             },
-            "name": "Scratch"
+            "name": "ExtData"
         }
     ],
     "mountPoints": [
         {
-            "containerPath": "/scratch",
-            "sourceVolume": "Scratch"
+            "containerPath": "${input_data_path}",
+            "sourceVolume": "ExtData"
         }
     ],
     "privileged": true,

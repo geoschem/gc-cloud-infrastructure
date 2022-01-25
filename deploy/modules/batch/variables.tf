@@ -84,4 +84,12 @@ variable "launch_script_path" {
     description = "path to user script to run on launch of ec2"
     default = null
 }
+variable "input_data_path" {
+    description = "path to mount input data to on EC2/ docker container"
+    default = "/ExtData"
+}
+variable "fsx_address" {
+    description = "ip address or dns address to the fsx for lustre volume"
+    default = null
+}
 

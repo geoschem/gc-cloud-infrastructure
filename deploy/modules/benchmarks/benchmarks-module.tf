@@ -56,6 +56,8 @@ module "benchmarks_on_demand" {
   compute_type              = "EC2"
   resolution                = var.resolution
   num_cores_per_node        = var.num_cores_per_node
+  launch_script_path        = "../../modules/batch/launch-scripts/fsx-mount-script.sh"
+  fsx_address               = var.fsx_address
   compute_resource_tags = {
     Name = "cloud-benchmarks-on-demand"
   }
@@ -84,6 +86,8 @@ module "benchmarks_spot" {
   resolution                = var.resolution
   num_cores_per_node        = var.num_cores_per_node
   allocation_strategy       = "SPOT_CAPACITY_OPTIMIZED" # lowers chance of interruptions
+  launch_script_path        = "../../modules/batch/launch-scripts/fsx-mount-script.sh"
+  fsx_address               = var.fsx_address
   compute_resource_tags = {
     Name = "cloud-benchmarks-spot"
   }
@@ -94,7 +98,7 @@ module "benchmarks_spot" {
 # network items 
 # ==============================================================
 # purpose built security group for benchmarks
-module "benchmarks_security_group" { # TODO: should change to common sg
+module "benchmarks_security_group" {
     source = "../security-group"
     vpc_id = local.vpc_id
     name = "${var.name_prefix}-sg"
@@ -147,6 +151,7 @@ module "vpc_items" {
   count       = var.use_default_vpc ? 0 : 1
   cidr_block  = "10.0.0.0/16"
   name_prefix = var.name_prefix
+  peering_connection_id = var.peering_connection_id
   public_subnets_info = [{
     cidr_block        = "10.0.0.0/20"
     availability_zone = "us-east-1a"

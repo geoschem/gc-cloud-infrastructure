@@ -5,11 +5,8 @@ Content-Type: multipart/mixed; boundary="==BOUNDARY=="
 Content-Type: text/cloud-config; charset="us-ascii"
 
 runcmd:
-- file_system_id_01=fs-021a27420932ff70c
-- region=us-east-1
-- fsx_directory=/scratch
 - amazon-linux-extras install -y lustre2.10
-- mkdir -p ${fsx_directory}
-- mount -t lustre ${file_system_id_01}.fsx.${region}.amazonaws.com@tcp:fsx ${fsx_directory}
+- mkdir -p ${input_data_path}
+- mount -t lustre -o noatime,flock ${fsx_address}@tcp:/fsx ${input_data_path}
 
 --==BOUNDARY==--

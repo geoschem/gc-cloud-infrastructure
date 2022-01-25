@@ -90,3 +90,6 @@ variable "peering_connection_id" {
   description = "vpc peering connection id (only required if creating vpc route table rule)"
   default = null
 }
+variable "fsx_address" {
+  description = "ip address or dns address to the fsx for lustre volume"
+}
