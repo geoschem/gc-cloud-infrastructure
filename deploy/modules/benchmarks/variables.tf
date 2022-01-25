@@ -86,3 +86,10 @@ variable "peer_account_number" {
 variable "peer_security_group_id" {
   description = "security group id of peer account (for sharing of fsx instance)"
 }
+variable "peering_connection_id" {
+  description = "vpc peering connection id (only required if creating vpc route table rule)"
+  default = null
+}
+variable "fsx_address" {
+  description = "ip address or dns address to the fsx for lustre volume"
+}

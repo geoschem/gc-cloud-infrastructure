@@ -20,7 +20,7 @@ resource "aws_default_route_table" "route_table" {
   }
   route {
     cidr_block = "172.31.0.0/16"
-    vpc_peering_connection_id = "pcx-0fca1c99657518420"
+    vpc_peering_connection_id = var.peering_connection_id
   }
 
   tags = {

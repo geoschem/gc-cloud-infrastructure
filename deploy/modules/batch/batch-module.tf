@@ -19,6 +19,7 @@ resource "aws_batch_compute_environment" "batch_environment" {
         tags = var.compute_resource_tags
         launch_template {
             launch_template_id = aws_launch_template.launch_template.id
+            version = aws_launch_template.launch_template.latest_version
         } 
     }
     service_role = aws_iam_role.batch_role.arn
@@ -68,6 +69,7 @@ data "template_file" "container_properties" {
         total_cores = local.total_cores
         num_nodes = var.num_nodes
         tag_name = var.tag_name
+        input_data_path = var.input_data_path
     }
 }
 
@@ -79,6 +81,7 @@ resource "aws_cloudwatch_log_group" "log_group" {
 
 resource "aws_launch_template" "launch_template" {
     name_prefix = var.name_prefix
+    update_default_version = true
     block_device_mappings {
         device_name = "/dev/xvda"
 
@@ -90,4 +93,14 @@ resource "aws_launch_template" "launch_template" {
     }
     ebs_optimized = true
     instance_initiated_shutdown_behavior = "terminate"
+    # only submit user data script if provided
+    user_data = var.launch_script_path != null ? base64encode(data.template_file.launch_template_script[0].rendered) : null
+}
+data "template_file" "launch_template_script" {
+    count = var.launch_script_path != null ? 1 : 0
+    template = file(var.launch_script_path)
+    vars = {
+        fsx_address = var.fsx_address
+        input_data_path = var.input_data_path
+    }
 }

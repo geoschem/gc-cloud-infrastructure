@@ -36,7 +36,20 @@
             "awslogs-stream-prefix": "${log_name}"
         }
     },
-    "mountPoints": [],
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "${input_data_path}"
+            },
+            "name": "ExtData"
+        }
+    ],
+    "mountPoints": [
+        {
+            "containerPath": "${input_data_path}",
+            "sourceVolume": "ExtData"
+        }
+    ],
     "privileged": true,
     "resourceRequirements": [ 
         { 
