@@ -79,6 +79,7 @@ resource "aws_cloudwatch_log_group" "log_group" {
 
 resource "aws_launch_template" "launch_template" {
     name_prefix = var.name_prefix
+    update_default_version = true
     block_device_mappings {
         device_name = "/dev/xvda"
 
@@ -90,4 +91,6 @@ resource "aws_launch_template" "launch_template" {
     }
     ebs_optimized = true
     instance_initiated_shutdown_behavior = "terminate"
+    # only submit user data script if provided
+    user_data = var.launch_script_path != null ? filebase64(var.launch_script_path) : null
 }

@@ -80,4 +80,8 @@ variable "compute_resource_tags" {
     description = "tag used to name ec2 instances (eg. lae_ec2_instance)"
     default = null
 }
+variable "launch_script_path" {
+    description = "path to user script to run on launch of ec2"
+    default = null
+}
 

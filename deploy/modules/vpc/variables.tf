@@ -7,3 +7,6 @@ variable "public_subnets_info" {
 variable "name_prefix" {
   description = "name prefix for vpc items"
 }
+variable "peering_connection_id" {
+  description = "id for peering connection rule"
+}

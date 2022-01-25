@@ -36,7 +36,20 @@
             "awslogs-stream-prefix": "${log_name}"
         }
     },
-    "mountPoints": [],
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "/scratch"
+            },
+            "name": "Scratch"
+        }
+    ],
+    "mountPoints": [
+        {
+            "containerPath": "/scratch",
+            "sourceVolume": "Scratch"
+        }
+    ],
     "privileged": true,
     "resourceRequirements": [ 
         { 

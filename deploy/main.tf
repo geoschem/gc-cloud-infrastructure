@@ -13,7 +13,7 @@ terraform {
   required_version = ">= 1.0.5" # at least have v1.0.5 of terraform
   required_providers {
     aws = {
-      version = ">= 3.63.0" # at least have v3.56.0 of aws provider
+      version = ">= 3.71.0" # at least have v3.56.0 of aws provider
       source  = "hashicorp/aws"
     }
   }
@@ -139,7 +139,7 @@ module "batch_benchmark_artifacts" {
   region                    = data.aws_region.current.name
   log_retention_days        = 5
   s3_path                   = "s3://${var.benchmarks_bucket}"
-  ec2_key_pair              = var.organization == "harvard" ? "lestrada_keypair" : null
+  ec2_key_pair              = var.organization == "harvard" ? "lestrada_keypair" : null # used for debugging purposes
   volume_size               = 400
   shared_memory_size        = 10000
   resolution                = 24
@@ -149,6 +149,7 @@ module "batch_benchmark_artifacts" {
   use_default_vpc           = var.organization == "harvard" ? false : true
   peer_account_number       = module.peer_account_info[0].secret_json["account_number"]
   peer_security_group_id    = module.peer_account_info[0].secret_json["security_group_id"]
+  peering_connection_id     = var.organization == "harvard" ? module.vpc_peering_connection_with_washu[0].connection_id : null
 }
 
 # ==============================================================
@@ -156,9 +157,10 @@ module "batch_benchmark_artifacts" {
 # ==============================================================
 module "fsx_lustre_instance" {
   source = "./modules/fsx-lustre"
-  count = local.only_washu
+  count = local.only_harvard
   subnet_ids = tolist(module.batch_benchmark_artifacts[0].subnet_ids)[0]
   security_group_ids = [module.batch_benchmark_artifacts[0].security_group_id]
+  import_path = "s3://imi-testing"
 }
 
 # ==============================================================
@@ -293,8 +295,8 @@ module "AQACF_account_number" {
 module "vpc_peering_connection_with_washu" {
    source = "./modules/vpc/peering"
    count = local.only_harvard
-   peer_account_id = "051282792181" #TODO replace with washu
-   peer_vpc_id = "vpc-bb473ac6" # TODO put in secrets manager
+   peer_account_id = module.peer_account_info[0].secret_json["account_number"]
+   peer_vpc_id = module.peer_account_info[0].secret_json["vpc_id"]
    requester_vpc_id = module.batch_benchmark_artifacts[0].vpc_id
    tags = { Name = "washu-harvard-vpc-peering" }
 }
