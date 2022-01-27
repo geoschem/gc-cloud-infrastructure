@@ -7,7 +7,7 @@
 
 ### Driver Script Environment Variables 
 
-The following variables must be set in any script that uses the `runStage.sh` helper:
+The following variables control high-level behaviour. Those that aren't marked [optional] must always be set.
   - `GEOSCHEM_BENCHMARK_SCRIPTS`: The full path to '/.../gc-cloud-infrastructure/benchmarks/scripts'.
   - `GEOSCHEM_BENCHMARK_INSTANCE_ID`: The primary key for the test instance (must be unique).
   - `GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION`: A description of what the test instance is.
