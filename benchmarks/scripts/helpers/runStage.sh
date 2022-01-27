@@ -74,6 +74,16 @@ function db_update_stage() {
         --expression-attribute-values "${expression_attribute_values}"
 }
 
+function update_status() {
+    # arguments: "NEW_STATUS"
+    new_status=$1
+    aws dynamodb update-item \
+        --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
+        --key "{\"InstanceID\":{\"S\":\"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
+        --update-expression 'SET ExecStatus = :v' \
+        --expression-attribute-values "{\":v\": {\"S\":\"${new_status}\"}}'
+}
+
 function upload_artifacts() {
     # arguments: artifact_name file1 [file2..]
     artifact_file_name=${STAGE_SHORT_NAME}_${1}.tar.gz
@@ -150,6 +160,7 @@ if ! db_query_stage_is_completed ; then
     
     # set stage start time
     stage_json=$(echo "${stage_json}" | jq ".M.StartTime.S=\"$(date --utc --iso-8601=s)\"")
+    update_status IN_PROGRESS
 
     # use an exit trap to upload the log file, update the database, and remove the temporary files
     function exit_hook() {
@@ -157,6 +168,9 @@ if ! db_query_stage_is_completed ; then
             # stage script exited successfully
             stage_json=$(echo "${stage_json}" | jq ".M.Completed.BOOL=true")
             stage_json=$(echo "${stage_json}" | jq ".M.EndTime.S=\"$(date --utc --iso-8601=s)\"")
+            update_status SUCCESSFUL
+        else 
+            update_status FAILED
         fi
         upload_log_file ${log_file}
         db_update_stage
