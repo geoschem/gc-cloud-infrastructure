@@ -17,7 +17,7 @@ err=0
 trap report ERR
 
 # setup environment
-source /environments/gchp_source.env
+source /etc/bashrc
 
 # set default paths
 REPO_PATH="/gc-src"
