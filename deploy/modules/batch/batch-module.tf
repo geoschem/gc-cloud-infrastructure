@@ -70,6 +70,7 @@ data "template_file" "container_properties" {
         num_nodes = var.num_nodes
         tag_name = var.tag_name
         input_data_path = var.input_data_path
+        default_command = var.default_command
     }
 }
 

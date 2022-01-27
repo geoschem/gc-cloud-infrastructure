@@ -36,6 +36,7 @@ variable "log_retention_days" {
 }
 variable "s3_path" {
     description = "path to upload run directory to"
+    default = ""
 }
 variable "job_type" {
     description = "type of batch job (eg. container or multinode)"
@@ -91,5 +92,9 @@ variable "input_data_path" {
 variable "fsx_address" {
     description = "ip address or dns address to the fsx for lustre volume"
     default = null
+}
+variable "default_command" {
+    description = "default command for docker container"
+    default = "./scripts/runForever.sh"
 }
 

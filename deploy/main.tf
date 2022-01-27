@@ -170,28 +170,43 @@ module "fsx_lustre_instance" {
 # ==============================================================
 # input data sync items
 # ==============================================================
-module "data_sync_ecr_repository" { # could potentially make public to save on cost
-  source          = "./modules/ecr"
-  count           = local.only_washu
-  repository_name = "input-data-sync-repository"
-}
 module "batch_data_sync_artifacts" {
   source                    = "./modules/batch"
-  count                     = local.only_washu
-  name_prefix               = "input-data-sync"
-  subnet_ids                = data.aws_subnet_ids.all_default_subnets.ids
+  count                     = local.all_environments
+  name_prefix               = "bashdatacatalog-input-data-sync"
+  subnet_ids                = module.batch_benchmark_artifacts[0].subnet_ids
   ami_id                    = null # currently using default ami
-  instance_types            = ["c5"]
-  security_group_id         = module.default_security_group[0].security_group_id
+  instance_types            = ["optimal"]
+  security_group_id         = module.batch_benchmark_artifacts[0].security_group_id
   timeout_seconds           = 86400                                                         # 24 hour timeout for jobs
-  docker_image              = "${module.data_sync_ecr_repository[0].repository_url}:latest" # TODO - use version tag
-  container_cpu             = 48
-  container_memory          = 98304
+  docker_image              = "${module.benchmarks_ecr_repository[0].repository_url}:test-image" # TODO - use version tag
+  container_cpu             = 1
+  container_memory          = 2000
   container_properties_file = "../../modules/batch/container-properties/container-properties.json"
   region                    = data.aws_region.current.name
-  log_retention_days        = 1
-  s3_path                   = "s3://${var.benchmarks_bucket}"
+  log_retention_days        = 30
   volume_size               = 30
+  compute_type              = "EC2"
+  default_command           = "./scripts/utils/update-bashdatacatalog.sh"
+  launch_script_path        = "../../modules/batch/launch-scripts/fsx-mount-script.sh"
+  ec2_key_pair              = var.organization == "harvard" ? "lestrada_keypair" : null # used for debugging purposes
+  fsx_address               = (var.organization == "harvard"
+                                ? module.peer_account_info[0].secret_json["fsx_ip_address"] 
+                                : module.fsx_lustre_instance[0].fsx_dns)
+  compute_resource_tags = {
+    Name = "bashdatacatalog-input-data-sync"
+  }
+}
+
+module "input_data_sync_trigger" {
+  source               = "./modules/cloudwatch/events"
+  count                = local.all_environments
+  name_prefix          = "bashdatacatalog-input-data-sync-rule"
+  description          = "rule that triggers daily input data sync batch job"
+  target_arn           = module.batch_data_sync_artifacts[0].batch_job_queue_arn
+  schedule_expression  = "cron(0 10 * * ? *)" # every day at 10 am
+  batch_job_definition =  module.batch_data_sync_artifacts[0].batch_job_definition_name
+  is_enabled = false
 }
 
 # ==============================================================

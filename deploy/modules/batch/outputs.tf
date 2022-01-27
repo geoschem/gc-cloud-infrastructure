@@ -4,3 +4,6 @@ output "batch_job_definition_name" {
 output "batch_job_queue_name" {
     value = aws_batch_job_queue.job_queue.name
 }
+output "batch_job_queue_arn" {
+    value = aws_batch_job_queue.job_queue.arn
+}
