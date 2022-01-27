@@ -54,6 +54,7 @@ phases:
           commands:
             - set -x
             - echo . /opt/spack/share/spack/setup-env.sh >> /etc/bashrc
+            - echo "export SPACK_ROOT=/opt/spack" >> /etc/bashrc
             - echo spack load {{ SpackCompiler }} >> /etc/bashrc
             - echo spack env activate {{ SpackEnvironmentName }} >> /etc/bashrc
             - chmod -R +r /opt/spack
