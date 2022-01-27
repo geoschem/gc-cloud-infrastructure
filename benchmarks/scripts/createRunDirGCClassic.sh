@@ -11,7 +11,7 @@ report() {
 
 err=0
 trap report ERR
-source /environments/gchp_source.env
+source /etc/bashrc
 
 # set default paths
 REPO_PATH="/gc-src"
