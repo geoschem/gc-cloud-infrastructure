@@ -81,7 +81,7 @@ function update_status() {
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
         --key "{\"InstanceID\":{\"S\":\"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
         --update-expression 'SET ExecStatus = :v' \
-        --expression-attribute-values "{\":v\": {\"S\":\"${new_status}\"}}'
+        --expression-attribute-values "{\":v\": {\"S\":\"${new_status}\"}}"
 }
 
 function upload_artifacts() {

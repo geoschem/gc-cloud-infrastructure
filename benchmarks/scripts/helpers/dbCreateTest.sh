@@ -13,7 +13,8 @@ item=$(cat << EOF
     "Site": {"S":"${GEOSCHEM_BENCHMARK_SITE}"},
     "Stages": {"L": [] },
     "ExecStatus": {"S": "PENDING" },
-    "Date": {"S": "\"$(date --iso-8601)\"" },
+    "Description": {"S": "${GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION}" },
+    "CreationDate": {"S": "$(date --iso-8601)" },
     "S3Uri": {"S": "${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}" }
 }
 EOF

@@ -15,6 +15,7 @@ bsub << EOF
 #BSUB -n 60
 #BSUB -R 'rusage[mem=256GB] span[ptile=30]'
 #BSUB -q rvmartin
+#BSUB -W 24:00
 #BSUB -J ${GEOSCHEM_BENCHMARK_INSTANCE_ID}
 #BSUB -a 'docker(public.ecr.aws/geoschem-wustl/geoschem_benchmark:latest)'
 #BSUB -g /liam.bindle/gcst-benchmarks
@@ -38,6 +39,7 @@ export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
 export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_INSTANCE_ID}
 export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud
 export GEOSCHEM_BENCHMARK_SITE=WUSTL
+export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="1-month GCHP benchmark simulation using '${GEOSCHEM_BENCHMARK_COMMIT_ID}'"
 export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/
 export GEOSCHEM_BENCHMARK_START_DATE=20190701
 export GEOSCHEM_BENCHMARK_END_DATE=20190801
