@@ -27,7 +27,11 @@ stage_json=$(cat << EOF
         "Name": { "S": "${STAGE_SHORT_NAME}" },
         "Completed": {"BOOL": false },
         "Log": {"S": "" },
-        "Artifacts": {"L": [] }
+        "Artifacts": {"L": [] },
+        "PublicArtifacts": {"L": [] },
+        "StartTime": {"S": "" },
+        "EndTime": {"S": "" },
+        "Metadata": {"S": "{}" }
     }
 }
 EOF
@@ -81,11 +85,32 @@ function upload_artifacts() {
 }
 export -f upload_artifacts
 
+function upload_public_artifacts() {
+    # arguments: artifact_name file1 [file2..]
+    for filename in $@; do
+        uri=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}/${filename}
+        url=$( echo "${uri}" | sed "s#s3://#http://s3.amazonaws.com/#")
+        aws s3 cp ${filename} ${uri} --only-show-errors --acl public-read
+        stage_json=$(echo "${stage_json}" | jq ".M.PublicArtifacts.L[.M.PublicArtifacts.L | length] |= . + {\"S\": \"${url}\"}")
+    done
+}
+export -f upload_public_artifacts
+
+
+function save_metadata() {
+    # arguments: metadata.json
+    filename=$1
+    stage_json=$(cat <(echo "${stage_json}") ${filename} | jq -s '.[0].M.Details.S=(.[1] | @text) | .[0]')
+}
+export -f save_metadata
+
 function download_artifacts() {
+    # arguments: primary key of instance to download artifacts from
+    artifacts_pk=${1}
     artifacts=$(
         aws dynamodb get-item \
             --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
-            --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
+            --key "{\"InstanceID\": {\"S\": \"${artifacts_pk}\"}}" \
             --attributes-to-get "Stages" \
         | jq -r ".Item.Stages.L[] | select(.M.Name.S != \"${STAGE_SHORT_NAME}\") | .M.Artifacts.L[].S"
     )
@@ -95,13 +120,15 @@ function download_artifacts() {
         rm -f artifact.tar.gz
     done
 }
+export -f download_artifacts
 
 function upload_log_file() {
     # arguments: log_file
     log_file_name=${1}
     log_file_uri=${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}/${log_file_name}
-    aws s3 cp ${log_file_name} ${log_file_uri} --only-show-errors
-    stage_json=$(echo "${stage_json}" | jq ".M.Log.S=\"${log_file_uri}\"")
+    log_file_url=$( echo "${log_file_uri}" | sed "s#s3://#http://s3.amazonaws.com/#")
+    aws s3 cp ${log_file_name} ${log_file_uri} --only-show-errors --acl public-read
+    stage_json=$(echo "${stage_json}" | jq ".M.Log.S=\"${log_file_url}\"")
 }
 
 # runStage.sh logic
@@ -119,13 +146,17 @@ if ! db_query_stage_is_completed ; then
 
     # tasks before the stage runs
     db_update_stage     # set empty
-    download_artifacts
+    download_artifacts "${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
+    
+    # set stage start time
+    stage_json=$(echo "${stage_json}" | jq ".M.StartTime.S=\"$(date --utc --iso-8601=s)\"")
 
     # use an exit trap to upload the log file, update the database, and remove the temporary files
     function exit_hook() {
         if [ "$1" -eq "0" ]; then
             # stage script exited successfully
             stage_json=$(echo "${stage_json}" | jq ".M.Completed.BOOL=true")
+            stage_json=$(echo "${stage_json}" | jq ".M.EndTime.S=\"$(date --utc --iso-8601=s)\"")
         fi
         upload_log_file ${log_file}
         db_update_stage
