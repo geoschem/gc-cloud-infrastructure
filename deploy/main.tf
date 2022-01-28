@@ -206,7 +206,6 @@ module "input_data_sync_trigger" {
   target_arn           = module.batch_data_sync_artifacts[0].batch_job_queue_arn
   schedule_expression  = "cron(0 10 * * ? *)" # every day at 10 am
   batch_job_definition =  module.batch_data_sync_artifacts[0].batch_job_definition_name
-  is_enabled = false
 }
 
 # ==============================================================
