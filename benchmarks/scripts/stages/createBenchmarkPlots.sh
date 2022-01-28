@@ -41,4 +41,5 @@ envsubst < ${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/resources/template.1mo_benchmark
 python gcpy/benchmark/run_1mo_benchmark.py 1mo_benchmark.yml
 
 # Upload the PDF files
-upload_public_artifacts dev/run-directory/BenchmarkResults/GCHP_version_comparison/**/*.pdf
+mv dev/run-directory/BenchmarkResults/GCHP_version_comparison GCHP_version_comparison
+upload_public_artifacts GCHP_version_comparison/**/*.pdf
