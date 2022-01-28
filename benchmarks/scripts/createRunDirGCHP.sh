@@ -11,7 +11,7 @@ report() {
 
 err=0
 trap report ERR
-source /environments/gchp_source.env
+source /etc/bashrc
 
 # reduce number of nodes by 6 to fix issue running with docker
 export NUM_CORES_PER_NODE="$(($NUM_CORES_PER_NODE-6))"

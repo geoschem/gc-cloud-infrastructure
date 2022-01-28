@@ -1,5 +1,5 @@
 { 
-    "command": [],
+    "command": ["${default_command}"],
     "environment": [
         { 
             "name": "S3_RUNDIR_PATH",
