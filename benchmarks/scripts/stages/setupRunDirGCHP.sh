@@ -36,7 +36,6 @@ EOF
 
 function configure_run_directory() {
     cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}/run-directory
-    # set ${site_default_cores_per_node}
     case ${GEOSCHEM_BENCHMARK_SITE} in
         WUSTL)
             site_default_cores_per_node=30
