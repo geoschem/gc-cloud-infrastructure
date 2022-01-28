@@ -13,10 +13,14 @@ git fetch
 git checkout feature/interface2
 export PATH="/opt/bashdatacatalog/bin:$PATH"
 
-# run bashdatacatalog
+# run bashdatacatalog commands
 echo "fetching bashdatacatalog metadata"
 cd /ExtData
 bashdatacatalog-fetch input-data-catalogs/develop/*.csv /input-data-catalogs/develop/*.csv /input-data-catalogs/MeteorologicalInputs.csv
 
 echo "downloading data"
 bashdatacatalog-list -am -f xargs-curl -r 2018-12-31 2020-01-01 /input-data-catalogs/develop/*.csv /input-data-catalogs/MeteorologicalInputs.csv | xargs curl
+
+echo "remove unnecessary input data"
+bashdatacatalog-list -au -f xargs-rm -r 2018-12-31 2020-01-01 /input-data-catalogs/MeteorologicalInputs.csv /input-data-catalogs/develop/*.csv | xargs rm
+echo "finished updating input data"
