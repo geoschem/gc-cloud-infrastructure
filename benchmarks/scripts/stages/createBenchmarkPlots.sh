@@ -6,9 +6,9 @@ set -e
 set -u
 set -x
 
-: "${GEOSCHEM_BENCHMARK_WORKING_DIR}"  # working directory
-: "${GEOSCHEM_BENCHMARK_REFPK}"        # primary key of ref in the database
-: "${GEOSCHEM_BENCHMARK_DEVPK}"        # primary key of dev in the database
+: "${GEOSCHEM_BENCHMARK_WORKING_DIR}"      # working directory
+: "${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}"  # primary key of ref in the database
+: "${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"  # primary key of dev in the database
 
 run_stage_name="RunGCHP"
 
@@ -24,12 +24,12 @@ download_latest_gcpy
 mkdir ref
 (
     cd ref
-    download_artifacts "${GEOSCHEM_BENCHMARK_REFPK}"
+    download_artifacts "${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}"
 )
 mkdir dev
 (
     cd dev
-    download_artifacts "${GEOSCHEM_BENCHMARK_DEVPK}"
+    download_artifacts "${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"
 )
 
 # Create weights dir

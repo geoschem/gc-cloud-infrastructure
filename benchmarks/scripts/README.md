@@ -30,8 +30,8 @@ The following variables must be set in any script that uses `setupRunDirectoryGC
   - `GEOSCHEM_BENCHMARK_RESOLUTION`: [optional]
 
 The following variables must be set in any script that uses `createBenchmarkPlots.sh`:
-  - `GEOSCHEM_BENCHMARK_REFPK`: InstanceID of ref.
-  - `GEOSCHEM_BENCHMARK_DEVPK`: InstanceID of dev.
+  - `GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY`: InstanceID of ref.
+  - `GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY`: InstanceID of dev.
 
 Not used:
   - `GEOSCHEM_BENCHMARK_CATALOG_FILES`
