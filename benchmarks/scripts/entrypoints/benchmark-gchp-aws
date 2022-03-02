@@ -1,0 +1,64 @@
+#!/bin/bash
+
+cd $GEOSCHEM_BENCHMARK_SCRIPTS
+. /etc/bashrc
+
+ulimit -t unlimited              # cputime
+ulimit -f unlimited              # filesize
+ulimit -d unlimited              # datasize
+ulimit -s unlimited              # stacksize
+ulimit -c unlimited              # coredumpsize
+ulimit -m unlimited              # memoryuse
+ulimit -v unlimited              # vmemoryuse
+ulimit -n unlimited              # descriptors
+ulimit -l unlimited              # memorylocked
+ulimit -u unlimited              # maxproc
+
+set -u
+set -e
+set -x
+
+GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}.bd
+export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
+export GEOSCHEM_BENCHMARK_INSTANCE_ID="$GEOSCHEM_BENCHMARK_TIME_PERIOD-${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
+export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://benchmarks-cloud/benchmarks
+export GEOSCHEM_BENCHMARK_SITE=AWS
+export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="1-day GCHP benchmark simulation using '${GEOSCHEM_BENCHMARK_COMMIT_ID}'"
+export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/ExtData/
+export GEOSCHEM_BENCHMARK_RESOLUTION=${CS_RES}
+export GEOSCHEM_BENCHMARK_NUM_NODES=${NUM_NODES}
+export GEOSCHEM_BENCHMARK_PROC_PER_NODE="$((NUM_CORES_PER_NODE-6))"
+export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
+export AWS_DEFAULT_REGION=us-east-1
+
+# set variables for different time periods
+case ${GEOSCHEM_BENCHMARK_TIME_PERIOD} in
+    1Day)
+        export GEOSCHEM_BENCHMARK_START_DATE=20190701
+        export GEOSCHEM_BENCHMARK_END_DATE=20190702
+        export GEOSCHEM_BENCHMARK_DURATION=00000001
+        export GEOSCHEM_BENCHMARK_FREQUENCY=240000
+        export GEOSCHEM_BENCHMARK_MONTHLY_DIAGS=0 # 0 for less than monthly diagnostics
+        ;;
+    1Mon)
+        export GEOSCHEM_BENCHMARK_START_DATE=20190701
+        export GEOSCHEM_BENCHMARK_END_DATE=20190801
+        export GEOSCHEM_BENCHMARK_DURATION=00000100
+        ;;
+    *)
+        >&2 echo "error: unknown time period '${GEOSCHEM_BENCHMARK_TIME_PERIOD}' (GEOSCHEM_BENCHMARK_TIME_PERIOD)"
+        exit 1
+        ;;
+esac
+
+export CC=icc
+export CXX=icpc
+export FC=ifort
+
+./helpers/dbCreateTest.sh || echo "Test already exists"
+./stages/setupRunDirGCHP.sh
+
+# Only run the simulation if env variable is present
+if [[ "x${GEOSCHEM_BENCHMARK_RUN_SIMULATION}" == "xtrue" ]]; then
+    ./stages/runGCHP.sh
+fi

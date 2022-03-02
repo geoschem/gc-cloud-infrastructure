@@ -22,7 +22,7 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
         mpiexec -n ${num_proc} ./gchp
         ;;
     AWS)
-        mpirun --allow-run-as-root --hostfile hostfile.txt -np ${num_proc} ./gchp
+        mpiexec -n ${num_proc} ./gchp
         ;;
     *)
         >&2 echo "error: unknown site '${GEOSCHEM_BENCHMARK_SITE}' (GEOSCHEM_BENCHMARK_SITE)"

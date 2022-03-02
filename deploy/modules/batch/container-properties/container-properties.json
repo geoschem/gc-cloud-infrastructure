@@ -18,8 +18,12 @@
             "value": "${num_nodes}"
         },
         { 
-            "name": "TAG_NAME",
+            "name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
             "value": "${tag_name}"
+        },
+        { 
+            "name": "GEOSCHEM_BENCHMARK_SCRIPTS",
+            "value": "/scripts"
         },
         { 
             "name": "CS_RES",

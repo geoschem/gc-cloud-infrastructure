@@ -6,21 +6,22 @@ git clone https://github.com/geoschem/input-data-catalogs.git
 cd input-data-catalogs 
 git submodule update --init --recursive
 
-# checkout the correct branch
-echo "checking out interface2 branch"
+# update the bashdatacatalog branch
+echo "pulling the branch"
 cd /opt/bashdatacatalog
-git fetch
-git checkout feature/interface2
+git pull
+
+# add to path
 export PATH="/opt/bashdatacatalog/bin:$PATH"
 
 # run bashdatacatalog commands
 echo "fetching bashdatacatalog metadata"
 cd /ExtData
-bashdatacatalog-fetch input-data-catalogs/develop/*.csv /input-data-catalogs/develop/*.csv /input-data-catalogs/MeteorologicalInputs.csv
+bashdatacatalog-fetch input-data-catalogs/develop/EmissionsInputs.csv /input-data-catalogs/develop/ChemistryInputs.csv /input-data-catalogs/MeteorologicalInputs.csv
 
 echo "downloading data"
-bashdatacatalog-list -am -f xargs-curl -r 2018-12-31 2020-01-01 /input-data-catalogs/develop/*.csv /input-data-catalogs/MeteorologicalInputs.csv | xargs curl
+bashdatacatalog-list -am -f xargs-curl -r 2019-06-30,2019-08-01 input-data-catalogs/develop/EmissionsInputs.csv /input-data-catalogs/develop/ChemistryInputs.csv /input-data-catalogs/MeteorologicalInputs.csv | xargs curl
 
 echo "remove unnecessary input data"
-bashdatacatalog-list -au -f xargs-rm -r 2018-12-31 2020-01-01 /input-data-catalogs/MeteorologicalInputs.csv /input-data-catalogs/develop/*.csv | xargs rm
+bashdatacatalog-list -au -f xargs-rm -r 2019-06-30,2019-08-01 input-data-catalogs/develop/EmissionsInputs.csv /input-data-catalogs/develop/ChemistryInputs.csv /input-data-catalogs/MeteorologicalInputs.csv | xargs rm
 echo "finished updating input data"

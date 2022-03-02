@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Description: Clone and checkout the corresponding git tag or commit hash given
-# by the env variable TAG_NAME into the specified directory. If no, tag name present,
+# by the env variable GEOSCHEM_BENCHMARK_COMMIT_ID into the specified directory. If no, tag name present,
 # exit with code 1.
 #
 # Usage:
@@ -25,14 +25,14 @@ if [[ -z "$2" ]]; then
 fi
 
 # if supplied checkout the relevant tag
-if [[ ! -z "${TAG_NAME}" ]]; then
+if [[ ! -z "${GEOSCHEM_BENCHMARK_COMMIT_ID}" ]]; then
   cd /
-  echo "Cloning $1 and checking out ${TAG_NAME}"
+  echo "Cloning $1 and checking out ${GEOSCHEM_BENCHMARK_COMMIT_ID}"
   git clone ${REPO} /gc-src
   cd /gc-src
-  git checkout ${TAG_NAME}
+  git checkout ${GEOSCHEM_BENCHMARK_COMMIT_ID}
   git submodule update --init --recursive
 else
-  echo "ERROR: No TAG_NAME environment variable specified"
+  echo "ERROR: No GEOSCHEM_BENCHMARK_COMMIT_ID environment variable specified"
   exit 1
 fi

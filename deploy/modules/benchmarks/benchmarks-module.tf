@@ -177,3 +177,18 @@ module "vpc_items" {
       availability_zone = "us-east-1f"
   }]
 }
+
+module "benchmark_registry_table" {
+  source = "../dynamo"
+  
+  table_name = "geoschem_testing"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "InstanceID"
+  # only need indexed variables defined eg. primary key
+  attributes = [
+    {
+      name = "InstanceID"
+      type = "S"
+    }
+  ]
+}

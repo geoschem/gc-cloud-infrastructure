@@ -48,6 +48,6 @@ make install
 /scripts/utils/set-config.sh GCC $RUNDIR
 
 echo "starting run directory upload"
-aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCC/rundir" --recursive --only-show-errors
+aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${GEOSCHEM_BENCHMARK_TIME_PERIOD}/${GEOSCHEM_BENCHMARK_COMMIT_ID}/GCC/rundir" --recursive --only-show-errors
 echo "Finished run directory upload"
 exit $err

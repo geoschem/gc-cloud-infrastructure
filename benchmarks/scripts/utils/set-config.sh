@@ -22,7 +22,7 @@ if [[ "x$1" == "xGCHP" ]]; then
   sed -i "s/NUM_CORES_PER_NODE=48/NUM_CORES_PER_NODE=${NUM_CORES_PER_NODE}/" runConfig.sh
 
   # check what time period to use -- default is 1Mon
-  if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
+  if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Day" ]]; then
     echo "creating rundir for 1Day time period"
     sed -i 's/End_Time="20190801 000000"/End_Time="20190702 000000"/' runConfig.sh
     sed -i 's/Duration="00000100 000000"/Duration="00000001 000000"/' runConfig.sh
@@ -31,7 +31,7 @@ if [[ "x$1" == "xGCHP" ]]; then
 # GCClassic configuration settings
 elif [[ "x$1" == "xGCC" ]]; then
   # check what time period to use -- default is 1Mon
-  if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
+  if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Day" ]]; then
     echo "creating rundir for 1Day time period"
     sed -i "s/End   YYYYMMDD, hhmmss  : 20190801 000000/End   YYYYMMDD, hhmmss  : 20190702 000000/" input.geos
     sed -i "s/DiagnFreq:                   Monthly/DiagnFreq:                   End/" HEMCO_Config.rc
