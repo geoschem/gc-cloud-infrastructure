@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# The number of processes for gchp simulations on aws must be
+# less than the number of cores allocated to the docker container
+# otherwise mpi errors ensue. This function sets the number 
+# of processes for the simulation such that it is divisible by 6,
+# while still leaving at least 1 core available
+function set_num_cores() {
+    num_proc=$((NUM_CORES_PER_NODE-1))
+    rem=$((num_proc%6))
+    while [ $rem -ne 0 ]
+    do
+        if [ $num_proc -lt 6 ]; then
+            echo "Error: NUM_CORES_PER_NODE must be greater than 6. Received $NUM_CORES_PER_NODE."
+            exit 1
+        fi
+        num_proc=$((num_proc-1))
+        rem=$((num_proc%6))
+    done
+    echo "setting GEOSCHEM_BENCHMARK_PROC_PER_NODE to $num_proc"
+    export GEOSCHEM_BENCHMARK_PROC_PER_NODE=$num_proc
+}
+
 cd $GEOSCHEM_BENCHMARK_SCRIPTS
 . /etc/bashrc
 
@@ -10,7 +31,6 @@ ulimit -s unlimited              # stacksize
 ulimit -c unlimited              # coredumpsize
 ulimit -m unlimited              # memoryuse
 ulimit -v unlimited              # vmemoryuse
-ulimit -n unlimited              # descriptors
 ulimit -l unlimited              # memorylocked
 ulimit -u unlimited              # maxproc
 
@@ -18,6 +38,7 @@ set -u
 set -e
 set -x
 
+GEOSCHEM_BENCHMARK_RUN_SIMULATION=${GEOSCHEM_BENCHMARK_RUN_SIMULATION:=false}
 GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}.bd
 export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
 export GEOSCHEM_BENCHMARK_INSTANCE_ID="$GEOSCHEM_BENCHMARK_TIME_PERIOD-${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
@@ -27,12 +48,21 @@ export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="1-day GCHP benchmark simulation 
 export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/ExtData/
 export GEOSCHEM_BENCHMARK_RESOLUTION=${CS_RES}
 export GEOSCHEM_BENCHMARK_NUM_NODES=${NUM_NODES}
-export GEOSCHEM_BENCHMARK_PROC_PER_NODE="$((NUM_CORES_PER_NODE-6))"
 export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 export AWS_DEFAULT_REGION=us-east-1
 
+set_num_cores
+
 # set variables for different time periods
 case ${GEOSCHEM_BENCHMARK_TIME_PERIOD} in
+    1Hr)
+        export GEOSCHEM_BENCHMARK_START_DATE=20190701
+        export GEOSCHEM_BENCHMARK_END_DATE=20190701
+        export GEOSCHEM_BENCHMARK_DURATION=00000000
+        export GEOSCHEM_BENCHMARK_DURATION_HOURS=010000
+        export GEOSCHEM_BENCHMARK_FREQUENCY=010000
+        export GEOSCHEM_BENCHMARK_MONTHLY_DIAGS=0
+        ;;
     1Day)
         export GEOSCHEM_BENCHMARK_START_DATE=20190701
         export GEOSCHEM_BENCHMARK_END_DATE=20190702
