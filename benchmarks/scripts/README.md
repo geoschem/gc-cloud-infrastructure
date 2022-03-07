@@ -21,6 +21,7 @@ The following variables control high-level behaviour. Those that aren't marked [
 The following variables must be set in any script that uses `setupRunDirectoryGCHP.sh`:
   - `GEOSCHEM_BENCHMARK_COMMIT_ID`: Commit ID to be used.
   - `GEOSCHEM_BENCHMARK_EXTDATA_DIR`: The path to ExtData.
+  - `GEOSCHEM_BENCHMARK_MODEL`: Model to run (GCC or GCHP).
   - `GEOSCHEM_BENCHMARK_START_DATE`: [optional]
   - `GEOSCHEM_BENCHMARK_END_DATE`: [optional]
   - `GEOSCHEM_BENCHMARK_DURATION`: [optional]
