@@ -16,6 +16,14 @@ trap report ERR
 # setup environment
 source /etc/bashrc
 
+ulimit -c unlimited              # coredumpsize
+ulimit -l unlimited              # memorylocked
+ulimit -u 50000                  # maxproc
+ulimit -v unlimited              # vmemoryuse
+ulimit -s unlimited              # stacksize
+
+export OMP_STACKSIZE=500m
+
 # set default paths
 REPO_PATH="/gc-src"
 RUNDIR="/home/default_rundir"
@@ -26,7 +34,7 @@ RUNDIR="/home/default_rundir"
 mkdir /home/ExtData
 # fetch the created/compiled run directory
 echo "downloading run directory from s3"
-aws s3 cp "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCC/rundir" $RUNDIR --recursive --only-show-errors
+aws s3 cp "${S3_RUNDIR_PATH}${GEOSCHEM_BENCHMARK_TIME_PERIOD}/${GEOSCHEM_BENCHMARK_COMMIT_ID}/GCC/rundir" $RUNDIR --recursive --only-show-errors
 echo "finished downloading run directory from s3"
 
 # get input data
@@ -48,6 +56,6 @@ mv HEMCO.log OutputDir/HEMCO.log
 
 # upload result 
 echo "uploading output dir"
-aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCC/OutputDir" --recursive
+aws s3 cp OutputDir/ "${S3_RUNDIR_PATH}${GEOSCHEM_BENCHMARK_TIME_PERIOD}/${GEOSCHEM_BENCHMARK_COMMIT_ID}/GCC/OutputDir" --recursive
 echo "finished uploading output dir"
 exit $err

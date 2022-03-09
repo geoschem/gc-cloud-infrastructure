@@ -17,7 +17,7 @@ ADD environments /environments
 
 # make run scripts executable
 RUN chmod -R +x /scripts/
-    
+
 # default command does nothing -- this is useful for testing
 CMD [ "./scripts/runForever.sh" ]
 

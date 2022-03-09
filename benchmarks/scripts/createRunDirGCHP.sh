@@ -55,5 +55,5 @@ if [ $err -gt 0 ]; then
 fi
 
 echo "starting run directory upload"
-aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${TIME_PERIOD}/${TAG_NAME}/GCHP/rundir" --recursive --only-show-errors
+aws s3 cp $RUNDIR "${S3_RUNDIR_PATH}${GEOSCHEM_BENCHMARK_TIME_PERIOD}/${GEOSCHEM_BENCHMARK_COMMIT_ID}/GCHP/rundir" --recursive --only-show-errors
 echo "Finished run directory upload"

@@ -117,11 +117,11 @@
               }
             ],
             "Environment": [{ 
-              "Name": "TAG_NAME",
+              "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
               "Value.$": "$.event.tag"
             },
             { 
-              "Name": "TIME_PERIOD",
+              "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
               "Value.$": "$.event.timePeriod"
             }
           ],
@@ -159,7 +159,7 @@
             ],
             "Environment": [
               { 
-                "Name": "TAG_NAME",
+                "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
                 "Value.$": "$.event.tag"
               },
               { 
@@ -175,11 +175,11 @@
                 "Value.$": "$.event.resolution"
               },
               { 
-                "Name": "TIME_PERIOD",
+                "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
                 "Value.$": "$.event.timePeriod"
               }
             ],
-            "Command": ["./scripts/createRunDirGCHP.sh"]
+            "Command": ["./scripts/entrypoints/benchmark-gchp-aws"]
           }
         },
         "Catch": [ {
@@ -213,11 +213,15 @@
             ],
             "Environment": [
               { 
-                "Name": "TAG_NAME",
+                "Name": "GEOSCHEM_BENCHMARK_RUN_SIMULATION",
+                "Value": "true"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
                 "Value.$": "$.event.tag"
               },
               { 
-                "Name": "TIME_PERIOD",
+                "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
                 "Value.$": "$.event.timePeriod"
               }
             ],
@@ -255,7 +259,11 @@
             ],
             "Environment": [
               { 
-                "Name": "TAG_NAME",
+                "Name": "GEOSCHEM_BENCHMARK_RUN_SIMULATION",
+                "Value": "true"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
                 "Value.$": "$.event.tag"
               },
               { 
@@ -275,15 +283,11 @@
                 "Value.$": "$.event.updateInputData"
               },
               { 
-                "Name": "DATA_CATALOG_VERSION",
-                "Value.$": "$.event.catalogVersion"
-              },
-              { 
-                "Name": "TIME_PERIOD",
+                "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
                 "Value.$": "$.event.timePeriod"
               }
             ],
-            "Command": ["./scripts/runGCHP.sh"]
+            "Command": ["./scripts/entrypoints/benchmark-gchp-aws"]
           }
         },
         "Catch": [ {

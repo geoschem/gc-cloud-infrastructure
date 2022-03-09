@@ -19,7 +19,7 @@ if [[ "x$1" == "xGCHP" ]]; then
   rm InitialConditions.csv # don't download restarts -- too big
   cd ..
   bashdatacatalog catalogs/*.csv fetch
-  if [[ "x${TIME_PERIOD}" == "x1Day" ]]; then
+  if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Day" ]]; then
     echo "downloading data for 1Day time period"
     bashdatacatalog catalogs/*.csv list-missing relative 2019-06-30 2019-07-02 \
     | sed "s#./\(.*\)#aws s3 cp s3://gcgrid/\1 $2/\home/ExtData/\1 --request-payer#g" \

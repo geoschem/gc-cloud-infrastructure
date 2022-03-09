@@ -60,6 +60,10 @@ resource "aws_iam_role_policy_attachment" "s3_policy_attachment" {
     role = aws_iam_role.ec2_role.name
     policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
+resource "aws_iam_role_policy_attachment" "dynamodb_policy_attachment" {
+    role = aws_iam_role.ec2_role.name
+    policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
 
 # Role for jobs 
 resource "aws_iam_role" "job_role" {
@@ -90,7 +94,8 @@ resource "aws_iam_policy" "job_policy" {
         {
             "Effect": "Allow",
             "Action": [
-                "s3:*"
+                "s3:*",
+                "dynamodb:*"
             ],
             "Resource": "*"
         }
