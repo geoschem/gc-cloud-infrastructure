@@ -60,7 +60,7 @@
             "And":[
               {
                 "Variable": "$.event.simulationType",
-                "StringEquals": "GCC"
+                "StringEquals": "gcc"
               },
               {
                 "Variable": "$.event.skipCreateRunDir",
@@ -73,7 +73,7 @@
             "And":[
               {
                 "Variable": "$.event.simulationType",
-                "StringEquals": "GCHP"
+                "StringEquals": "gchp"
               },
               {
                 "Variable": "$.event.skipCreateRunDir",
@@ -84,12 +84,12 @@
           },
           {
             "Variable": "$.event.simulationType",
-            "StringEquals": "GCC",
+            "StringEquals": "gcc",
             "Next": "Invoke_CreateRunDirectoryGCC"
           },
           {
             "Variable": "$.event.simulationType",
-            "StringEquals": "GCHP",
+            "StringEquals": "gchp",
             "Next": "Invoke_CreateRunDirectoryGCHP"
           }
         ],
@@ -123,9 +123,13 @@
             { 
               "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
               "Value.$": "$.event.timePeriod"
+            },
+            { 
+              "Name": "GEOSCHEM_BENCHMARK_MODEL",
+              "Value.$": "$.event.simulationType"
             }
           ],
-            "Command": ["./scripts/createRunDirGCClassic.sh"]
+            "Command": ["./scripts/entrypoints/benchmark-aws"]
           }
         },
         "Catch": [ {
@@ -177,9 +181,13 @@
               { 
                 "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
                 "Value.$": "$.event.timePeriod"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_MODEL",
+                "Value.$": "$.event.simulationType"
               }
             ],
-            "Command": ["./scripts/entrypoints/benchmark-gchp-aws"]
+            "Command": ["./scripts/entrypoints/benchmark-aws"]
           }
         },
         "Catch": [ {
@@ -223,9 +231,13 @@
               { 
                 "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
                 "Value.$": "$.event.timePeriod"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_MODEL",
+                "Value.$": "$.event.simulationType"
               }
             ],
-            "Command": ["./scripts/runGCClassic.sh"]
+            "Command": ["./scripts/entrypoints/benchmark-aws"]
           }
         },
         "Catch": [ {
@@ -279,15 +291,15 @@
                 "Value.$": "$.event.resolution"
               },
               { 
-                "Name": "INPUT_DATA_DOWNLOAD",
-                "Value.$": "$.event.updateInputData"
-              },
-              { 
                 "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
                 "Value.$": "$.event.timePeriod"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_MODEL",
+                "Value.$": "$.event.simulationType"
               }
             ],
-            "Command": ["./scripts/entrypoints/benchmark-gchp-aws"]
+            "Command": ["./scripts/entrypoints/benchmark-aws"]
           }
         },
         "Catch": [ {
@@ -336,7 +348,7 @@
         "Parameters": {
           "TopicArn": "${sns_topic_arn}",
           "Subject": "Benchmark run finished!",
-          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod ,$.event.tag, $.event.simulationType)"
+          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod, $.event.simulationType, $.event.tag)"
         },
         "Next": "WorkflowComplete"
       },
