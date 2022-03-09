@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# The number of processes for gchp simulations on aws must be
+# less than the number of cores allocated to the docker container
+# otherwise mpi errors ensue. This function sets the number 
+# of processes for the simulation such that it is divisible by 6,
+# while still leaving at least 1 core available
+function set_num_cores() {
+    num_proc=$((NUM_CORES_PER_NODE-1))
+    rem=$((num_proc%6))
+    while [ $rem -ne 0 ]
+    do
+        if [ $num_proc -lt 6 ]; then
+            echo "Error: NUM_CORES_PER_NODE must be greater than 6. Received $NUM_CORES_PER_NODE."
+            exit 1
+        fi
+        num_proc=$((num_proc-1))
+        rem=$((num_proc%6))
+    done
+    echo "setting GEOSCHEM_BENCHMARK_PROC_PER_NODE to $num_proc"
+    export GEOSCHEM_BENCHMARK_PROC_PER_NODE=$num_proc
+}
+
 cd $GEOSCHEM_BENCHMARK_SCRIPTS
 . /etc/bashrc
 
@@ -19,15 +40,21 @@ set -x
 
 GEOSCHEM_BENCHMARK_RUN_SIMULATION=${GEOSCHEM_BENCHMARK_RUN_SIMULATION:=false}
 GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}.bd
-export GEOSCHEM_BENCHMARK_MODEL=gcc
 export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
 export GEOSCHEM_BENCHMARK_INSTANCE_ID="${GEOSCHEM_BENCHMARK_MODEL}-${GEOSCHEM_BENCHMARK_TIME_PERIOD}-${GEOSCHEM_BENCHMARK_INSTANCE_ID}"
-export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://benchmarks-cloud/benchmarks
+export GEOSCHEM_BENCHMARK_S3_BUCKET="s3://benchmarks-cloud/benchmarks/${GEOSCHEM_BENCHMARK_TIME_PERIOD}/${GEOSCHEM_BENCHMARK_MODEL}"
 export GEOSCHEM_BENCHMARK_SITE=AWS
-export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="${GEOSCHEM_BENCHMARK_TIME_PERIOD} GCC benchmark simulation using '${GEOSCHEM_BENCHMARK_COMMIT_ID}'"
-export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/ExtData/
+export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="${GEOSCHEM_BENCHMARK_TIME_PERIOD} ${GEOSCHEM_BENCHMARK_MODEL} benchmark simulation using '${GEOSCHEM_BENCHMARK_COMMIT_ID}'"
+export GEOSCHEM_BENCHMARK_EXTDATA_DIR=/ExtData
 export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 export AWS_DEFAULT_REGION=us-east-1
+
+# set GCHP specific vars
+if [[ "x${GEOSCHEM_BENCHMARK_MODEL}" == "xgchp" ]]; then
+    export GEOSCHEM_BENCHMARK_RESOLUTION=${CS_RES}
+    export GEOSCHEM_BENCHMARK_NUM_NODES=${NUM_NODES}
+    set_num_cores
+fi
 
 # set variables for different time periods
 case ${GEOSCHEM_BENCHMARK_TIME_PERIOD} in
@@ -66,6 +93,10 @@ export FC=ifort
 
 # Only run the simulation if env variable is present
 if [[ "x${GEOSCHEM_BENCHMARK_RUN_SIMULATION}" == "xtrue" ]]; then
-    ./stages/runGCC.sh
+    if [[ "x${GEOSCHEM_BENCHMARK_MODEL}" == "xgchp" ]]; then
+        ./stages/runGCHP.sh
+    else
+        export OMP_STACKSIZE=500m
+        ./stages/runGCC.sh
+    fi
 fi
-

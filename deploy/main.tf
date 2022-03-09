@@ -68,7 +68,12 @@ module "benchmarks_bucket" {
   expiration_settings = [{
     prefix = "benchmarks/1Day/"
     days   = 90
-  }]
+  },
+  {
+    prefix = "benchmarks/1Hr/"
+    days   = 90
+  }
+  ]
 }
 module "benchmarks_bucket_policy" {
   source    = "./modules/s3/policy"
