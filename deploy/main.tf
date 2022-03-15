@@ -272,6 +272,45 @@ module "AQACF_bucket" {
 POLICY
 }
 
+# role for accessing dynamodb table
+module "AQACF_iam_role" {
+  source      = "./modules/iam/cross-account-role"
+  count       = local.only_washu
+  account_id  = module.AQACF_account_number[0].secret_json["account_number"] # TODO: check with thomas if this is the right account number 
+  name_prefix = "AQACF_cross_account"
+  # TODO: update table name from geoschem_testing to desired table to access
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ListAndDescribe",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:List*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "SpecificTable",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:BatchGet*",
+                "dynamodb:DescribeStream",
+                "dynamodb:DescribeTable",
+                "dynamodb:Get*",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:BatchWrite*",
+                "dynamodb:Update*",
+                "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/geoschem_testing"
+        }
+    ]
+}
+EOF
+}
 
 # ==============================================================
 # Billing alarm items
