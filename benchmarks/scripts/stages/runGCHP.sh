@@ -31,4 +31,4 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
 esac
 
 cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
-upload_artifacts OutputDir run-directory/OutputDir/* run-directory/gcchem_internal_checkpoint*
+upload_artifacts OutputDir run-directory/OutputDir/* run-directory/gcchem_internal_checkpoint* run-directory/species_database.yml

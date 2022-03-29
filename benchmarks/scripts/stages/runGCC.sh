@@ -21,7 +21,6 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
     AWS)
         ./gcclassic
         mv HEMCO.log OutputDir/HEMCO.log
-        mv GEOSChem.Restart.* OutputDir/
         ;;
     *)
         >&2 echo "error: unknown site '${GEOSCHEM_BENCHMARK_SITE}' (GEOSCHEM_BENCHMARK_SITE)"
@@ -30,4 +29,4 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
 esac
 
 cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
-upload_artifacts OutputDir run-directory/OutputDir/*
+upload_artifacts OutputDir run-directory/OutputDir/* run-directory/species_database.yml run-directory/GEOSChem.Restart.*

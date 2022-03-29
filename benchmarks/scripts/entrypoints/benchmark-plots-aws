@@ -27,6 +27,22 @@ export GEOSCHEM_BENCHMARK_SITE=AWS
 export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://benchmarks-cloud
 export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 
+case ${GEOSCHEM_BENCHMARK_TIME_PERIOD} in
+    1Hr)
+        export GEOSCHEM_BENCHMARK_PLOT_CONFIG_FILE=${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/resources/template.1Hr_benchmark_${GEOSCHEM_BENCHMARK_MODEL}.yml
+        ;;
+    1Day)
+
+        ;;
+    1Mon)
+
+        ;;
+    *)
+        >&2 echo "error: unknown time period '${GEOSCHEM_BENCHMARK_TIME_PERIOD}' (GEOSCHEM_BENCHMARK_TIME_PERIOD)"
+        exit 1
+        ;;
+esac
+
 ./helpers/dbCreateTest.sh || echo "Test already exists"
 ./stages/createBenchmarkPlots.sh
 
