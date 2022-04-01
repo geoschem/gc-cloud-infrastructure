@@ -362,3 +362,42 @@ module "vpc_peering_connection_with_washu" {
    requester_vpc_id = module.batch_benchmark_artifacts[0].vpc_id
    tags = { Name = "washu-harvard-vpc-peering" }
 }
+
+# iam role giving access to harvard account from washu
+module "washu_iam_role" {
+  source      = "./modules/iam/cross-account-role"
+  count       = local.only_harvard
+  account_id  = module.peer_account_info[0].secret_json["account_number"]
+  name_prefix = "washu_cross_account"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ListAndDescribe",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:List*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "SpecificTable",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:BatchGet*",
+                "dynamodb:DescribeStream",
+                "dynamodb:DescribeTable",
+                "dynamodb:Get*",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:BatchWrite*",
+                "dynamodb:Update*",
+                "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/geoschem_testing"
+        }
+    ]
+}
+EOF
+}

@@ -21,13 +21,13 @@ data:
   # contains configurations for ref and dev runs (version, dates, prior to v13.0.0)
   ref:
     gcc:
-      version: ${GEOSCHEM_BENCHMARK_REFPK} # NOTE: these will be used in some filenames and so should not have spaces
+      version: ${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY} # NOTE: these will be used in some filenames and so should not have spaces
       dir: ref/run-directory # Directory name
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-07-01T01:00:00"
     gchp:
-      version: ${GEOSCHEM_BENCHMARK_REFPK}
+      version: ${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}
       dir: ref/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
@@ -35,13 +35,13 @@ data:
       is_legacy: False # Whether GCHP files are legacy (pre-13.1) format
   dev:
     gcc:
-      version: ${GEOSCHEM_BENCHMARK_DEVPK}
+      version: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
       dir: dev/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-07-01T01:00:00"
     gchp:
-      version: ${GEOSCHEM_BENCHMARK_DEVPK}
+      version: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
       dir: dev/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
@@ -49,8 +49,8 @@ data:
       is_legacy: False
 
 options:
+  bmk_type: FullChemBenchmark
   gcpy_test: False # Specify if this is a gcpy test validation run
-  
   comparisons:
     gcc_vs_gcc: 
       run: False # True to run this comparison
@@ -74,7 +74,7 @@ options:
     emis_table: True
     plot_jvalues: True
     plot_aod: True
-    mass_table: False # needs gcchem_internal_checkpoint.restart.20190801_000000.nc4
+    mass_table: True # needs gcchem_internal_checkpoint.restart.20190701_000000.nc4
     ops_budget_table: False
     OH_metrics: True # GCC only
     ste_table: True # GCC only

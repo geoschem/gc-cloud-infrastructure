@@ -37,8 +37,8 @@ mkdir weights
 
 
 # Create GCPy configuration file (and fill it in)
-envsubst < ${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/resources/template.1mo_benchmark.yml > 1mo_benchmark.yml
-python gcpy/benchmark/run_1mo_benchmark.py 1mo_benchmark.yml
+envsubst < $GEOSCHEM_BENCHMARK_PLOTTING_CONFIG_FILE > benchmark.yml
+python gcpy/benchmark/run_benchmark.py benchmark.yml
 
 # Upload the PDF files
 mv dev/run-directory/BenchmarkResults/GCHP_version_comparison GCHP_version_comparison
