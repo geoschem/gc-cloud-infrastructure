@@ -36,6 +36,8 @@ The following variables must be set in any script that uses `setupRunDirectoryGC
 The following variables must be set in any script that uses `createBenchmarkPlots.sh`:
   - `GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY`: InstanceID of ref.
   - `GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY`: InstanceID of dev.
+  - `GEOSCHEM_BENCHMARK_COMPARISON_TYPE`: GCpy comparison type
+  - `GEOSCHEM_BENCHMARK_TIME_PERIOD`: time period of simulation comparison
 
 Not used:
   - `GEOSCHEM_BENCHMARK_CATALOG_FILES`

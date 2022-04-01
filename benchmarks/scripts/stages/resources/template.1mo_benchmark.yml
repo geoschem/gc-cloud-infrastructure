@@ -52,19 +52,19 @@ options:
   bmk_type: FullChemBenchmark
   gcpy_test: False # Specify if this is a gcpy test validation run
   comparisons:
-    gcc_vs_gcc: 
-      run: False # True to run this comparison
+    gcc_vs_gcc:
+      run: False
       dir: GCC_version_comparison
       tables_subdir: Tables
-    gchp_vs_gcc: 
+    gchp_vs_gcc:
       run: False
-      dir: GCHP_GCC_comparison 
+      dir: GCHP_GCC_comparison
       tables_subdir: Tables
-    gchp_vs_gchp: 
-      run: True
+    gchp_vs_gchp:
+      run: False
       dir: GCHP_version_comparison
       tables_subdir: Tables
-    gchp_vs_gcc_diff_of_diffs: 
+    gchp_vs_gcc_diff_of_diffs:
       run: False
       dir: GCHP_GCC_diff_of_diffs
 

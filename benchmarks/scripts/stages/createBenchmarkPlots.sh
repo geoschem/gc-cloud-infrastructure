@@ -10,7 +10,30 @@ set -x
 : "${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}"  # primary key of ref in the database
 : "${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"  # primary key of dev in the database
 
-run_stage_name="RunGCHP"
+run_stage_name="Plotting"
+
+# update the plotting config file to use correct settings
+function update_plotting_config_file() {
+    filename=$1
+    case ${GEOSCHEM_BENCHMARK_COMPARISON_TYPE} in
+        gcc_gcc)
+            sed -i '/gcc_vs_gcc:/{n;s/run: False/run: True/;}' $filename
+            ;;
+        gchp_gchp)
+            sed -i '/gchp_vs_gchp:/{n;s/run: False/run: True/;}' $filename
+            ;;
+        gchp_gcc)
+            sed -i '/gchp_vs_gcc:/{n;s/run: False/run: True/;}' $filename
+            ;;
+        gcc_gchp)
+            sed -i '/gchp_vs_gcc:/{n;s/run: False/run: True/;}' $filename
+            ;;
+        *)
+            >&2 echo "error: unknown comparison type '${GEOSCHEM_BENCHMARK_COMPARISON_TYPE}' (GEOSCHEM_BENCHMARK_COMPARISON_TYPE)"
+            exit 1
+            ;;
+    esac
+}
 
 function download_latest_gcpy() {
     git clone https://github.com/geoschem/gcpy.git --branch dev --depth 1
@@ -35,11 +58,11 @@ mkdir dev
 # Create weights dir
 mkdir weights
 
-
 # Create GCPy configuration file (and fill it in)
 envsubst < $GEOSCHEM_BENCHMARK_PLOTTING_CONFIG_FILE > benchmark.yml
+update_plotting_config_file benchmark.yml
 python gcpy/benchmark/run_benchmark.py benchmark.yml
 
 # Upload the PDF files
-mv dev/run-directory/BenchmarkResults/GCHP_version_comparison GCHP_version_comparison
-upload_public_artifacts GCHP_version_comparison/**/*.pdf
+mv dev/run-directory/BenchmarkResults BenchmarkResults
+upload_public_artifacts BenchmarkResults/**/*
