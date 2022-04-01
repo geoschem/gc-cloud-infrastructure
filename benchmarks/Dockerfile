@@ -3,7 +3,8 @@ FROM public.ecr.aws/geoschem-wustl/geoschem_benchmark:latest
 # install some prereqs
 RUN yum install -y \
     emacs \
-    wget
+    wget \
+    time
 
 # set default workdir
 WORKDIR /

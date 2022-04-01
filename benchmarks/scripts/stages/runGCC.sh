@@ -16,10 +16,10 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
     WUSTL)
         export TMPDIR="$__LSF_JOB_TMPDIR__"
         chmod +x ./gcclassic
-        ./gcclassic
+        /usr/bin/time -v ./gcclassic
         ;;
     AWS)
-        ./gcclassic
+        /usr/bin/time -v ./gcclassic
         mv HEMCO.log OutputDir/HEMCO.log
         ;;
     *)
