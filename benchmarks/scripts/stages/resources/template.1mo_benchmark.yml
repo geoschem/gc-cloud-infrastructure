@@ -25,13 +25,13 @@ data:
       dir: ref/run-directory # Directory name
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-07-01T01:00:00"
+      bmk_end: "2019-08-01T00:00:00"
     gchp:
       version: ${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}
       dir: ref/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-07-01T01:00:00"
+      bmk_end: "2019-08-01T00:00:00"
       is_legacy: False # Whether GCHP files are legacy (pre-13.1) format
   dev:
     gcc:
@@ -39,13 +39,13 @@ data:
       dir: dev/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-07-01T01:00:00"
+      bmk_end: "2019-08-01T00:00:00"
     gchp:
       version: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
       dir: dev/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-07-01T01:00:00"
+      bmk_end: "2019-08-01T00:00:00"
       is_legacy: False
 
 options:

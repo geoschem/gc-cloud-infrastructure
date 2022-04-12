@@ -65,4 +65,5 @@ python gcpy/benchmark/run_benchmark.py benchmark.yml
 
 # Upload the PDF files
 mv dev/run-directory/BenchmarkResults BenchmarkResults
-upload_public_artifacts BenchmarkResults/**/*
+files=`find BenchmarkResults -type f`
+upload_public_artifacts $files

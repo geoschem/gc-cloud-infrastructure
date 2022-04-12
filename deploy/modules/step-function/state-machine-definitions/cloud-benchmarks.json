@@ -1,24 +1,7 @@
 {
     "Comment": "Run Automated Benchmarks",
-    "StartAt": "Evaluate_StartPoint",
+    "StartAt": "Evaluate_RunType",
     "States": {
-      "Evaluate_StartPoint": {
-        "Type": "Choice",
-        "Choices": [
-          {
-            "Variable": "$.event.skipCreateRunDir",
-            "IsPresent": false,
-            "Next": "Set_skipCreateRunDir"
-          }
-        ],
-        "Default": "Evaluate_RunType"
-      },
-      "Set_skipCreateRunDir": {
-        "Type": "Pass",
-        "Result": "false",
-        "ResultPath": "$.event.skipCreateRunDir",
-        "Next": "Evaluate_RunType"
-      },
       "Evaluate_RunType": {
         "Type": "Choice",
         "Choices": [
@@ -59,93 +42,25 @@
           {
             "And":[
               {
-                "Variable": "$.event.simulationType",
-                "StringEquals": "gcc"
+                "Variable": "$.event.skipCreateRunDir",
+                "IsPresent": true
               },
               {
                 "Variable": "$.event.skipCreateRunDir",
                 "StringEquals": "true"
               }
             ],
-            "Next": "Invoke_RunBenchmarkGCC"
-          },
-          {
-            "And":[
-              {
-                "Variable": "$.event.simulationType",
-                "StringEquals": "gchp"
-              },
-              {
-                "Variable": "$.event.skipCreateRunDir",
-                "StringEquals": "true"
-              }
-            ],
-            "Next": "Invoke_RunBenchmarkGCHP"
-          },
-          {
-            "Variable": "$.event.simulationType",
-            "StringEquals": "gcc",
-            "Next": "Invoke_CreateRunDirectoryGCC"
-          },
-          {
-            "Variable": "$.event.simulationType",
-            "StringEquals": "gchp",
-            "Next": "Invoke_CreateRunDirectoryGCHP"
+            "Next": "Invoke_RunBenchmark"
           }
         ],
-        "Default": "Evaluate_Failed_Workflow"
+        "Default": "Invoke_CreateRunDirectory"
       },
-      "Invoke_CreateRunDirectoryGCC": {
+      "Invoke_CreateRunDirectory": {
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
           "JobDefinition": "${job_definition_name_spot}",
-          "JobName.$": "States.Format('Invoke_CreateRunDirectoryGCC_{}', $.event.nameSuffix)",
-          "JobQueue": "${job_queue_spot}",
-          "Timeout": {
-            "AttemptDurationSeconds": 12000
-          },
-          "ContainerOverrides": {
-            "ResourceRequirements": [
-              {
-                "Type": "VCPU",
-                "Value": "4"
-              },
-              {
-                "Type": "MEMORY",
-                "Value": "16384"
-              }
-            ],
-            "Environment": [{ 
-              "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
-              "Value.$": "$.event.tag"
-            },
-            { 
-              "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
-              "Value.$": "$.event.timePeriod"
-            },
-            { 
-              "Name": "GEOSCHEM_BENCHMARK_MODEL",
-              "Value.$": "$.event.simulationType"
-            }
-          ],
-            "Command": ["./scripts/entrypoints/benchmark-aws"]
-          }
-        },
-        "Catch": [ {
-          "ErrorEquals": [ "States.ALL" ],
-          "ResultPath": "$.event.createRunDir",
-          "Next": "Evaluate_Failed_Workflow"
-        } ],
-        "ResultPath": "$.event.createRunDir",
-        "Next": "Invoke_RunBenchmarkGCC"
-      },
-      "Invoke_CreateRunDirectoryGCHP": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::batch:submitJob.sync",
-        "Parameters": {
-          "JobDefinition": "${job_definition_name_spot}",
-          "JobName.$": "States.Format('Invoke_CreateRunDirectoryGCHP_{}', $.event.nameSuffix)",
+          "JobName.$": "States.Format('Invoke_CreateRunDirectory_{}', $.event.nameSuffix)",
           "JobQueue": "${job_queue_spot}",
           "Timeout": {
             "AttemptDurationSeconds": 12000
@@ -165,6 +80,10 @@
               { 
                 "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
                 "Value.$": "$.event.tag"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_INSTANCE_ID",
+                "Value.$": "$.event.primaryKey"
               },
               { 
                 "Name": "NUM_CORES_PER_NODE",
@@ -196,14 +115,14 @@
           "Next": "Evaluate_Failed_Workflow"
         } ],
         "ResultPath": "$.event.createRunDir",
-        "Next": "Invoke_RunBenchmarkGCHP"
+        "Next": "Invoke_RunBenchmark"
       },
-      "Invoke_RunBenchmarkGCC": {
+      "Invoke_RunBenchmark": {
         "Type": "Task",
         "Resource": "arn:aws:states:::batch:submitJob.sync",
         "Parameters": {
           "JobDefinition.$": "$.event.batch_info.job_definition",
-          "JobName.$": "States.Format('Invoke_RunBenchmarkGCC_{}', $.event.nameSuffix)",
+          "JobName.$": "States.Format('Invoke_RunBenchmark_{}', $.event.nameSuffix)",
           "JobQueue.$": "$.event.batch_info.job_queue",
           "Timeout": {
             "AttemptDurationSeconds": 120000
@@ -227,6 +146,22 @@
               { 
                 "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
                 "Value.$": "$.event.tag"
+              },
+              { 
+                "Name": "GEOSCHEM_BENCHMARK_INSTANCE_ID",
+                "Value.$": "$.event.primaryKey"
+              },
+              { 
+                "Name": "NUM_CORES_PER_NODE",
+                "Value.$": "$.event.numCores"
+              },
+              { 
+                "Name": "TOTAL_CORES",
+                "Value.$": "$.event.numCores"
+              },
+              { 
+                "Name": "CS_RES",
+                "Value.$": "$.event.resolution"
               },
               { 
                 "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
@@ -246,65 +181,41 @@
           "Next": "Evaluate_Failed_Workflow"
         } ],
         "ResultPath": "$.event.runBenchmark",
-        "Next": "Evaluate_Successful_Workflow"
+        "Next": "Evaluate_PlottingWorkflow"
       },
-      "Invoke_RunBenchmarkGCHP": {
+      "Evaluate_PlottingWorkflow": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.plotting",
+            "IsPresent": true,
+            "Next": "Invoke_PlottingWorkflow"
+          }
+        ],
+        "Default": "Evaluate_Successful_Workflow"
+      },
+      "Invoke_PlottingWorkflow": {
         "Type": "Task",
-        "Resource": "arn:aws:states:::batch:submitJob.sync",
+        "Resource": "arn:aws:states:::states:startExecution",
         "Parameters": {
-          "JobDefinition.$": "$.event.batch_info.job_definition",
-          "JobName.$": "States.Format('Invoke_RunBenchmarkGCHP_{}', $.event.nameSuffix)",
-          "JobQueue.$": "$.event.batch_info.job_queue",
-          "Timeout": {
-            "AttemptDurationSeconds": 120000
-          },
-          "ContainerOverrides": {
-            "ResourceRequirements": [
-              {
-                "Type": "VCPU",
-                "Value.$": "$.event.numCores"
-              },
-              {
-                "Type": "MEMORY",
-                "Value.$": "$.event.memory"
-              }
-            ],
-            "Environment": [
-              { 
-                "Name": "GEOSCHEM_BENCHMARK_RUN_SIMULATION",
-                "Value": "true"
-              },
-              { 
-                "Name": "GEOSCHEM_BENCHMARK_COMMIT_ID",
-                "Value.$": "$.event.tag"
-              },
-              { 
-                "Name": "NUM_CORES_PER_NODE",
-                "Value.$": "$.event.numCores"
-              },
-              { 
-                "Name": "TOTAL_CORES",
-                "Value.$": "$.event.numCores"
-              },
-              { 
-                "Name": "CS_RES",
-                "Value.$": "$.event.resolution"
-              },
-              { 
-                "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
-                "Value.$": "$.event.timePeriod"
-              },
-              { 
-                "Name": "GEOSCHEM_BENCHMARK_MODEL",
-                "Value.$": "$.event.simulationType"
-              }
-            ],
-            "Command": ["./scripts/entrypoints/benchmark-aws"]
+          "StateMachineArn": "${plotting_sfn_arn}",
+
+          "Input": {
+            "NeedCallback": false,
+            "AWS_STEP_FUNCTIONS_STARTED_BY_EXECUTION_ID.$": "$$.Execution.Id",
+            "event": {
+              "runType.$": "$.event.runType",
+              "timePeriod.$": "$.event.timePeriod",
+              "sendEmailNotification.$": "$.event.sendEmailNotification",
+              "devPrimaryKey.$": "$.plotting.devPrimaryKey",
+              "refPrimaryKey.$": "$.plotting.refPrimaryKey",
+              "modelComparison": "true"
+            }
           }
         },
         "Catch": [ {
           "ErrorEquals": [ "States.ALL" ],
-          "ResultPath": "$.event.runBenchmark",
+          "ResultPath": "$.event.runPlotting",
           "Next": "Evaluate_Failed_Workflow"
         } ],
         "ResultPath": "$.event.runBenchmark",
@@ -314,8 +225,16 @@
         "Type": "Choice",
         "Choices": [
           {
-            "Variable": "$.event.sendEmailNotification",
-            "IsPresent": true,
+            "And":[
+              {
+                "Variable": "$.event.sendEmailNotification",
+                "IsPresent": true
+              },
+              {
+                "Variable": "$.event.sendEmailNotification",
+                "StringEquals": "true"
+              }
+            ],
             "Next": "Invoke_SendFailureEmail"
           }
         ],
@@ -325,8 +244,16 @@
         "Type": "Choice",
         "Choices": [
           {
-            "Variable": "$.event.sendEmailNotification",
-            "IsPresent": true,
+            "And":[
+              {
+                "Variable": "$.event.sendEmailNotification",
+                "IsPresent": true
+              },
+              {
+                "Variable": "$.event.sendEmailNotification",
+                "StringEquals": "true"
+              }
+            ],
             "Next": "Invoke_SendSuccessEmail"
           }
         ],
@@ -348,7 +275,7 @@
         "Parameters": {
           "TopicArn": "${sns_topic_arn}",
           "Subject": "Benchmark run finished!",
-          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}-{}-{}.bd', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod, $.event.simulationType, $.event.simulationType, $.event.timePeriod,$.event.tag)"
+          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}-{}-{}.bd', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod, $.event.simulationType, $.event.simulationType, $.event.timePeriod,$.event.primaryKey)"
         },
         "Next": "WorkflowComplete"
       },

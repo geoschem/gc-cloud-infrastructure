@@ -127,7 +127,7 @@ module "github_service_user" {
   source             = "./modules/iam/user"
   count              = local.only_harvard
   name               = "${var.benchmarks_name_prefix}-github-user"
-  permitted_services = "\"states:*\""
+  permitted_services = "\"states:*\", \"dynamodb:*\""
 }
 
 module "batch_benchmark_artifacts" {
@@ -149,6 +149,7 @@ module "batch_benchmark_artifacts" {
   resolution                = 24
   num_cores_per_node        = 6
   step_fn_definition_file   = "../../modules/step-function/state-machine-definitions/cloud-benchmarks.json"
+  plotting_step_fn_definition_file = "../../modules/step-function/state-machine-definitions/cloud-benchmark-plotting.json"
   enable_step_function      = true
   use_default_vpc           = var.organization == "harvard" ? false : true
   peer_account_number       = module.peer_account_info[0].secret_json["account_number"]

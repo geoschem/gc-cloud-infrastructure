@@ -1,6 +1,6 @@
 # service role
 resource "aws_iam_role" "default_sfn_role" {
-  name = "default-sfn-role"
+  name = "${var.name}-sfn-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -20,10 +20,9 @@ resource "aws_iam_role" "default_sfn_role" {
 EOF
 }
 
-
 # logging policy
 resource "aws_iam_policy" "sfn_policy" {
-  name = "default-sfn-policy"
+  name = "${var.name}-sfn-policy"
   path = "/"
   description = "IAM policy for accessing various services from step functions"
 
@@ -37,7 +36,8 @@ resource "aws_iam_policy" "sfn_policy" {
         "sns:*",
         "iam:PassRole",
         "logs:*",
-        "events:*"
+        "events:*",
+        "states:*"
       ],
       "Resource": "*",
       "Effect": "Allow"
