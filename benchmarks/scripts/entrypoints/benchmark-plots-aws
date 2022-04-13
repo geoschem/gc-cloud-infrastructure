@@ -10,44 +10,8 @@ set -x
 : "${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}"        # primary key of ref in the database
 : "${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"        # primary key of dev in the database
 
-# extrapolate based on GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY to 
-# create model comparison plot with corresponding 1Mon benchmark
-function run_model_comparison() {
-    case ${DEV_MODEL_TYPE} in
-        gchp)
-            export GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY=$( echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed "s#${DEV_MODEL_TYPE}#gcc#")
-            export GEOSCHEM_BENCHMARK_COMPARISON_TYPE=gchp_gcc
-            SIMULATION_STAGE_NAME=RunGCC
-            ;;
-        gcc)
-            export GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY=$( echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed "s#${DEV_MODEL_TYPE}#gchp#")
-            export GEOSCHEM_BENCHMARK_COMPARISON_TYPE=gcc_gchp
-            SIMULATION_STAGE_NAME=RunGCHP
-            ;;
-        *)
-            >&2 echo "error: unknown dev model type '${DEV_MODEL_TYPE}' extrapolated from prefix of primary key: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"
-            exit 1
-            ;;
-    esac
-    export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="${GEOSCHEM_BENCHMARK_TIME_PERIOD} Benchmark plot model comparison ('${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}'; '${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}')"
-    export GEOSCHEM_BENCHMARK_INSTANCE_ID=diff-${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}-${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
-
-    simulation_status=`aws dynamodb get-item \
-    --table-name geoschem_testing \
-    --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}\"}}" \
-    --output json`
-    
-    # Check if the non-dev model's simulation exists and was successful
-    if [[ `echo $simulation_status | jq '.Item.ExecStatus.S | contains("SUCCESSFUL")'` == "true" ]] \
-    && [[ `echo $simulation_status | jq --arg name $SIMULATION_STAGE_NAME 'any(.Item.Stages.L[].M.Name.S; . == $name)'` == "true" ]]; then
-        ./helpers/dbCreateTest.sh || echo "Test already exists"
-        ./stages/createBenchmarkPlots.sh
-        echo "Finished $GEOSCHEM_BENCHMARK_INSTANCE_ID model comparison."
-    else
-        echo "Skipping ${GEOSCHEM_BENCHMARK_COMPARISON_TYPE} model comparison. '${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}' either does not yet exist or failed to run."
-    fi
-}
-
+# import functions
+source ${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/modules/plotting.sh
 
 export GEOSCHEM_BENCHMARK_INSTANCE_ID=diff-${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}-${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
 export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="${GEOSCHEM_BENCHMARK_TIME_PERIOD} Benchmark plot creation (ref: '${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}'; dev:'${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}')"
@@ -55,8 +19,9 @@ export GEOSCHEM_BENCHMARK_SITE=AWS
 export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://benchmarks-cloud/diff-plots/$GEOSCHEM_BENCHMARK_TIME_PERIOD
 export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 export AWS_DEFAULT_REGION=us-east-1
-DEV_MODEL_TYPE=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-.*##')
-export GEOSCHEM_BENCHMARK_COMPARISON_TYPE="${DEV_MODEL_TYPE}_$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-.*##')"
+export GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-.*##')
+export GEOSCHEM_BENCHMARK_REF_MODEL_TYPE=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed 's#-.*##')
+export GEOSCHEM_BENCHMARK_COMPARISON_TYPE="${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}_$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-.*##')"
 
 case ${GEOSCHEM_BENCHMARK_TIME_PERIOD} in
     1Hr)
@@ -76,6 +41,15 @@ esac
 
 ./helpers/dbCreateTest.sh || echo "Test already exists"
 ./stages/createBenchmarkPlots.sh
+
+# Conditionally perform model comparison plotting
+if [[ "x${GEOSCHEM_BENCHMARK_PLOTTING_DIFF_OF_DIFFS}" == "xtrue" ]]; then
+    if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Mon" ]]; then
+        run_diff_of_diffs  
+    else
+        echo "Skipping diff of diffs comparison. Diff of diffs comparisons are only performed for 1Mon benchmarks."
+    fi
+fi
 
 # Conditionally perform model comparison plotting
 if [[ "x${GEOSCHEM_BENCHMARK_PLOTTING_MODEL_COMPARISON}" == "xtrue" ]]; then

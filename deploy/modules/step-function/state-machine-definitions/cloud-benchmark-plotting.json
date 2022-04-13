@@ -54,7 +54,7 @@
             },
             {
               "Type": "MEMORY",
-              "Value": "16000"
+              "Value": "50000"
             }
           ],
           "Environment": [
@@ -73,6 +73,10 @@
             {
               "Name": "GEOSCHEM_BENCHMARK_PLOTTING_MODEL_COMPARISON",
               "Value.$": "$.event.modelComparison"
+            },
+            {
+              "Name": "GEOSCHEM_BENCHMARK_PLOTTING_DIFF_OF_DIFFS",
+              "Value.$": "$.event.diffOfDiffs"
             }
           ],
           "Command": [
@@ -146,7 +150,7 @@
       "Parameters": {
         "TopicArn": "${sns_topic_arn}",
         "Subject": "Benchmark run finished!",
-        "Message.$": "States.Format('Benchmark Plot finished for {}-{}! \n\n Output available at: s3://benchmarks-cloud/diff-plots/{}/{}/{}-{}', $.event.devPrimaryKey, $.event.refPrimaryKey, $.event.timePeriod, $.event.devPrimaryKey, $.event.refPrimaryKey)"
+        "Message.$": "States.Format('Benchmark Plot finished for {}-{}! \n\n Check the dashboard for s3 object information: https://rn7bblog7b.execute-api.us-east-1.amazonaws.com/Prod/dashboard/', $.event.devPrimaryKey, $.event.refPrimaryKey)"
       },
       "Next": "WorkflowComplete"
     },

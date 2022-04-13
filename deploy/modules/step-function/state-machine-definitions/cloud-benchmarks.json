@@ -209,7 +209,8 @@
               "sendEmailNotification.$": "$.event.sendEmailNotification",
               "devPrimaryKey.$": "$.plotting.devPrimaryKey",
               "refPrimaryKey.$": "$.plotting.refPrimaryKey",
-              "modelComparison": "true"
+              "modelComparison": "true",
+              "diffOfDiffs": "true"
             }
           }
         },
@@ -275,7 +276,7 @@
         "Parameters": {
           "TopicArn": "${sns_topic_arn}",
           "Subject": "Benchmark run finished!",
-          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}-{}-{}.bd', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod, $.event.simulationType, $.event.simulationType, $.event.timePeriod,$.event.primaryKey)"
+          "Message.$": "States.Format('Benchmark {} run finished for {} commit: {}! \n\n Output available at: s3://benchmarks-cloud/benchmarks/{}/{}/{}', $.event.timePeriod, $.event.simulationType, $.event.tag, $.event.timePeriod, $.event.simulationType, $.event.primaryKey)"
         },
         "Next": "WorkflowComplete"
       },

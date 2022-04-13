@@ -22,13 +22,13 @@ data:
   ref:
     gcc:
       version: ${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY} # NOTE: these will be used in some filenames and so should not have spaces
-      dir: ref/run-directory # Directory name
+      dir: ref-gcc/run-directory # Directory name
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-08-01T00:00:00"
     gchp:
       version: ${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}
-      dir: ref/run-directory
+      dir: ref-gchp/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-08-01T00:00:00"
@@ -36,13 +36,13 @@ data:
   dev:
     gcc:
       version: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
-      dir: dev/run-directory
+      dir: dev-gcc/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-08-01T00:00:00"
     gchp:
       version: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
-      dir: dev/run-directory
+      dir: dev-gchp/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-08-01T00:00:00"
