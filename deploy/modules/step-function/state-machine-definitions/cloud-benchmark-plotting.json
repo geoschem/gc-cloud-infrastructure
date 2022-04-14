@@ -54,7 +54,7 @@
             },
             {
               "Type": "MEMORY",
-              "Value": "50000"
+              "Value": "60000"
             }
           ],
           "Environment": [
