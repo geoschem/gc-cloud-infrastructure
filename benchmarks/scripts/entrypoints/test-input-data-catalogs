@@ -1,0 +1,64 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+    >&2 echo "error: commit id and catalog version weren't provided"
+    exit 1
+fi
+
+set -u
+cd ${GEOSCHEM_BENCHMARK_SCRIPTS}
+
+GEOSCHEM_BENCHMARK_COMMIT_ID=${1}
+GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}.checkcatalogs
+
+GEOSCHEM_BENCHMARK_CATALOGS_FOR_VERSION=${2}
+
+bsub << EOF
+#BSUB -n 18
+#BSUB -R 'rusage[mem=64GB] span[ptile=18]'
+#BSUB -q rvmartin
+#BSUB -W 12:00
+#BSUB -J ${GEOSCHEM_BENCHMARK_INSTANCE_ID}
+#BSUB -a 'docker(public.ecr.aws/geoschem-wustl/geoschem_benchmark:latest)'
+#BSUB -g /liam.bindle/gcst-benchmarks
+#BSUB -o /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExternalShare/GCST/Benchmarking/Logs/%J-${GEOSCHEM_BENCHMARK_INSTANCE_ID}.txt
+#BSUB -Ne
+##BSUB -u benchmarks-cloud-aaaafk3osaonk4ruw4st4nibiq@harvard.org.slack.com 
+
+. /etc/bashrc
+
+ulimit -c 0                      # coredumpsize
+ulimit -l unlimited              # memorylocked
+ulimit -u 50000                  # maxproc
+ulimit -v unlimited              # vmemoryuse
+ulimit -s unlimited              # stacksize
+
+set -u
+set -e
+set -x
+
+export GEOSCHEM_BENCHMARK_COMMIT_ID=${GEOSCHEM_BENCHMARK_COMMIT_ID}
+export GEOSCHEM_BENCHMARK_INSTANCE_ID=${GEOSCHEM_BENCHMARK_INSTANCE_ID}
+export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud
+export GEOSCHEM_BENCHMARK_SITE=WUSTL
+export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="1-day GCHP benchmark simulation using '${GEOSCHEM_BENCHMARK_COMMIT_ID}'"
+export GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX}
+export GEOSCHEM_BENCHMARK_EXTDATA_DIR=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX}/TempExtData
+export GEOSCHEM_BENCHMARK_CATALOGS_FOR_VERSION=${GEOSCHEM_BENCHMARK_CATALOGS_FOR_VERSION}
+export GEOSCHEM_BENCHMARK_START_DATE=20190701
+export GEOSCHEM_BENCHMARK_END_DATE=20190702
+export GEOSCHEM_BENCHMARK_DURATION=00000001
+export GEOSCHEM_BENCHMARK_RESOLUTION=24
+export GEOSCHEM_BENCHMARK_NUM_NODES=1
+export GEOSCHEM_BENCHMARK_PROC_PER_NODE=18
+export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
+
+export CC=icc
+export CXX=icpc
+export FC=ifort
+
+./helpers/dbCreateTest.sh || echo "Test already exists"
+./stages/setupRunDirGCHP.sh
+./stages/runGCHP.sh
+
+EOF
