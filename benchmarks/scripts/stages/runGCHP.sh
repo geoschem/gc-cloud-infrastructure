@@ -11,6 +11,24 @@ set -x
 
 cd run-directory
 
+function wustl_extdata_setup_hook() {
+    # if EXTDATA_DIR is a subdirectory of the tempdir, sync using bashdatacatalog
+    case ${GEOSCHEM_BENCHMARK_EXTDATA_DIR} in
+        ${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX}*)
+            echo "Making a fresh copy of ExtData for this test at '${GEOSCHEM_BENCHMARK_EXTDATA_DIR}'"
+            (
+                mkdir -p ${GEOSCHEM_BENCHMARK_EXTDATA_DIR}
+                cd ${GEOSCHEM_BENCHMARK_EXTDATA_DIR}
+                cp /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/DataCatalogs/${GEOSCHEM_BENCHMARK_CATALOGS_FOR_VERSION}/*.csv .
+                cp /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData/DataCatalogs/MeteorologicalInputs.csv .
+                bashdatacatalog-fetch *.csv
+                bashdatacatalog-list -am -r 2019-06-31,2019-07-02 -f rsync *.csv > transfer_list.txt
+                rsync -avip --files-from=transfer_list.txt /storage1/fs1/rvmartin/Active/GEOS-Chem-shared/ExtData .
+            )
+            ;;
+    esac
+}
+
 # get number of processes
 num_proc=$(sed -n 's#TOTAL_CORES=\([0-9][0-9]*\)#\1#p' runConfig.sh)
 
@@ -18,6 +36,7 @@ num_proc=$(sed -n 's#TOTAL_CORES=\([0-9][0-9]*\)#\1#p' runConfig.sh)
 case ${GEOSCHEM_BENCHMARK_SITE} in
     WUSTL)
         export TMPDIR="$__LSF_JOB_TMPDIR__"
+        wustl_extdata_setup_hook
         chmod +x ./gchp
         mpiexec -n ${num_proc} ./gchp
         ;;
