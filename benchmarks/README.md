@@ -23,16 +23,21 @@ The input data format for step functions is the following:
 ```
 {
     "event": {
-      "nameSuffix": "{commit-hash?}", // can't use tag because punctuation is not accepted
-      "simulationType": "GCC", // or GHCP
-      "runType": "SPOT", // or DEMAND
-      "timePeriod": "1Day", // or 1Mon, default is 1Mon
-      "tag": "13.2.1",  // accepts tags, branch names, or commits
-      "numCores": "48", // number of cores to deploy with
-      "memory": "16000", // amount of memory to deploy with
-      "resolution": "24", // resolution to run at (GCHP only)
-      "sendEmailNotification": "true", // optional parameter, send email notifications of status
-      "skipCreateRunDir": "true" // optional parameter, defaults to false
+        "nameSuffix": "28c9b26",  // can't use tag because punctuation is not accepted
+        "primaryKey": "gchp-24-1Hr-13.4.0-alpha.27-2-g28c9b26",
+        "simulationType": "gchp", // or gcc
+        "runType": "SPOT", // or DEMAND
+        "timePeriod": "1Hr", // or 1Mon/1Day
+        "tag": "28c9b26", // accepts tags, branch names, or commits
+        "numCores": "62", // number of cores to deploy with
+        "memory": "80000", // amount of memory to deploy with
+        "resolution": "24", // resolution to run at (GCHP only)
+        "sendEmailNotification": "true", // optional parameter, send email notifications of status
+        "skipCreateRunDir": "true" // optional parameter, skips creating run directory
+    },
+    "plotting": { // optional section, if plotting desired
+        "devPrimaryKey": "gchp-24-1Hr-13.4.0-alpha.27-2-g28c9b26", // primary key for dev
+        "refPrimaryKey": "gchp-24-1Hr-13.4.0-alpha.26-1-g35edefe" // primary key for ref
     }
 }
 ```

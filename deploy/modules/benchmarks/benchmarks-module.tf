@@ -24,8 +24,22 @@ module "benchmarks_sns_topic" {
 module "step_function" {
   source          = "../step-function"
   count           = var.enable_step_function ? 1 : 0
-  name            = "${var.name_prefix}-workflow"
+  name            = "${var.name_prefix}"
   definition_file = var.step_fn_definition_file
+  state_machine_definition_vars = {
+    job_definition_name_on_demand = module.benchmarks_on_demand.batch_job_definition_name
+    job_queue_on_demand           = module.benchmarks_on_demand.batch_job_queue_name
+    job_definition_name_spot      = module.benchmarks_spot.batch_job_definition_name
+    job_queue_spot                = module.benchmarks_spot.batch_job_queue_name
+    sns_topic_arn                 = module.benchmarks_sns_topic.arn
+    plotting_sfn_arn              = module.plotting_step_function[0].sfn_arn
+  }
+}
+module "plotting_step_function" {
+  source          = "../step-function"
+  count           = var.enable_step_function ? 1 : 0
+  name            = "${var.name_prefix}-plotting"
+  definition_file = var.plotting_step_fn_definition_file
   state_machine_definition_vars = {
     job_definition_name_on_demand = module.benchmarks_on_demand.batch_job_definition_name
     job_queue_on_demand           = module.benchmarks_on_demand.batch_job_queue_name

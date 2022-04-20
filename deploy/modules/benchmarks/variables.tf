@@ -72,6 +72,10 @@ variable "step_fn_definition_file" {
   description = "path to step function definition"
   default     = null
 }
+variable "plotting_step_fn_definition_file" {
+  description = "path to plotting step function definition"
+  default     = null
+}
 variable "sns_topic" {
   description = "arn for sns topic used for email notifications"
   default     = null

@@ -25,13 +25,13 @@ data:
       dir: ref-gcc/run-directory # Directory name
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-08-01T00:00:00"
+      bmk_end: "2019-07-01T01:00:00"
     gchp:
       version: ${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}
       dir: ref-gchp/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-08-01T00:00:00"
+      bmk_end: "2019-07-01T01:00:00"
       is_legacy: False # Whether GCHP files are legacy (pre-13.1) format
   dev:
     gcc:
@@ -39,13 +39,13 @@ data:
       dir: dev-gcc/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-08-01T00:00:00"
+      bmk_end: "2019-07-01T01:00:00"
     gchp:
       version: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
       dir: dev-gchp/run-directory
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
-      bmk_end: "2019-08-01T00:00:00"
+      bmk_end: "2019-07-01T01:00:00"
       is_legacy: False
 
 options:
@@ -69,12 +69,12 @@ options:
       dir: GCHP_GCC_diff_of_diffs
 
   outputs: # Output to generate (plots/tables will be created in this order):
-    plot_conc: True
-    plot_emis: True
+    plot_conc: False
+    plot_emis: False
     emis_table: True
-    plot_jvalues: True
-    plot_aod: True
-    mass_table: True # needs gcchem_internal_checkpoint.restart.20190701_000000.nc4
+    plot_jvalues: False
+    plot_aod: False
+    mass_table: True # needs gcchem_internal_checkpoint.restart.20190801_000000.nc4
     ops_budget_table: False
     OH_metrics: True # GCC only
     ste_table: True # GCC only

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+cd ${GEOSCHEM_BENCHMARK_SCRIPTS}
+. /etc/bashrc
+
+set -u
+set -e
+set -x
+
+: "${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}"        # primary key of ref in the database
+: "${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"        # primary key of dev in the database
+
+# import functions
+source ${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/modules/plotting.sh
+
+export GEOSCHEM_BENCHMARK_INSTANCE_ID=diff-${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}-${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}
+export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="${GEOSCHEM_BENCHMARK_TIME_PERIOD} Benchmark plot creation (ref: '${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}'; dev:'${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}')"
+export GEOSCHEM_BENCHMARK_SITE=AWS
+export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://benchmarks-cloud/diff-plots/$GEOSCHEM_BENCHMARK_TIME_PERIOD
+export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
+export AWS_DEFAULT_REGION=us-east-1
+export GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-.*##')
+export GEOSCHEM_BENCHMARK_REF_MODEL_TYPE=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed 's#-.*##')
+export GEOSCHEM_BENCHMARK_COMPARISON_TYPE="${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}_$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-.*##')"
+
+case ${GEOSCHEM_BENCHMARK_TIME_PERIOD} in
+    1Hr)
+        export GEOSCHEM_BENCHMARK_PLOTTING_CONFIG_FILE=${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/resources/template.1hr_benchmark.yml
+        ;;
+    1Day)
+        export GEOSCHEM_BENCHMARK_PLOTTING_CONFIG_FILE=${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/resources/template.1day_benchmark.yml
+        ;;
+    1Mon)
+        export GEOSCHEM_BENCHMARK_PLOTTING_CONFIG_FILE=${GEOSCHEM_BENCHMARK_SCRIPTS}/stages/resources/template.1mo_benchmark.yml
+        ;;
+    *)
+        >&2 echo "error: unknown time period '${GEOSCHEM_BENCHMARK_TIME_PERIOD}' (GEOSCHEM_BENCHMARK_TIME_PERIOD)"
+        exit 1
+        ;;
+esac
+
+./helpers/dbCreateTest.sh || echo "Test already exists"
+./stages/createBenchmarkPlots.sh
+
+# Conditionally perform model comparison plotting
+if [[ "x${GEOSCHEM_BENCHMARK_PLOTTING_DIFF_OF_DIFFS}" == "xtrue" ]]; then
+    if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Mon" ]]; then
+        run_diff_of_diffs  
+    else
+        echo "Skipping diff of diffs comparison. Diff of diffs comparisons are only performed for 1Mon benchmarks."
+    fi
+fi
+
+# Conditionally perform model comparison plotting
+if [[ "x${GEOSCHEM_BENCHMARK_PLOTTING_MODEL_COMPARISON}" == "xtrue" ]]; then
+    if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Mon" ]]; then
+        run_model_comparison  
+    else
+        echo "Skipping model comparison. Model comparisons are only performed for 1Mon benchmarks."
+    fi
+fi

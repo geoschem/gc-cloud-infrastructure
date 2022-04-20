@@ -1,0 +1,165 @@
+{
+  "Comment": "Run Automated Benchmark Plotting",
+  "StartAt": "Evaluate_RunType",
+  "States": {
+    "Evaluate_RunType": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.event.runType",
+          "StringEquals": "DEMAND",
+          "Next": "Set_OnDemand"
+        },
+        {
+          "Variable": "$.event.runType",
+          "StringEquals": "SPOT",
+          "Next": "Set_SpotInstance"
+        }
+      ],
+      "Default": "Evaluate_Failed_Workflow"
+    },
+    "Set_OnDemand": {
+      "Type": "Pass",
+      "Result": {
+        "job_queue": "${job_queue_on_demand}",
+        "job_definition": "${job_definition_name_on_demand}"
+      },
+      "ResultPath": "$.event.batch_info",
+      "Next": "Invoke_RunBenchmarkPlotting"
+    },
+    "Set_SpotInstance": {
+      "Type": "Pass",
+      "Result": {
+        "job_queue": "${job_queue_spot}",
+        "job_definition": "${job_definition_name_spot}"
+      },
+      "ResultPath": "$.event.batch_info",
+      "Next": "Invoke_RunBenchmarkPlotting"
+    },
+    "Invoke_RunBenchmarkPlotting": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::batch:submitJob.sync",
+      "Parameters": {
+        "JobDefinition.$": "$.event.batch_info.job_definition",
+        "JobName": "Invoke_RunBenchmarkPlot",
+        "JobQueue.$": "$.event.batch_info.job_queue",
+        "Timeout": {
+          "AttemptDurationSeconds": 120000
+        },
+        "ContainerOverrides": {
+          "ResourceRequirements": [
+            {
+              "Type": "VCPU",
+              "Value": "4"
+            },
+            {
+              "Type": "MEMORY",
+              "Value": "60000"
+            }
+          ],
+          "Environment": [
+            {
+              "Name": "GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY",
+              "Value.$": "$.event.devPrimaryKey"
+            },
+            {
+              "Name": "GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY",
+              "Value.$": "$.event.refPrimaryKey"
+            },
+            {
+              "Name": "GEOSCHEM_BENCHMARK_TIME_PERIOD",
+              "Value.$": "$.event.timePeriod"
+            },
+            {
+              "Name": "GEOSCHEM_BENCHMARK_PLOTTING_MODEL_COMPARISON",
+              "Value.$": "$.event.modelComparison"
+            },
+            {
+              "Name": "GEOSCHEM_BENCHMARK_PLOTTING_DIFF_OF_DIFFS",
+              "Value.$": "$.event.diffOfDiffs"
+            }
+          ],
+          "Command": [
+            "./scripts/entrypoints/benchmark-plots-aws"
+          ]
+        }
+      },
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.event.runBenchmarkPlotting",
+          "Next": "Evaluate_Failed_Workflow"
+        }
+      ],
+      "ResultPath": "$.event.runBenchmarkPlotting",
+      "Next": "Evaluate_Successful_Workflow"
+    },
+    "Evaluate_Failed_Workflow": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.event.sendEmailNotification",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.event.sendEmailNotification",
+              "StringEquals": "true"
+            }
+          ],
+          "Next": "Invoke_SendFailureEmail"
+        }
+      ],
+      "Default": "WorkflowFailed"
+    },
+    "Evaluate_Successful_Workflow": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.event.sendEmailNotification",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.event.sendEmailNotification",
+              "StringEquals": "true"
+            }
+          ],
+          "Next": "Invoke_SendSuccessEmail"
+        }
+      ],
+      "Default": "WorkflowComplete"
+    },
+    "Invoke_SendFailureEmail": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${sns_topic_arn}",
+        "Subject": "Benchmark run failed!",
+        "Message.$": "States.Format('Benchmark Plot failed for {}-{}! Check the state machine status at: https://console.aws.amazon.com/states/home?region=us-east-1#/statemachines \n\n Step Function Details: \n{}', $.event.devPrimaryKey, $.event.refPrimaryKey, $.event)"
+      },
+      "Next": "WorkflowFailed"
+    },
+    "Invoke_SendSuccessEmail": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${sns_topic_arn}",
+        "Subject": "Benchmark run finished!",
+        "Message.$": "States.Format('Benchmark Plot finished for {}-{}! \n\n Check the dashboard for s3 object information: https://rn7bblog7b.execute-api.us-east-1.amazonaws.com/Prod/dashboard/', $.event.devPrimaryKey, $.event.refPrimaryKey)"
+      },
+      "Next": "WorkflowComplete"
+    },
+    "WorkflowComplete": {
+      "Type": "Pass",
+      "End": true
+    },
+    "WorkflowFailed": {
+      "Type": "Fail"
+    }
+  }
+}
