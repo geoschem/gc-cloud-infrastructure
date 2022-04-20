@@ -42,6 +42,7 @@ export GEOSCHEM_BENCHMARK_SITE=WUSTL
 export GEOSCHEM_BENCHMARK_S3_BUCKET=s3://washu-benchmarks-cloud
 export GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX}
 export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
+export AWS_PROFILE=harvard-dynamodb
 
 ./helpers/dbCreateTest.sh || echo "Test already exists"
 ./stages/createBenchmarkPlots.sh
