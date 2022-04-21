@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE:=default}
+
 set -e
 set -u
 
@@ -10,4 +12,5 @@ aws dynamodb query \
     --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
     --key-condition-expression 'InstanceID = :v' \
     --expression-attribute-values "{\":v\": {\"S\": \"${primary_key}\"}}" \
-    --projection-expression "Stages" | jq '.Items[0].Stages.L[] | { Name:.M.Name.S, Completed:.M.Completed.BOOL, Log:.M.Log.S,  StartTime:.M.StartTime.S, EndTime:.M.EndTime.S, PublicArtifacts:  [ .M.PublicArtifacts.L | .[].S ]}'
+    --projection-expression "Stages" \
+    --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE} | jq '.Items[0].Stages.L[] | { Name:.M.Name.S, Completed:.M.Completed.BOOL, Log:.M.Log.S,  StartTime:.M.StartTime.S, EndTime:.M.EndTime.S, PublicArtifacts:  [ .M.PublicArtifacts.L | .[].S ]}'

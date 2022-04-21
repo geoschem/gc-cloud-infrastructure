@@ -1,12 +1,15 @@
 #!/bin/bash
 
+export GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE:=default}
+
 set -e
 set -u
 
 function scan_table() {
     aws dynamodb scan \
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
-        --projection-expression 'InstanceID, CreationDate, ExecStatus, Description'
+        --projection-expression 'InstanceID, CreationDate, ExecStatus, Description' \
+        --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE}
 }
 
 function convert_scan_output_to_csv() {

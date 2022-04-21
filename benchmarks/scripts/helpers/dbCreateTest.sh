@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+export GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE:=default}
+
 set -u
 set -e
 
@@ -26,4 +29,5 @@ set -x
 aws dynamodb put-item \
     --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
     --item "${item}" \
-    --condition-expression "attribute_not_exists(InstanceID)"
+    --condition-expression "attribute_not_exists(InstanceID)" \
+    --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE}

@@ -8,7 +8,7 @@ fi
 export TMPDIR=${GEOSCHEM_BENCHMARK_TEMPDIR_PREFIX:-${TMPDIR}}  # prefix of temporary directories (if specified)
 temp_dir=$(mktemp --directory)
 export GEOSCHEM_BENCHMARK_WORKING_DIR=${GEOSCHEM_BENCHMARK_WORKING_DIR:=${temp_dir}}    # working directory for this stage
-
+export GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE:=default}
 set -e  
 set -u
 
@@ -43,6 +43,7 @@ function db_query_stage_is_completed() {
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
         --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
         --attributes-to-get "Stages" \
+        --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE} \
     | jq -e ".Item.Stages.L[] | select((.M.Name.S == \"${STAGE_SHORT_NAME}\") and (.M.Completed.BOOL == true))" &> /dev/null
 }
 
@@ -53,6 +54,7 @@ function db_get_stage_index() {
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
         --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
         --attributes-to-get "Stages" \
+        --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE} \
     | jq -e ".Item.Stages.L | map(.M.Name.S == \"${STAGE_SHORT_NAME}\") | index(true)"
 }
 
@@ -71,7 +73,8 @@ function db_update_stage() {
         --key "{\"InstanceID\": {\"S\": \"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
         --update-expression "${update_expression}" \
         --expression-attribute-names '{"#s": "Stages"}' \
-        --expression-attribute-values "${expression_attribute_values}"
+        --expression-attribute-values "${expression_attribute_values}" \
+        --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE}
 }
 
 function update_status() {
@@ -81,7 +84,8 @@ function update_status() {
         --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
         --key "{\"InstanceID\":{\"S\":\"${GEOSCHEM_BENCHMARK_INSTANCE_ID}\"}}" \
         --update-expression 'SET ExecStatus = :v' \
-        --expression-attribute-values "{\":v\": {\"S\":\"${new_status}\"}}"
+        --expression-attribute-values "{\":v\": {\"S\":\"${new_status}\"}}" \
+        --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE}
 }
 
 function upload_artifacts() {
@@ -122,6 +126,7 @@ function download_artifacts() {
             --table-name ${GEOSCHEM_BENCHMARK_TABLE_NAME} \
             --key "{\"InstanceID\": {\"S\": \"${artifacts_pk}\"}}" \
             --attributes-to-get "Stages" \
+            --profile=${GEOSCHEM_BENCHMARK_DYNAMODB_PROFILE} \
         | jq -r ".Item.Stages.L[] | select(.M.Name.S != \"${STAGE_SHORT_NAME}\") | .M.Artifacts.L[].S"
     )
     for artifact_uri in ${artifacts}; do
