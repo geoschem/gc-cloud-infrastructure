@@ -13,7 +13,10 @@ resource "aws_sns_topic_policy" "allow_publish_events" {
       "Sid": "Allow_Publish_Events",
       "Effect": "Allow",
       "Principal": {
-        "Service": "events.amazonaws.com"
+        "Service": [
+          "events.amazonaws.com",
+          "cloudwatch.amazonaws.com"
+        ]
       },
       "Action": "sns:Publish",
       "Resource": "${aws_sns_topic.sns_topic.arn}"
