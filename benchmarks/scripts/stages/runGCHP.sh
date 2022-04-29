@@ -38,10 +38,14 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
         export TMPDIR="$__LSF_JOB_TMPDIR__"
         wustl_extdata_setup_hook
         chmod +x ./gchp
-        /usr/bin/time -v mpiexec -n ${num_proc} ./gchp
+        mpiexec -n ${num_proc} ./gchp
         ;;
     AWS)
-        /usr/bin/time -v mpiexec -n ${num_proc} ./gchp
+        /usr/bin/time -v mpiexec -n ${num_proc} ./gchp 2>&1 | tee runlog.txt
+        # Add peak memory and wall time to stage metadata
+        memory=$(sed -n 's#Maximum resident set size (kbytes):  *\([0-9][0-9]*\)#\1#p' runlog.txt | sed 's#\t##')
+        wallTime=$(sed -n 's#Elapsed (wall clock) time (h:mm:ss or m:ss):  *\([0-9].*\)#\1#p' runlog.txt | sed 's#\t##')
+        echo "{\"PeakMemory\":  \"${memory} KB\", \"WallTime\":  \"${wallTime} KB\"}" > metadata.json
         ;;
     *)
         >&2 echo "error: unknown site '${GEOSCHEM_BENCHMARK_SITE}' (GEOSCHEM_BENCHMARK_SITE)"

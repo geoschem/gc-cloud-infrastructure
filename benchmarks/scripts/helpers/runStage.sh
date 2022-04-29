@@ -178,13 +178,6 @@ if ! db_query_stage_is_completed ; then
             update_status FAILED
         fi
         
-        # Add peak memory and wall time to stage json
-        if [ "x${STAGE_SHORT_NAME}" == "xRunGCHP" ] || [ "x${STAGE_SHORT_NAME}" == "xRunGCC" ]; then
-            memory=$(sed -n 's#Maximum resident set size (kbytes):  *\([0-9][0-9]*\)#\1#p' ${log_file} | sed 's#\t##')
-            wallTime=$(sed -n 's#Elapsed (wall clock) time (h:mm:ss or m:ss):  *\([0-9].*\)#\1#p' ${log_file} | sed 's#\t##')
-            stage_json=$(echo "${stage_json}" | jq ".M.PeakMemory.S=\"${memory} KB\"")
-            stage_json=$(echo "${stage_json}" | jq ".M.WallTime.S=\"${wallTime}\"")
-        fi
         upload_log_file ${log_file}
         db_update_stage
         
