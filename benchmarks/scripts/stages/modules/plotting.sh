@@ -74,8 +74,8 @@ function run_diff_of_diffs() {
     
     ref_commit=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed 's#.*[0-9][a-zA-Z]..-##')
     dev_commit=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#.*[0-9][a-zA-Z]..-##')
-    dev_prefix=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-[0-9][a-zA-Z].*##')
-    ref_diff_prefix=$(echo $GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY | sed 's#-[0-9][a-zA-Z].*##')
+    dev_prefix=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed 's#-1[a-zA-Z].*##')
+    ref_diff_prefix=$(echo $GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY | sed 's#-1[a-zA-Z].*##')
     export GEOSCHEM_BENCHMARK_COMPARISON_TYPE=diff_of_diffs
     export GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION="${GEOSCHEM_BENCHMARK_TIME_PERIOD} Benchmark plot diff of diffs (ref: '${GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY}'; dev: '${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}'; dev: '${GEOSCHEM_BENCHMARK_DIFF_DEV_PRIMARY_KEY}'; ref: '${GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY})"
     export GEOSCHEM_BENCHMARK_INSTANCE_ID=diff-of-diffs-${GEOSCHEM_BENCHMARK_TIME_PERIOD}-${dev_prefix}-${ref_diff_prefix}-${ref_commit}-${dev_commit}
