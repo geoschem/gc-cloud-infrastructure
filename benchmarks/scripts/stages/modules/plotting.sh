@@ -57,13 +57,13 @@ function run_diff_of_diffs() {
     case ${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE} in
         gchp)
             diff_model_type=gcc
-            export GEOSCHEM_BENCHMARK_DIFF_DEV_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}#${diff_model_type}#" | sed "s#c24#4x5")
-            export GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_REF_MODEL_TYPE}#${diff_model_type}#" | sed "s#c24#4x5")
+            export GEOSCHEM_BENCHMARK_DIFF_DEV_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}#${diff_model_type}#" | sed "s#c24#4x5#")
+            export GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_REF_MODEL_TYPE}#${diff_model_type}#" | sed "s#c24#4x5#")
             ;;
         gcc)
             export diff_model_type=gchp
-            export GEOSCHEM_BENCHMARK_DIFF_DEV_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}#${diff_model_type}#" | sed "s#c24#4x5")
-            export GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_REF_MODEL_TYPE}#${diff_model_type}#" | sed "s#c24#4x5")
+            export GEOSCHEM_BENCHMARK_DIFF_DEV_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}#${diff_model_type}#" | sed "s#4x5#c24#")
+            export GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY=$(echo $GEOSCHEM_BENCHMARK_REF_PRIMARY_KEY | sed "s#${GEOSCHEM_BENCHMARK_REF_MODEL_TYPE}#${diff_model_type}#" | sed "s#4x5#c24#")
             ;;
         *)
             >&2 echo "error: unknown dev model type '${GEOSCHEM_BENCHMARK_DEV_MODEL_TYPE}' extrapolated from prefix of primary key: ${GEOSCHEM_BENCHMARK_DEV_PRIMARY_KEY}"

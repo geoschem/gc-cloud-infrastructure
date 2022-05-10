@@ -49,6 +49,9 @@ export GEOSCHEM_BENCHMARK_TABLE_NAME=geoschem_testing
 export AWS_DEFAULT_REGION=us-east-1
 export GEOSCHEM_BENCHMARK_DURATION_HOURS=000000
 
+# set name of current profile to default
+aws configure set profile default
+
 # set GCHP specific vars
 if [[ "x${GEOSCHEM_BENCHMARK_MODEL}" == "xgchp" ]]; then
     export GEOSCHEM_BENCHMARK_RESOLUTION=${CS_RES}
