@@ -35,8 +35,18 @@ function configure_run_directory() {
     GEOSCHEM_BENCHMARK_DURATION_HOURS=${GEOSCHEM_BENCHMARK_DURATION_HOURS:=000000}
     GEOSCHEM_BENCHMARK_FREQUENCY=${GEOSCHEM_BENCHMARK_FREQUENCY:=7440000}
     GEOSCHEM_BENCHMARK_MONTHLY_DIAGS=${GEOSCHEM_BENCHMARK_MONTHLY_DIAGS:=1}
-    sed -i "s/Start   YYYYMMDD, hhmmss  : [0-9][0-9]* 000000/Start   YYYYMMDD, hhmmss  : ${GEOSCHEM_BENCHMARK_END_DATE} ${GEOSCHEM_BENCHMARK_DURATION_HOURS}/" input.geos
-    sed -i "s/End   YYYYMMDD, hhmmss  : [0-9][0-9]* 000000/End   YYYYMMDD, hhmmss  : ${GEOSCHEM_BENCHMARK_END_DATE} ${GEOSCHEM_BENCHMARK_DURATION_HOURS}/" input.geos
+    
+    # Check whether to use input.geos (for versions <14)
+    GC_VERSION=$(echo ${GEOSCHEM_BENCHMARK_INSTANCE_ID} | sed "s#^[^-]*-[^-]*-[^-]*-##" | sed "s#[.].*##")
+    if [[ "x${GC_VERSION}" == "x13" ]]; then
+        sed -i "s/Start   YYYYMMDD, hhmmss  : [0-9][0-9]* 000000/Start   YYYYMMDD, hhmmss  : ${GEOSCHEM_BENCHMARK_START_DATE} 000000/" input.geos
+        sed -i "s/End   YYYYMMDD, hhmmss  : [0-9][0-9]* 000000/End   YYYYMMDD, hhmmss  : ${GEOSCHEM_BENCHMARK_END_DATE} ${GEOSCHEM_BENCHMARK_DURATION_HOURS}/" input.geos
+    else
+        sed -i "s#start_date\: \[20190701, 000000\]#start_date\: \[${GEOSCHEM_BENCHMARK_START_DATE}, 000000\]#" geoschem_config.yml
+        sed -i "s#end_date\: \[20190801, 000000\]#end_date\: \[${GEOSCHEM_BENCHMARK_END_DATE}, ${GEOSCHEM_BENCHMARK_DURATION_HOURS}\]#" geoschem_config.yml
+    fi
+
+    # reset DiagnFreq based on time period
     if [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Day" ]] ||
     [[ "x${GEOSCHEM_BENCHMARK_TIME_PERIOD}" == "x1Hr" ]]; then
         echo "creating rundir for 1Day time period"
