@@ -402,3 +402,8 @@ module "washu_iam_role" {
 }
 EOF
 }
+
+module "aws_marketplace" {
+  source      = "./modules/marketplace"
+  count       = local.only_harvard
+}
