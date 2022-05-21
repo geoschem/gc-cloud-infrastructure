@@ -7,7 +7,8 @@ from datetime import date
 
 # This file could be split into seperate model.py, view.py, and controller.py modules.
 
-#== helpers ==
+# == helpers ==
+
 
 def dynamodb_encode_item(v):
     if isinstance(v, str):
@@ -17,9 +18,10 @@ def dynamodb_encode_item(v):
     elif isinstance(v, list):
         return {"L": [dynamodb_encode_item(e) for e in v]}
     elif isinstance(v, dict):
-        return {"M": { kk: dynamodb_encode_item(vv) for kk, vv in v.items()}}
+        return {"M": {kk: dynamodb_encode_item(vv) for kk, vv in v.items()}}
     else:
         raise TypeError(f"Invalid type for encoding: {type(v).__name__}")
+
 
 def dynamodb_encode_dict(d: dict):
     new_dict = {}
@@ -58,31 +60,43 @@ class PrimaryKeyClassification:
     primary_key: dataclasses.InitVar[str] = None
     code_url: str = None
     commit_id: str = None
+    time_period: str = None
 
     def __post_init__(self, primary_key):
         semver_re = r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?"
         commit_hash_re = r"[0-9a-f]{7}"
-        simulation_re = fr"(gcc|gchp)-((2x25|2x2\.5|4x5|c?24|c?48|c?90|c?180)-)?(1Mon-|1Hr-)?({semver_re}|{commit_hash_re})(\.bd)?"
-        diff_of_diffs_re = fr"diff-of-diffs-1Mon-(gcc|gchp)-(2x25|2x2\.5|4x5|c?24|c?48|c?90|c?180)-(gcc|gchp)-(2x25|2x2\.5|4x5|c?24|c?48|c?90|c?180)-({semver_re}|{commit_hash_re})-({semver_re}|{commit_hash_re})"
-        if re.match(fr"^{simulation_re}$", primary_key):
+        simulation_re = rf"(gcc|gchp)-((2x25|2x2\.5|4x5|c?24|c?48|c?90|c?180)-)?(1Mon-|1Hr-)?({semver_re}|{commit_hash_re})(\.bd)?"
+        diff_of_diffs_re = rf"diff-of-diffs-1Mon-(gcc|gchp)-(2x25|2x2\.5|4x5|c?24|c?48|c?90|c?180)-(gcc|gchp)-(2x25|2x2\.5|4x5|c?24|c?48|c?90|c?180)-({semver_re}|{commit_hash_re})-({semver_re}|{commit_hash_re})"
+        if "1Mon" in primary_key:
+            self.time_period = "1Mon"
+        elif "1Hr" in primary_key:
+            self.time_period = "1Hr"
+        else:
+            self.time_period = "Unknown"
+
+        if re.match(rf"^{simulation_re}$", primary_key):
             if re.match(r"^gchp", primary_key):
                 self.classification = "GEOS-Chem Simulation"
                 repo = "GCHP"
             else:
                 self.classification = "GEOS-Chem Simulation"
-                repo="GCClassic"
+                repo = "GCClassic"
             semver_tag = re.search(semver_re, primary_key)
             if semver_tag:
                 self.commit_id = semver_tag.group(0)
                 self.commit_id = self.commit_id.removesuffix(".bd")  # for old entries
-                self.code_url = f"https://github.com/geoschem/{repo}/tree/{self.commit_id}"
+                self.code_url = (
+                    f"https://github.com/geoschem/{repo}/tree/{self.commit_id}"
+                )
             commit_hash = re.search(commit_hash_re, primary_key)
             if commit_hash:
                 self.commit_id = commit_hash.group(0)
                 self.commit_id = self.commit_id.removesuffix(".bd")  # for old entries
-                self.code_url = f"https://github.com/geoschem/{repo}/commit/{self.commit_id}"
+                self.code_url = (
+                    f"https://github.com/geoschem/{repo}/commit/{self.commit_id}"
+                )
             self.api = "simulation"
-        elif re.match(fr"^diff-{simulation_re}-{simulation_re}$", primary_key):
+        elif re.match(rf"^diff-{simulation_re}-{simulation_re}$", primary_key):
             self.classification = "Difference Plots"
             self.api = "difference"
         elif re.match(diff_of_diffs_re, primary_key):
@@ -113,7 +127,9 @@ class RegistryEntry:
             self.execution_site = dynamodb_scan_result.get("Site")
             self.s3_uri = dynamodb_scan_result.get("S3Uri")
             self.description = dynamodb_scan_result.get("Description")
-        self.primary_key_classification = PrimaryKeyClassification(primary_key=self.primary_key)
+        self.primary_key_classification = PrimaryKeyClassification(
+            primary_key=self.primary_key
+        )
 
 
 @dataclasses.dataclass
@@ -151,8 +167,12 @@ class RegistryEntrySimulation(RegistryEntry):
         if dynamodb_query_result is not None:
             super().__post_init__(dynamodb_query_result)
             stages = dynamodb_query_result["Stages"]["L"]
-            self.setup_run_directory = RegistryEntryStage(dynamodb_stage_result=stages[0].get("M", {}) if len(stages) >= 1 else {})
-            self.run_simulation_directory = RegistryEntryStage(dynamodb_stage_result=stages[1].get("M", {}) if len(stages) >= 2 else {})
+            self.setup_run_directory = RegistryEntryStage(
+                dynamodb_stage_result=stages[0].get("M", {}) if len(stages) >= 1 else {}
+            )
+            self.run_simulation_directory = RegistryEntryStage(
+                dynamodb_stage_result=stages[1].get("M", {}) if len(stages) >= 2 else {}
+            )
         else:
             super().__post_init__(dynamodb_scan_result)
 
@@ -171,7 +191,9 @@ class RegistryEntryDiff(RegistryEntry):
         if dynamodb_query_result is not None:
             super().__post_init__(dynamodb_query_result)
             stages = dynamodb_query_result["Stages"]["L"]
-            self.run_gcpy_stage = RegistryEntryStage(dynamodb_stage_result=stages[0].get("M", {}) if len(stages) >= 1 else {})
+            self.run_gcpy_stage = RegistryEntryStage(
+                dynamodb_stage_result=stages[0].get("M", {}) if len(stages) >= 1 else {}
+            )
         else:
             super().__post_init__(dynamodb_scan_result)
 
@@ -214,9 +236,9 @@ class NewDifferencePlot:
         return item
 
 
-#== VIEW ==
+# == VIEW ==
 
-html_page_begin="""<!DOCTYPE html>
+html_page_begin = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>GEOS-Chem Testing Dashboard</title>
@@ -231,12 +253,14 @@ html_page_begin="""<!DOCTYPE html>
 </head>
 <body>
 """
-html_page_end="""</body>
+html_page_end = """</body>
 </html>
 """
 
-dashboard_template="""
+dashboard_template = """
+<h1><a href="./">GC Testing Dashboard</a></h1>
 <h2>Registered Simulations</h2>
+<div style="font-weight: bold">Filters: <a href="filter?time_period=1Mon">1Mon</a>, <a href="filter?time_period=1Hr">1Hr</a></div>
 <table>
     <tr><th>Simulation ID</th><th>Date</th><th>Status</th><th>Code Url</th><th>Site</th><th>Description</th></tr>
 {%- for entry in entries -%}
@@ -296,7 +320,7 @@ dashboard_template="""
 </table>
 """
 
-simulation_template="""
+simulation_template = """
 <table>
     <tr><th>Name</th><th>Value</th></tr>
     <tr>
@@ -500,9 +524,15 @@ difference_template = """
 
 def fill_template(template_str, **kwargs):
     env = jinja2.Environment()
-    html_page = html_page_begin + env.from_string(template_str).render(**kwargs) + html_page_end
-    html_page = html_page.replace("SUCCESSFUL", '<span style="color:green">✅ SUCCESSFUL</span>')
-    html_page = html_page.replace("IN_PROGRESS", '<span style="color:orange">⌛ IN_PROGRESS</span>')
+    html_page = (
+        html_page_begin + env.from_string(template_str).render(**kwargs) + html_page_end
+    )
+    html_page = html_page.replace(
+        "SUCCESSFUL", '<span style="color:green">✅ SUCCESSFUL</span>'
+    )
+    html_page = html_page.replace(
+        "IN_PROGRESS", '<span style="color:orange">⌛ IN_PROGRESS</span>'
+    )
     html_page = html_page.replace("FAILED", '<span style="color:red">❌ FAILED</span>')
     return html_page
 
@@ -519,12 +549,14 @@ def get_difference_page(entry):
     return fill_template(difference_template, entry=entry)
 
 
-#== CONTROLLER ==
-TABLE_NAME="geoschem_testing"
+# == CONTROLLER ==
+TABLE_NAME = "geoschem_testing"
+
 
 def get_dynamodb_client():
-    dynamodb_client = boto3.client('dynamodb')
+    dynamodb_client = boto3.client("dynamodb")
     return dynamodb_client
+
 
 def parse_scan_response(response):
     entries = []
@@ -537,9 +569,9 @@ def scan_registry():
     client = get_dynamodb_client()
     response = client.scan(
         TableName=TABLE_NAME,
-        ProjectionExpression='InstanceID,CreationDate,ExecStatus,Site,Description',
+        ProjectionExpression="InstanceID,CreationDate,ExecStatus,Site,Description",
     )
-    return parse_scan_response(response['Items'])
+    return parse_scan_response(response["Items"])
 
 
 def parse_query_response_astype(query_results, astype):
@@ -556,66 +588,75 @@ def query_registry(items, astype):
         request_keys = [{"InstanceID": {"S": items}}]
     else:
         request_keys = [{"InstanceID": {"S": item.primary_key}} for item in items]
-    response = client.batch_get_item(
-        RequestItems={TABLE_NAME: {'Keys': request_keys}}
-    )
+    response = client.batch_get_item(RequestItems={TABLE_NAME: {"Keys": request_keys}})
 
     if astype is dict:
-        return [dynamodb_decode_dict(response) for response in response["Responses"][TABLE_NAME]]
+        return [
+            dynamodb_decode_dict(response)
+            for response in response["Responses"][TABLE_NAME]
+        ]
     else:
         return parse_query_response_astype(response["Responses"][TABLE_NAME], astype)
 
 
 def dashboard(event, context):
-    print(event)
-    if event['rawPath'] == "/difference":
-        difference(event, context)
-    elif event['rawPath'] == "/simulation":
-        simulation(event, context)
-    else:
-        entries = scan_registry()
-        entries.sort(key=lambda entry: entry.creation_date, reverse=True)
-        html_page = get_dashboard_page(entries)
-        return {
-            "statusCode": 200,
-            "headers": {
-                'Content-Type': 'text/html',
-            },
-            "body": html_page,
-        }
+    entries = scan_registry()
+    if event["rawPath"] == "/filter":
+        entries = [
+            entry
+            for entry in entries
+            if entry.primary_key_classification.time_period
+            == event["queryStringParameters"]["time_period"]
+        ]
+    entries.sort(key=lambda entry: entry.creation_date, reverse=True)
+    html_page = get_dashboard_page(entries)
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "text/html",
+        },
+        "body": html_page,
+    }
 
 
 def simulation(event, context):
-    primary_key = event['queryStringParameters']['primary_key']
+    primary_key = event["queryStringParameters"]["primary_key"]
     entries = query_registry(primary_key, RegistryEntrySimulation)
     html_page = get_simulation_page(entry=entries[0])
     return {
         "statusCode": 200,
         "headers": {
-            'Content-Type': 'text/html',
+            "Content-Type": "text/html",
         },
         "body": html_page,
     }
 
 
 def difference(event, context):
-    primary_key = event['queryStringParameters']['primary_key']
+    primary_key = event["queryStringParameters"]["primary_key"]
     entries = query_registry(primary_key, RegistryEntryDiff)
     html_page = get_difference_page(entry=entries[0])
     return {
         "statusCode": 200,
         "headers": {
-            'Content-Type': 'text/html',
+            "Content-Type": "text/html",
         },
         "body": html_page,
     }
 
+
+def test(event, context):
+    return {"event": event}
+
+
 def handler(event, context):
 
-    if event['rawPath'] == "/difference":
+    if event["rawPath"] == "/difference":
         output = difference(event, context)
-    elif event['rawPath'] == "/simulation":
+    elif event["rawPath"] == "/simulation":
         output = simulation(event, context)
+    elif event["rawPath"] == "/test":
+        output = test(event, context)
     else:
         output = dashboard(event, context)
     return output
