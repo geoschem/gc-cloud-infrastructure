@@ -12,12 +12,13 @@ variable bucket_policy {
 }
 
 variable enable_versioning {
-    description = "set to true to ensure you can see the full revision history of bucket objects"
+    default = "Suspended"
+    description = "set to Enabled to ensure you can see the full revision history of bucket objects"
 }
 
 variable encryption_algorithm {
     description = "set array to either [\"AES256\"] or [\"aws:kms\"] to enable server-side encryption for the bucket"
-    default = []
+    default = null
 }
 variable expiration_settings {
     description = "settings for object expiration in the bucket. Each object in array must contain a prefix and days attribute"

@@ -1,0 +1,70 @@
+{
+    "Item": {
+        "CreationDate": {
+            "S": "2022-04-04"
+        },
+        "ExecStatus": {
+            "S": "SUCCESSFUL"
+        },
+        "S3Uri": {
+            "S": "s3://benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd"
+        },
+        "Description": {
+            "S": "1Hr Benchmark plot creation (ref: 'gcc-1Hr-3f70328.bd'; dev:'gcc-1Hr-3f70328.bd')"
+        },
+        "InstanceID": {
+            "S": "diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd"
+        },
+        "Site": {
+            "S": "AWS"
+        },
+        "Stages": {
+            "L": [
+                {
+                    "M": {
+                        "Artifacts": {
+                            "L": []
+                        },
+                        "EndTime": {
+                            "S": "2022-04-04T17:23:32+0000"
+                        },
+                        "Log": {
+                            "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd/CreateBenchmarkPlots.txt"
+                        },
+                        "PublicArtifacts": {
+                            "L": [
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd/BenchmarkResults/Tables/Emission_totals.txt"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd/BenchmarkResults/Tables/GlobalMass_Trop.txt"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd/BenchmarkResults/Tables/GlobalMass_TropStrat.txt"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd/BenchmarkResults/Tables/Inventory_totals.txt"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Hr/diff-gcc-1Hr-3f70328.bd-gcc-1Hr-3f70328.bd/BenchmarkResults/Tables/OH_metrics.txt"
+                                }
+                            ]
+                        },
+                        "Completed": {
+                            "BOOL": true
+                        },
+                        "StartTime": {
+                            "S": "2022-04-04T17:22:44+0000"
+                        },
+                        "Metadata": {
+                            "S": "{}"
+                        },
+                        "Name": {
+                            "S": "CreateBenchmarkPlots"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -4,8 +4,11 @@
 data "aws_vpc" "default" {# fetch default vpc
   default = true
 }
-data "aws_subnet_ids" "subnets" {
-  vpc_id = local.vpc_id
+data "aws_subnets" "subnets" {
+  filter {
+    name = "vpc-id"
+    values = [local.vpc_id] 
+  }
 }
 # conditionally set whether to use the default vpc or a purpose built vpc
 locals {
@@ -52,7 +55,7 @@ module "plotting_step_function" {
 module "benchmarks_on_demand" {
   source                    = "../batch"
   name_prefix               = var.name_prefix
-  subnet_ids                = data.aws_subnet_ids.subnets.ids
+  subnet_ids                = data.aws_subnets.subnets.ids
   ami_id                    = var.ami_id
   instance_types            = var.instance_types
   security_group_id         = module.benchmarks_security_group.security_group_id
@@ -82,7 +85,7 @@ module "benchmarks_on_demand" {
 module "benchmarks_spot" {
   source                    = "../batch"
   name_prefix               = "${var.name_prefix}-spot"
-  subnet_ids                = data.aws_subnet_ids.subnets.ids
+  subnet_ids                = data.aws_subnets.subnets.ids
   ami_id                    = var.ami_id
   instance_types            = var.instance_types
   security_group_id         = module.benchmarks_security_group.security_group_id

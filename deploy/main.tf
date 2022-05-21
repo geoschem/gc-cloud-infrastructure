@@ -13,7 +13,7 @@ terraform {
   required_version = ">= 1.0.5" # at least have v1.0.5 of terraform
   required_providers {
     aws = {
-      version = ">= 3.63.0" # at least have v3.56.0 of aws provider
+      version = ">= 4.15.0" # at least have v3.56.0 of aws provider
       source  = "hashicorp/aws"
     }
   }
@@ -37,8 +37,11 @@ locals {
 data "aws_vpc" "default" { # fetch default vpc
   default = true
 }
-data "aws_subnet_ids" "all_default_subnets" { # fetch default subnets
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "all_default_subnets" { # fetch default subnets
+  filter {
+    name = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 module "default_security_group" {
   count       = local.all_environments
@@ -64,7 +67,6 @@ module "benchmarks_bucket" {
   count             = local.all_environments
   bucket_name       = var.benchmarks_bucket
   bucket_acl        = "private"
-  enable_versioning = false
   expiration_settings = [{
     prefix = "benchmarks/1Day/"
     days   = 90
@@ -226,7 +228,7 @@ module "gchp_image_builder" {
   builder_version    = "1.0.2" # TODO: figure out a way to stop needing to change this with every update 
   component_file     = "../../modules/ec2-image-builder/components/install-spack-component.yaml"
   security_group_id  = module.default_security_group[0].security_group_id
-  subnet_id          = tolist(data.aws_subnet_ids.all_default_subnets.ids)[0]
+  subnet_id          = tolist(data.aws_subnets.all_default_subnets.ids)[0]
   recipe_name        = "geoschem_deps-pcluster_ami-x86_64-alinux2-intel_latest-intelmpi_latest"
 }
 
@@ -237,7 +239,6 @@ module "AQACF_bucket" {
   source            = "./modules/s3/bucket"
   count             = local.only_washu
   bucket_name       = "${var.organization}-aqacf-data"
-  enable_versioning = false
   bucket_policy     = <<POLICY
 {
    "Version": "2012-10-17",
@@ -406,4 +407,14 @@ EOF
 module "aws_marketplace" {
   source      = "./modules/marketplace"
   count       = local.only_harvard
+}
+module "gc_testing_dashboard" {
+  source      = "./modules/lambda"
+  count       = local.only_harvard
+  name_prefix = "gc-testing-dashboard"
+  handler     = "geoschem_testing.handler"
+  code_path   = "../../../benchmarks/dashboard/src"
+  packages_path  = "../../../benchmarks/dashboard/packages"
+  enable_lambda_function_url = true
+  additional_role_permissions = ["arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"]
 }

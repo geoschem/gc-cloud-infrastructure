@@ -3,8 +3,8 @@ module "state_bucket" {
     
     bucket_name = var.bucket_name
     bucket_acl = "private"
-    enable_versioning = true
-    encryption_algorithm = ["AES256"]
+    enable_versioning = "Enabled"
+    encryption_algorithm = "AES256"
 }
 
 module "state_lock_table" {

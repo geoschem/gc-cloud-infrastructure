@@ -1,0 +1,193 @@
+{
+    "Item": {
+        "CreationDate": {
+            "S": "2022-04-13"
+        },
+        "ExecStatus": {
+            "S": "SUCCESSFUL"
+        },
+        "S3Uri": {
+            "S": "s3://benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27"
+        },
+        "Description": {
+            "S": "1Mon Benchmark plot diff of diffs (ref: 'gchp-c24-1Mon-13.4.0-alpha.26'; dev: 'gchp-c24-1Mon-13.4.0-alpha.27'; dev: 'gcc-c24-1Mon-13.4.0-alpha.27'; ref: 'gcc-c24-1Mon-13.4.0-alpha.26)"
+        },
+        "InstanceID": {
+            "S": "diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27"
+        },
+        "Site": {
+            "S": "AWS"
+        },
+        "Stages": {
+            "L": [
+                {
+                    "M": {
+                        "Artifacts": {
+                            "L": []
+                        },
+                        "EndTime": {
+                            "S": "2022-04-13T20:53:47+0000"
+                        },
+                        "Log": {
+                            "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/CreateBenchmarkPlots.txt"
+                        },
+                        "PublicArtifacts": {
+                            "L": [
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/lumped_species.yml"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/benchmark_categories.yml"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Aerosols/Aerosols_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Aerosols/Aerosols_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Aerosols/Aerosols_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Aerosols/Aerosols_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Bromine/Bromine_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Bromine/Bromine_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Bromine/Bromine_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Bromine/Bromine_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Chlorine/Chlorine_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Chlorine/Chlorine_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Chlorine/Chlorine_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Chlorine/Chlorine_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Iodine/Iodine_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Iodine/Iodine_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Iodine/Iodine_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Iodine/Iodine_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Nitrogen/Nitrogen_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Nitrogen/Nitrogen_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Nitrogen/Nitrogen_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Nitrogen/Nitrogen_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Oxidants/Oxidants_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Oxidants/Oxidants_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Oxidants/Oxidants_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Oxidants/Oxidants_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Primary_Organics/Primary_Organics_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Primary_Organics/Primary_Organics_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Primary_Organics/Primary_Organics_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Primary_Organics/Primary_Organics_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/ROy/ROy_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/ROy/ROy_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/ROy/ROy_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/ROy/ROy_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organic_Aerosols/Secondary_Organic_Aerosols_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organic_Aerosols/Secondary_Organic_Aerosols_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organic_Aerosols/Secondary_Organic_Aerosols_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organic_Aerosols/Secondary_Organic_Aerosols_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organics/Secondary_Organics_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organics/Secondary_Organics_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organics/Secondary_Organics_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Secondary_Organics/Secondary_Organics_Strat_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Sulfur/Sulfur_Surface.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Sulfur/Sulfur_500hPa.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Sulfur/Sulfur_FullColumn_ZonalMean.pdf"
+                                },
+                                {
+                                    "S": "http://s3.amazonaws.com/benchmarks-cloud/diff-plots/1Mon/diff-of-diffs-1Mon-gchp-c24-gcc-c24-13.4.0-alpha.26-13.4.0-alpha.27/BenchmarkResults/GCHP_GCC_diff_of_diffs/Sulfur/Sulfur_Strat_ZonalMean.pdf"
+                                }
+                            ]
+                        },
+                        "Completed": {
+                            "BOOL": true
+                        },
+                        "StartTime": {
+                            "S": "2022-04-13T20:44:26+0000"
+                        },
+                        "Metadata": {
+                            "S": "{}"
+                        },
+                        "Name": {
+                            "S": "CreateBenchmarkPlots"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
