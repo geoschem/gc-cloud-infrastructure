@@ -4,3 +4,4 @@
 .env
 registry.terraform.io*
 **/modules.json
+benchmarks/dashboard/packages/*

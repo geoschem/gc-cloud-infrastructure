@@ -1,0 +1,90 @@
+{
+    "Item": {
+        "CreationDate": {
+            "S": "2022-03-28"
+        },
+        "ExecStatus": {
+            "S": "SUCCESSFUL"
+        },
+        "S3Uri": {
+            "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-rc.3.bd"
+        },
+        "Description": {
+            "S": "1Mon gchp benchmark simulation using '13.4.0-rc.3'"
+        },
+        "InstanceID": {
+            "S": "gchp-1Mon-13.4.0-rc.3.bd"
+        },
+        "Site": {
+            "S": "AWS"
+        },
+        "Stages": {
+            "L": [
+                {
+                    "M": {
+                        "Artifacts": {
+                            "L": [
+                                {
+                                    "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-rc.3.bd/SetupRunDirectory_RunDirectory.tar.gz"
+                                }
+                            ]
+                        },
+                        "EndTime": {
+                            "S": "2022-03-28T18:00:15+0000"
+                        },
+                        "Log": {
+                            "S": "http://s3.amazonaws.com/benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-rc.3.bd/SetupRunDirectory.txt"
+                        },
+                        "PublicArtifacts": {
+                            "L": []
+                        },
+                        "Completed": {
+                            "BOOL": true
+                        },
+                        "StartTime": {
+                            "S": "2022-03-28T17:45:04+0000"
+                        },
+                        "Metadata": {
+                            "S": "{}"
+                        },
+                        "Name": {
+                            "S": "SetupRunDirectory"
+                        }
+                    }
+                },
+                {
+                    "M": {
+                        "Artifacts": {
+                            "L": [
+                                {
+                                    "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-rc.3.bd/RunGCHP_OutputDir.tar.gz"
+                                }
+                            ]
+                        },
+                        "EndTime": {
+                            "S": "2022-03-29T01:45:15+0000"
+                        },
+                        "Log": {
+                            "S": "http://s3.amazonaws.com/benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-rc.3.bd/RunGCHP.txt"
+                        },
+                        "PublicArtifacts": {
+                            "L": []
+                        },
+                        "Completed": {
+                            "BOOL": true
+                        },
+                        "StartTime": {
+                            "S": "2022-03-28T19:26:04+0000"
+                        },
+                        "Metadata": {
+                            "S": "{}"
+                        },
+                        "Name": {
+                            "S": "RunGCHP"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

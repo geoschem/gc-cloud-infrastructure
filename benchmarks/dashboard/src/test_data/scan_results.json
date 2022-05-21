@@ -1,0 +1,967 @@
+{
+    "Items": [
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.23.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.23'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.23.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-d7f6e81.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using 'd7f6e81'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-d7f6e81.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-28"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-rc.3.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-rc.3'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-rc.3.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-6817ca3.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '6817ca3'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-6817ca3.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-22"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.22.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.22'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.22.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-f295a52.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using 'f295a52'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-f295a52.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-f9a901a.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using 'f9a901a'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-f9a901a.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-2a814f6.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '2a814f6'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-2a814f6.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.24.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.24'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.24.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.20.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.20'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.20.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.21.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.21'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.21.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-28"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-rc.3.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-rc.3'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-rc.3.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-483b659.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '483b659'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-483b659.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-7131f3d.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '7131f3d'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-7131f3d.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-22"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-d15d3c6.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using 'd15d3c6'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-d15d3c6.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-28"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.25.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.25'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.25.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-25e3809.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '25e3809'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-25e3809.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-5d35275.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '5d35275'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-5d35275.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-28"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-3f70328.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '3f70328'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-3f70328.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-a6a4783.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using 'a6a4783'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-a6a4783.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.19.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.19'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.19.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-18"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-44a05aa.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '44a05aa'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-44a05aa.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-3b400ed.bd"
+            },
+            "Description": {
+                "S": "1Hr GCHP benchmark simulation using '3b400ed'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-3b400ed.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-31"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-ef73756.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using 'ef73756'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-ef73756.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-18"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-47619e8.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '47619e8'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-47619e8.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-08"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-404b4d9.bd"
+            },
+            "Description": {
+                "S": "1Hr GCC benchmark simulation using '404b4d9'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-404b4d9.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-31"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/plots/bmp.gchp-1Hr-ef73756.bd_gchp-1Hr-caa6320.bd"
+            },
+            "Description": {
+                "S": "GCHP benchmark plot creation (ref: 'gchp-1Hr-ef73756.bd'; dev:'gchp-1Hr-caa6320.bd')"
+            },
+            "InstanceID": {
+                "S": "bmp.gchp-1Hr-ef73756.bd_gchp-1Hr-caa6320.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-172ae01.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '172ae01'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-172ae01.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.19.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.19'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.19.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-08"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-13.3.4.bd"
+            },
+            "Description": {
+                "S": "1Hr GCC benchmark simulation using '13.3.4'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-13.3.4.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-31"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-caa6320.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using 'caa6320'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-caa6320.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-16"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-552323b.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '552323b'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-552323b.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.20.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.20'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.20.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-9da5a3f.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '9da5a3f'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-9da5a3f.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-08"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-fd28642.bd"
+            },
+            "Description": {
+                "S": "1Hr GCC benchmark simulation using 'fd28642'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-fd28642.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-28"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.25.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.25'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.25.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.23.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.23'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.23.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-08"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-13.3.4.bd"
+            },
+            "Description": {
+                "S": "1Hr GCHP benchmark simulation using '13.3.4'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-13.3.4.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-17"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.21.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.21'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.21.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-30"
+            },
+            "ExecStatus": {
+                "S": "IN_PROGRESS"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-13.2.1.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '13.2.1'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-13.2.1.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-447fc29.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '447fc29'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-447fc29.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-22"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-2f037c2.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '2f037c2'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-2f037c2.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-24"
+            },
+            "ExecStatus": {
+                "S": "FAILED"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gchp/gchp-1Mon-13.4.0-alpha.24.bd"
+            },
+            "Description": {
+                "S": "1Mon gchp benchmark simulation using '13.4.0-alpha.24'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Mon-13.4.0-alpha.24.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-18"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-519b9bd.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '519b9bd'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-519b9bd.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-09"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gchp/gchp-1Hr-1ea41cd.bd"
+            },
+            "Description": {
+                "S": "1Hr gchp benchmark simulation using '1ea41cd'"
+            },
+            "InstanceID": {
+                "S": "gchp-1Hr-1ea41cd.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-18"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-60a412b.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using '60a412b'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-60a412b.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-22"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Mon/gcc/gcc-1Mon-13.4.0-alpha.22.bd"
+            },
+            "Description": {
+                "S": "1Mon gcc benchmark simulation using '13.4.0-alpha.22'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Mon-13.4.0-alpha.22.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        },
+        {
+            "CreationDate": {
+                "S": "2022-03-18"
+            },
+            "ExecStatus": {
+                "S": "SUCCESSFUL"
+            },
+            "S3Uri": {
+                "S": "s3://benchmarks-cloud/benchmarks/1Hr/gcc/gcc-1Hr-f2a6715.bd"
+            },
+            "Description": {
+                "S": "1Hr gcc benchmark simulation using 'f2a6715'"
+            },
+            "InstanceID": {
+                "S": "gcc-1Hr-f2a6715.bd"
+            },
+            "Site": {
+                "S": "AWS"
+            }
+        }
+    ],
+    "Count": 48,
+    "ScannedCount": 48,
+    "ConsumedCapacity": null
+}
