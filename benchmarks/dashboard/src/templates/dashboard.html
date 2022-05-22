@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1><a href="./">GC Testing Dashboard</a></h1>
+<h2>Registered Simulations</h2>
+<div style="font-weight: bold">Filters: <a href="filter?time_period=1Mon">1Mon</a>, <a
+        href="filter?time_period=1Hr">1Hr</a></div>
+<table>
+    <tr>
+        <th>Simulation ID</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Code Url</th>
+        <th>Site</th>
+        <th>Description</th>
+    </tr>
+    {%- for entry in entries -%}
+    {%- if entry.primary_key_classification.classification == 'GEOS-Chem Simulation' -%}
+    <tr>
+        {%- if entry.primary_key_classification.api is not none -%}
+        <td><a href="{{ entry.primary_key_classification.api }}?primary_key={{ entry.primary_key }}">{{
+                entry.primary_key }}</a></td>
+        {%- else -%}
+        <td>{{ entry.primary_key }}</td>
+        {%- endif -%}
+        <td>{{ entry.creation_date }}</td>
+        <td>{{ entry.execution_status }}</td>
+        <td><a href="{{ entry.primary_key_classification.code_url }}">{{ entry.primary_key_classification.commit_id
+                }}</a></td>
+        <td>{{ entry.execution_site }}</td>
+        <td>{{ entry.description }}</td>
+    </tr>
+    {%- endif -%}
+    {%- endfor -%}
+</table>
+
+<hr>
+<h2>Difference Plots</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Site</th>
+        <th>Description</th>
+    </tr>
+    {%- for entry in entries -%}
+    {%- if entry.primary_key_classification.classification == 'Difference Plots' -%}
+    <tr>
+        {%- if entry.primary_key_classification.api is not none -%}
+        <td><a href="{{ entry.primary_key_classification.api }}?primary_key={{ entry.primary_key }}">{{
+                entry.primary_key }}</a></td>
+        {%- else -%}
+        <td>{{ entry.primary_key }}</td>
+        {%- endif -%}
+        <td>{{ entry.creation_date }}</td>
+        <td>{{ entry.execution_status }}</td>
+        <td>{{ entry.execution_site }}</td>
+        <td>{{ entry.description }}</td>
+    </tr>
+    {%- endif -%}
+    {%- endfor -%}
+</table>
+
+<hr>
+<h2>Unclassified Entries</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Site</th>
+        <th>Description</th>
+    </tr>
+    {%- for entry in entries -%}
+    {%- if entry.primary_key_classification.classification == 'Unknown' -%}
+    <tr>
+        <td>{{ entry.primary_key }}</td>
+        <td>{{ entry.creation_date }}</td>
+        <td>{{ entry.execution_status }}</td>
+        <td>{{ entry.execution_site }}</td>
+        <td>{{ entry.description }}</td>
+    </tr>
+    {%- endif -%}
+    {%- endfor -%}
+</table>
+{% endblock %}

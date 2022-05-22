@@ -34,3 +34,7 @@ variable "log_expiration_days" {
   description = "number of days logs expire in"
   default     = 14
 }
+variable "code_zip_exclude" {
+  description = "files to exclude in code zip"
+  default     = []
+}

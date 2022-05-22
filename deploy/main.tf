@@ -412,9 +412,10 @@ module "gc_testing_dashboard" {
   source      = "./modules/lambda"
   count       = local.only_harvard
   name_prefix = "gc-testing-dashboard"
-  handler     = "geoschem_testing.handler"
-  code_path   = "../../../benchmarks/dashboard/src"
+  handler     = "src.controller.handler"
+  code_path   = "../../../benchmarks/dashboard/"
   packages_path  = "../../../benchmarks/dashboard/packages"
   enable_lambda_function_url = true
   additional_role_permissions = ["arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"]
+  code_zip_exclude = fileset("../../../benchmarks/dashboard/", "packages/**")
 }

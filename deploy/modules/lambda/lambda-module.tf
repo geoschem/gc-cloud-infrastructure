@@ -2,6 +2,7 @@ data "archive_file" "zip_code" {
   type        = "zip"
   source_dir  = var.code_path
   output_path = "${var.packages_path}/code_pkg.zip"
+  excludes    = var.code_zip_exclude
 }
 
 data "archive_file" "zip_layers" {

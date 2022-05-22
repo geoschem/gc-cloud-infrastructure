@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Primary Key</td>
+        <td>{{ entry.primary_key }}</td>
+    </tr>
+    <tr>
+        <td>Creation Date</td>
+        <td>{{ entry.creation_date }}</td>
+    </tr>
+    <tr>
+        <td>Execution Status</td>
+        <td>{{ entry.execution_status }}</td>
+    </tr>
+    <tr>
+        <td>Execution Site</td>
+        <td>{{ entry.execution_site }}</td>
+    </tr>
+    <tr>
+        <td>S3 Uri Site</td>
+        <td>{{ entry.s3_uri }}</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>{{ entry.description }}</td>
+    </tr>
+    <tr>
+        <td>GCPy Output</td>
+        {%- if entry.run_gcpy_stage is not none -%}
+        <td>
+            <table>
+                <tr>
+                    <td>Completed</td>
+                    <td>{{ entry.run_gcpy_stage.completed }}</td>
+                </tr>
+                <tr>
+                    <td>Log File</td>
+                    <td><a href="{{ entry.run_gcpy_stage.log_file }}">{{ entry.run_gcpy_stage.log_file }}</a></td>
+                </tr>
+                <tr>
+                    <td>Start Time</td>
+                    <td>{{ entry.run_gcpy_stage.start_time }}</td>
+                </tr>
+                <tr>
+                    <td>End Time</td>
+                    <td>{{ entry.run_gcpy_stage.end_time }}</td>
+                </tr>
+                <tr>
+                    <td>Public Artifacts</td>
+                    <td>
+                        {%- for artifact in entry.run_gcpy_stage.public_artifacts -%}
+                        <a href="{{ artifact }}">{{ artifact }}</a><br>
+                        {%- endfor -%}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Stage Artifacts</td>
+                    <td>
+                        {%- for artifact in entry.run_gcpy_stage.artifacts -%}
+                        {{ artifact }}<br>
+                        {%- endfor -%}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Metadata</td>
+                    <td>{{ entry.run_gcpy_stage.metadata }}</td>
+                </tr>
+            </table>
+        </td>
+        {%- else -%}
+        <td>n/a</td>
+        {%- endif -%}
+    </tr>
+</table>
+{% endblock %}
