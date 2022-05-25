@@ -39,7 +39,7 @@ function update_plotting_config_file() {
             mkdir $diff_devdir
             (
                 cd $diff_devdir
-                download_artifacts "${GEOSCHEM_BENCHMARK_DIFF_REF_PRIMARY_KEY}"
+                download_artifacts "${GEOSCHEM_BENCHMARK_DIFF_DEV_PRIMARY_KEY}"
             )
             mkdir $diff_refdir
             (
