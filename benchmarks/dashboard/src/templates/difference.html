@@ -54,7 +54,7 @@
                     <td>Public Artifacts</td>
                     <td>
                         {%- for artifact in entry.run_gcpy_stage.public_artifacts -%}
-                        <a href="{{ artifact }}">{{ artifact }}</a><br>
+                        <a href="{{ artifact.url }}">{{ artifact.name }}</a><br>
                         {%- endfor -%}
                     </td>
                 </tr>

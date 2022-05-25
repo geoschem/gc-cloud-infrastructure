@@ -55,7 +55,7 @@
                     <td>Public Artifacts</td>
                     <td>
                         {%- for artifact in entry.setup_run_directory.public_artifacts -%}
-                        <a href="{{ artifact }}">{{ artifact }}</a><br>
+                        <a href="{{ artifact.url }}">{{ artifact.url }}</a><br>
                         {%- endfor -%}
                     </td>
                 </tr>
@@ -103,7 +103,7 @@
                     <td>Public Artifacts</td>
                     <td>
                         {%- for artifact in entry.run_simulation_directory.public_artifacts -%}
-                        <a href="{{ artifact }}">{{ artifact }}</a><br>
+                        <a href="{{ artifact.url }}">{{ artifact.url }}</a><br>
                         {%- endfor -%}
                     </td>
                 </tr>

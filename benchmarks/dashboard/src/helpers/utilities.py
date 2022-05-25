@@ -14,3 +14,11 @@ def fill_template(template_file, **kwargs):
     )
     html_page = html_page.replace("FAILED", '<span style="color:red">❌ FAILED</span>')
     return html_page
+
+def create_public_artifacts(public_artifacts):
+    updated_artifacts = []
+    for artifact in public_artifacts:
+        name = artifact.split("BenchmarkResults/",1)[1]
+        updated_artifacts.append({"url": artifact, "name": name})
+    return updated_artifacts
+

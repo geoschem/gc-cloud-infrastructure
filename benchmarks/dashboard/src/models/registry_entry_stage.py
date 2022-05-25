@@ -1,6 +1,7 @@
 import dataclasses
 import typing
 from ..helpers.model_helpers import dynamodb_decode_dict
+from ..helpers.utilities import create_public_artifacts
 
 
 @dataclasses.dataclass
@@ -24,5 +25,5 @@ class RegistryEntryStage:
             self.start_time = dynamodb_stage_result.get("StartTime")
             self.end_time = dynamodb_stage_result.get("EndTime")
             self.artifacts = dynamodb_stage_result.get("Artifacts")
-            self.public_artifacts = dynamodb_stage_result.get("PublicArtifacts")
+            self.public_artifacts = create_public_artifacts(dynamodb_stage_result.get("PublicArtifacts"))
             self.metadata = dynamodb_stage_result.get("Metadata")
