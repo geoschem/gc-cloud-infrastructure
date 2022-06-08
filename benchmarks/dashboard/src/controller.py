@@ -1,11 +1,11 @@
-from .helpers.utilities import fill_template
+from .helpers.utilities import fill_template, apply_filters
 from .models.registry_entry_simulation import RegistryEntrySimulation
 from .models.registry_entry_diff import RegistryEntryDiff
 from .helpers.dynamodb import *
 
 
 def dashboard(event, context):
-    entries = scan_registry()
+    entries = apply_filters(event, scan_registry())
     if event["rawPath"] == "/filter":
         entries = [
             entry

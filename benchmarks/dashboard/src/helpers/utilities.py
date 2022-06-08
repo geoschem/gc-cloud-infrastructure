@@ -22,3 +22,22 @@ def create_public_artifacts(public_artifacts):
         updated_artifacts.append({"url": artifact, "name": name})
     return updated_artifacts
 
+# filter entries based on querystring parameters
+def apply_filters(event, entries):
+    if event["rawPath"] == "/search":
+        search_string = event["queryStringParameters"]["searchString"]
+        hour_filter = event["queryStringParameters"]["1Hr"] if "1Hr" in event["queryStringParameters"] else None
+        monthly_filter = event["queryStringParameters"]["1Mon"] if "1Mon" in event["queryStringParameters"] else None
+
+        if not hour_filter and monthly_filter:
+            time_period = hour_filter or monthly_filter or None
+            entries = [
+                entry
+                for entry in entries
+                if entry.primary_key_classification.time_period == time_period
+            ]
+        if search_string != "":
+            entries = [entry for entry in entries if search_string in entry.primary_key]
+
+    return entries
+

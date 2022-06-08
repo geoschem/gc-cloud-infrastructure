@@ -58,13 +58,29 @@ def parse_scan_response(response):
     return entries
 
 
-def scan_registry():
+def scan_registry(start_key=None, previous_entries=None):
     client = get_dynamodb_client()
-    response = client.scan(
-        TableName=TABLE_NAME,
-        ProjectionExpression="InstanceID,CreationDate,ExecStatus,Site,Description",
-    )
-    return parse_scan_response(response["Items"])
+    if start_key is None:
+        response = client.scan(
+            TableName=TABLE_NAME,
+            ProjectionExpression="InstanceID,CreationDate,ExecStatus,Site,Description",
+        )
+    else:
+        response = client.scan(
+            TableName=TABLE_NAME,
+            ProjectionExpression="InstanceID,CreationDate,ExecStatus,Site,Description",
+            ExclusiveStartKey=start_key
+        )
+    entries = parse_scan_response(response["Items"])
+
+    if previous_entries is not None:
+        entries = previous_entries + entries
+        
+    # handle pagination of dynamodb results
+    if "LastEvaluatedKey" in response:
+        return scan_registry(response["LastEvaluatedKey"], previous_entries=entries)
+    else:
+        return entries
 
 
 def parse_query_response_astype(query_results, astype):
