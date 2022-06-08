@@ -36,6 +36,7 @@ module "step_function" {
     job_queue_spot                = module.benchmarks_spot.batch_job_queue_name
     sns_topic_arn                 = module.benchmarks_sns_topic.arn
     plotting_sfn_arn              = module.plotting_step_function[0].sfn_arn
+    lambda_microservices_arn      = module.gc_benchmarking_services.lambda_arn
   }
 }
 module "plotting_step_function" {
@@ -208,4 +209,12 @@ module "benchmark_registry_table" {
       type = "S"
     }
   ]
+}
+
+module "gc_benchmarking_services" {
+  source      = "../lambda"
+  name_prefix = "gc-benchmarking-microservices"
+  handler     = "src.controller.handler"
+  code_path   = "../../../benchmarks/microservices/"
+  packages_path  = "../../../benchmarks/microservices/packages"
 }

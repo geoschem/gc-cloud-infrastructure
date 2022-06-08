@@ -112,7 +112,7 @@
         "Catch": [ {
           "ErrorEquals": [ "States.ALL" ],
           "ResultPath": "$.event.createRunDir",
-          "Next": "Evaluate_Failed_Workflow"
+          "Next": "Parse_Error_Message"
         } ],
         "ResultPath": "$.event.createRunDir",
         "Next": "Invoke_RunBenchmark"
@@ -178,7 +178,7 @@
         "Catch": [ {
           "ErrorEquals": [ "States.ALL" ],
           "ResultPath": "$.event.runBenchmark",
-          "Next": "Evaluate_Failed_Workflow"
+          "Next": "Parse_Error_Message"
         } ],
         "ResultPath": "$.event.runBenchmark",
         "Next": "Evaluate_PlottingWorkflow"
@@ -222,9 +222,32 @@
         "ResultPath": "$.event.runBenchmark",
         "Next": "Evaluate_Successful_Workflow"
       },
+      "Parse_Error_Message": {
+        "Type": "Task",
+        "Resource": "${lambda_microservices_arn}",
+
+        "Parameters": {
+          "Input.$": "$.event"
+        },
+        "ResultPath": "$.event.errorParsing", 
+        "Next": "Evaluate_Failed_Workflow"
+      },
       "Evaluate_Failed_Workflow": {
         "Type": "Choice",
         "Choices": [
+          {
+            "And":[
+              {
+                "Variable": "$.event.errorParsing",
+                "IsPresent": true
+              },
+              {
+                "Variable": "$.event.errorParsing.errorStatus",
+                "StringEquals": "Interruption"
+              }
+            ],
+            "Next": "Set_OnDemand"
+          },
           {
             "And":[
               {

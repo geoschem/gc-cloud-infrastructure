@@ -37,7 +37,8 @@ resource "aws_iam_policy" "sfn_policy" {
         "iam:PassRole",
         "logs:*",
         "events:*",
-        "states:*"
+        "states:*",
+        "lambda:*"
       ],
       "Resource": "*",
       "Effect": "Allow"

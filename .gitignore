@@ -5,3 +5,4 @@
 registry.terraform.io*
 **/modules.json
 benchmarks/dashboard/packages/*
+benchmarks/microservices/packages/*

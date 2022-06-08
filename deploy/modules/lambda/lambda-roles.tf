@@ -19,7 +19,7 @@ EOF
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name        = "aws_iam_policy_for_terraform_aws_lambda_role"
+  name        = "${var.name_prefix}-policy"
   path        = "/"
   description = "AWS IAM Policy for managing aws lambda role"
   policy      = <<EOF
