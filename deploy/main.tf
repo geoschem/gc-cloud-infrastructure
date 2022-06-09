@@ -413,9 +413,9 @@ module "gc_testing_dashboard" {
   count       = local.only_harvard
   name_prefix = "gc-testing-dashboard"
   handler     = "src.controller.handler"
-  code_path   = "../../../benchmarks/dashboard/"
-  packages_path  = "../../../benchmarks/dashboard/packages"
+  code_path   = "../../../dashboard/"
+  packages_path  = "../../../dashboard/packages"
   enable_lambda_function_url = true
   additional_role_permissions = ["arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"]
-  code_zip_exclude = fileset("../../../benchmarks/dashboard/", "packages/**")
+  code_zip_exclude = fileset("../../../dashboard/", "packages/**")
 }

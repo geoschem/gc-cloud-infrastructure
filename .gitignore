@@ -4,5 +4,5 @@
 .env
 registry.terraform.io*
 **/modules.json
-benchmarks/dashboard/packages/*
+dashboard/packages/*
 benchmarks/microservices/packages/*

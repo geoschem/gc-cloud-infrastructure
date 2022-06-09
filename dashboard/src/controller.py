@@ -53,7 +53,11 @@ def difference(event, context):
 def test(event, context):
     return {"event": event}
 
-
+def registration(event, context):
+    print(event)
+    print(context)
+    return event
+    
 def handler(event, context):
 
     if event["rawPath"] == "/difference":
@@ -62,6 +66,8 @@ def handler(event, context):
         output = simulation(event, context)
     elif event["rawPath"] == "/test":
         output = test(event, context)
+    elif event["rawPath"] == "/registration":
+        output = registration(event, context)
     else:
         output = dashboard(event, context)
     return output
