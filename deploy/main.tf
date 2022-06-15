@@ -408,14 +408,8 @@ module "aws_marketplace" {
   source      = "./modules/marketplace"
   count       = local.only_harvard
 }
-module "gc_testing_dashboard" {
-  source      = "./modules/lambda"
+module "dashboard" {
+  source      = "./modules/dashboard"
   count       = local.only_harvard
   name_prefix = "gc-testing-dashboard"
-  handler     = "src.controller.handler"
-  code_path   = "../../../dashboard/"
-  packages_path  = "../../../dashboard/packages"
-  enable_lambda_function_url = true
-  additional_role_permissions = ["arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"]
-  code_zip_exclude = fileset("../../../dashboard/", "packages/**")
 }

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1><a href="./users">GC User Dashboard</a></h1>
+<style>
+    th,
+    td,
+    table {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    .table {
+        max-height: 90%;
+    }
+</style>
+<h2>Registered Users</h2>
+<!-- <button type="button" class="collapsible">Filters ▼</button>
+<div class="collapsible-content">
+    <form action="/search">
+        <label for="search-box"> Search: </label><input type="text" id="search-box" name="searchString" value=""
+        size="25" />
+        <input type="checkbox" id="hr-checkbox" name="1Hr" value="1Hr" checked><label for="hr-checkbox"> 1Hr </label>
+        <input type="checkbox" id="mon-checkbox" name="1Mon" value="1Mon" checked><label for="mon-checkbox"> 1Mon </label>
+        <input type="submit" value="Submit" />
+    </form>
+</div> -->
+
+<div class="table">
+    <table>
+        <tr>
+            <th>Email Address</th>
+            <th>Affiliation</th>
+            <th>Date Registered</th>
+            <th>Research Interest</th>
+        </tr>
+        {%- for entry in entries -%}
+        <tr>
+            <td>{{ entry.primary_key }}</td>
+            <td>{{ entry.affiliation }}</td>
+            <td>{{ entry.creation_date }}</td>
+            <td>{{ entry.research_interest }}</td>
+        </tr>
+        {%- endfor -%}
+    </table>
+</div>
+{% endblock %}

@@ -3,8 +3,6 @@ from ..models.registry_entry import RegistryEntry
 
 # helper methods for interacting with dynamodb
 
-TABLE_NAME = "geoschem_testing"
-
 
 def dynamodb_decode_dict(d: dict):
     new_dict = {}
@@ -51,34 +49,34 @@ def get_dynamodb_client():
     return dynamodb_client
 
 
-def parse_scan_response(response):
-    entries = []
-    for item in response:
-        entries.append(RegistryEntry(dynamodb_scan_result=item))
+def parse_scan_response(response, astype):
+    entries = [astype(dynamodb_scan_result=item) for item in response]
     return entries
 
 
-def scan_registry(start_key=None, previous_entries=None):
+def scan_registry(table, expression, start_key=None, previous_entries=None, astype=RegistryEntry):
     client = get_dynamodb_client()
     if start_key is None:
         response = client.scan(
-            TableName=TABLE_NAME,
-            ProjectionExpression="InstanceID,CreationDate,ExecStatus,Site,Description",
+            TableName=table,
+            ProjectionExpression=expression,
         )
     else:
         response = client.scan(
-            TableName=TABLE_NAME,
-            ProjectionExpression="InstanceID,CreationDate,ExecStatus,Site,Description",
-            ExclusiveStartKey=start_key
+            TableName=table,
+            ProjectionExpression=expression,
+            ExclusiveStartKey=start_key,
         )
-    entries = parse_scan_response(response["Items"])
+    entries = parse_scan_response(response["Items"], astype)
 
     if previous_entries is not None:
         entries = previous_entries + entries
-        
+
     # handle pagination of dynamodb results
     if "LastEvaluatedKey" in response:
-        return scan_registry(response["LastEvaluatedKey"], previous_entries=entries)
+        return scan_registry(
+            table, expression, response["LastEvaluatedKey"], previous_entries=entries
+        )
     else:
         return entries
 
@@ -90,19 +88,23 @@ def parse_query_response_astype(query_results, astype):
     return entries
 
 
-def query_registry(items, astype):
+def query_registry(items, astype, table):
     client = get_dynamodb_client()
 
     if isinstance(items, str):
         request_keys = [{"InstanceID": {"S": items}}]
     else:
         request_keys = [{"InstanceID": {"S": item.primary_key}} for item in items]
-    response = client.batch_get_item(RequestItems={TABLE_NAME: {"Keys": request_keys}})
+    response = client.batch_get_item(RequestItems={table: {"Keys": request_keys}})
 
     if astype is dict:
         return [
-            dynamodb_decode_dict(response)
-            for response in response["Responses"][TABLE_NAME]
+            dynamodb_decode_dict(response) for response in response["Responses"][table]
         ]
     else:
-        return parse_query_response_astype(response["Responses"][TABLE_NAME], astype)
+        return parse_query_response_astype(response["Responses"][table], astype)
+
+
+def put_item(table, item):
+    client = get_dynamodb_client()
+    client.put_item(TableName=table, Item=item)
