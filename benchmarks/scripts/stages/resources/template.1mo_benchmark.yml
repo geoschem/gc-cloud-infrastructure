@@ -32,7 +32,8 @@ data:
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-08-01T00:00:00"
-      is_legacy: False # Whether GCHP files are legacy (pre-13.1) format
+      is_pre_13.1: False
+      is_pre_14.0: True
   dev:
     gcc:
       version: GCC_dev
@@ -46,7 +47,8 @@ data:
       subdir: OutputDir
       bmk_start: "2019-07-01T00:00:00" # timestamp format YYYY-MM-DDThh:mm:ss
       bmk_end: "2019-08-01T00:00:00"
-      is_legacy: False
+      is_pre_13.1: False
+      is_pre_14.0: True
 
 options:
   bmk_type: FullChemBenchmark
