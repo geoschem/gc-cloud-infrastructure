@@ -59,6 +59,8 @@ def parse_user_registration(body):
     return {
         "EmailAddress": {"S": body["email"]},
         "Affiliation": {"S": body["affiliation"]},
+        "Site": {"S": body["site"]},
+        "GitUsername": {"S": body["git_username"]},
         "ResearchInterest": {"S": body["research_interest"]},
         "EpochTimeCreateDate": {"N": str(current_time)},
     }

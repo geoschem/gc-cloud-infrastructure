@@ -8,6 +8,8 @@ class UserEntry:
     primary_key: str = None
     creation_date: str = None
     affiliation: str = None
+    site: str = None
+    git_username: str = None
     research_interest: str = None
     dynamodb_scan_result: dataclasses.InitVar[dict] = None
 
@@ -19,4 +21,6 @@ class UserEntry:
                 float(dynamodb_scan_result.get("EpochTimeCreateDate"))
             ).strftime("%m-%d-%Y")
             self.affiliation = dynamodb_scan_result.get("Affiliation")
+            self.site = dynamodb_scan_result.get("Site")
+            self.git_username = dynamodb_scan_result.get("GitUsername")
             self.research_interest = dynamodb_scan_result.get("ResearchInterest")
