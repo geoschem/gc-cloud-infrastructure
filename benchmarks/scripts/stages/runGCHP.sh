@@ -30,6 +30,7 @@ function wustl_extdata_setup_hook() {
 }
 
 # get number of processes and start date
+GC_VERSION=$(echo ${GEOSCHEM_BENCHMARK_INSTANCE_ID} | sed "s#^[^-]*-[^-]*-[^-]*-##" | sed "s#[.].*##")
 if [[ "x${GC_VERSION}" == "x13" ]]; then
     num_proc=$(sed -n 's#TOTAL_CORES=\([0-9][0-9]*\)#\1#p' runConfig.sh)
 else 
@@ -59,9 +60,10 @@ case ${GEOSCHEM_BENCHMARK_SITE} in
 esac
 
 # rename restart to conform to gcpy compliant format
-GC_VERSION=$(echo ${GEOSCHEM_BENCHMARK_INSTANCE_ID} | sed "s#^[^-]*-[^-]*-[^-]*-##" | sed "s#[.].*##")
 if [[ "x${GC_VERSION}" == "x13" ]]; then
     mv gcchem_internal_checkpoint "gcchem_internal_checkpoint.restart.${GEOSCHEM_BENCHMARK_END_DATE}_${GEOSCHEM_BENCHMARK_DURATION_HOURS}.nc4"
+    cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
+    upload_artifacts OutputDir run-directory/OutputDir/* run-directory/gcchem_internal_checkpoint* run-directory/species_database.yml
 else
     new_start_str=$(sed 's/ /_/g' cap_restart)
     if [[ "${new_start_str}" = "${start_str}" || "${new_start_str}" = "" ]]; then
@@ -72,8 +74,8 @@ else
         mv gcchem_internal_checkpoint Restarts/GEOSChem.Restart.${new_start_str}z.c${GEOSCHEM_BENCHMARK_RESOLUTION}.nc4
         source setRestartLink.sh
     fi
+    cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
+    upload_artifacts OutputDir run-directory/OutputDir/* run-directory/Restarts/* run-directory/species_database.yml
 fi
 
 
-cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
-upload_artifacts OutputDir run-directory/OutputDir/* run-directory/gcchem_internal_checkpoint* run-directory/Restarts/* run-directory/species_database.yml
