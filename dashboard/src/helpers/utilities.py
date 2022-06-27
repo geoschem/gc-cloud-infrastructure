@@ -27,7 +27,7 @@ def create_public_artifacts(public_artifacts):
 
 # filter entries based on querystring parameters
 def apply_filters(event, entries):
-    if event["rawPath"] == "/search":
+    if event["path"] == "/search":
         search_string = event["queryStringParameters"]["searchString"]
         hour_filter = (
             event["queryStringParameters"]["1Hr"]

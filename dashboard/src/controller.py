@@ -10,7 +10,7 @@ from .helpers.dynamodb import *
 def dashboard(event, context):
     expression = "InstanceID,CreationDate,ExecStatus,Site,Description"
     entries = apply_filters(event, scan_registry("geoschem_testing", expression))
-    if event["rawPath"] == "/filter":
+    if event["path"] == "/filter":
         entries = [
             entry
             for entry in entries
@@ -39,7 +39,13 @@ def difference(event, context):
 def registration(event, context):
     item = parse_user_registration(json.loads(event["body"]))
     put_item("geoschem_users", item)
-    return {"Status": "Successful Registration"}
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "text/html",
+        },
+        "body": "Successful Registration"
+    }
 
 
 def users(event, context):
@@ -55,15 +61,15 @@ def test(event, context):
 
 def handler(event, context):
 
-    if event["rawPath"] == "/difference":
+    if event["path"] == "/difference":
         output = difference(event, context)
-    elif event["rawPath"] == "/simulation":
+    elif event["path"] == "/simulation":
         output = simulation(event, context)
-    elif event["rawPath"] == "/test":
+    elif event["path"] == "/test":
         output = test(event, context)
-    elif event["rawPath"] == "/registration":
+    elif event["path"] == "/registration":
         output = registration(event, context)
-    elif event["rawPath"] == "/users":
+    elif event["path"] == "/users":
         output = users(event, context)
     else:
         output = dashboard(event, context)

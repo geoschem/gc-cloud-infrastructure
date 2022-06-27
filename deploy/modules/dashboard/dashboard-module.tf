@@ -9,6 +9,14 @@ module "dashboard_lambda" {
   code_zip_exclude = fileset("../../../dashboard/", "packages/**")
 }
 
+module "dashboard_api_gw" {
+  source = "../api-gateway"
+  name_prefix = var.name_prefix
+  lambda_function_arn = module.dashboard_lambda.lambda_arn
+  lambda_function_name = module.dashboard_lambda.lambda_name
+  dns_name = var.dns_name
+}
+
 module "user_registry_table" {
   source = "../dynamo"
   

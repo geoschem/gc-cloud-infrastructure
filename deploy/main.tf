@@ -412,4 +412,5 @@ module "dashboard" {
   source      = "./modules/dashboard"
   count       = local.only_harvard
   name_prefix = "gc-testing-dashboard"
+  dns_name = "gc-dashboard.org"
 }
