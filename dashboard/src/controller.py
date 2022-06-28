@@ -49,12 +49,11 @@ def registration(event, context):
 
 
 def users(event, context):
-    expression = "EmailAddress,Affiliation,Site,GitUsername,ResearchInterest,EpochTimeCreateDate"
+    expression = "EmailAddress,Affiliation,Site,GitUsername,ModelType,ResearchInterest,EpochTimeCreateDate"
     entries = scan_registry("geoschem_users", expression, astype=UserEntry)
     entries.sort(key=lambda entry: entry.creation_date, reverse=True)
     html_page = fill_template("user-dashboard.html", entries=entries)
     return render_page(html_page)
-
 
 def test(event, context):
     return {"event": event}

@@ -61,6 +61,7 @@ def parse_user_registration(body):
         "Affiliation": {"S": body["affiliation"]},
         "Site": {"S": body["site"]},
         "GitUsername": {"S": body["git_username"]},
+        "ModelType": {"S": body["model_type"]},
         "ResearchInterest": {"S": body["research_interest"]},
         "EpochTimeCreateDate": {"N": str(current_time)},
     }
