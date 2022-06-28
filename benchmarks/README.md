@@ -3,6 +3,9 @@ The items in this directory are intended for an automated benchmarking workflow 
 
 Benchmarks are triggered by github actions in the [GCClassic](https://github.com/geoschem/GCClassic/tree/dev) and [GCHP](https://github.com/geoschem/GCHP/tree/dev) repositories, but you can trigger cloud benchmarks manually as well (see below for details).
 ### Deploying the dockerfile to ecr
+Updates to the docker container used for running automated benchmarks are automatically updated 
+on pushes to the `main` branch using github actions, but you can also manually push a new docker 
+image using the following commands:
 1. `$ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 753979222379.dkr.ecr.us-east-1.amazonaws.com`
 2. `$ docker build -t benchmarks-cloud-repository .`
 3. `$ docker tag benchmarks-cloud-repository:latest 753979222379.dkr.ecr.us-east-1.amazonaws.com/benchmarks-cloud-repository:latest`
@@ -32,8 +35,7 @@ The input data format for step functions is the following:
         "numCores": "62", // number of cores to deploy with
         "memory": "80000", // amount of memory to deploy with
         "resolution": "24", // resolution to run at (GCHP only)
-        "sendEmailNotification": "true", // optional parameter, send email notifications of status
-        "skipCreateRunDir": "true" // optional parameter, skips creating run directory
+        "sendEmailNotification": "true" // optional parameter, send email notifications of status
     },
     "plotting": { // optional section, if plotting desired
         "devPrimaryKey": "gchp-24-1Hr-13.4.0-alpha.27-2-g28c9b26", // primary key for dev
