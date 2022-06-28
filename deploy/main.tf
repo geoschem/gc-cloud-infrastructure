@@ -129,7 +129,7 @@ module "github_service_user" {
   source             = "./modules/iam/user"
   count              = local.only_harvard
   name               = "${var.benchmarks_name_prefix}-github-user"
-  permitted_services = "\"states:*\", \"dynamodb:*\""
+  permitted_services = "\"states:*\", \"dynamodb:*\", \"ecr:*\""
 }
 
 module "batch_benchmark_artifacts" {
