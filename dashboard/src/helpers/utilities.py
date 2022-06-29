@@ -40,7 +40,7 @@ def apply_filters(event, entries):
             else None
         )
 
-        if not hour_filter and monthly_filter:
+        if not (hour_filter and monthly_filter):
             time_period = hour_filter or monthly_filter or None
             entries = [
                 entry

@@ -10,13 +10,6 @@ from .helpers.dynamodb import *
 def dashboard(event, context):
     expression = "InstanceID,CreationDate,ExecStatus,Site,Description"
     entries = apply_filters(event, scan_registry("geoschem_testing", expression))
-    if event["path"] == "/filter":
-        entries = [
-            entry
-            for entry in entries
-            if entry.primary_key_classification.time_period
-            == event["queryStringParameters"]["time_period"]
-        ]
     entries.sort(key=lambda entry: entry.creation_date, reverse=True)
     html_page = fill_template("testing-dashboard.html", entries=entries)
     return render_page(html_page)
