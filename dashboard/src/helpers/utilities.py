@@ -34,22 +34,48 @@ def apply_filters(event, entries):
             if "1Hr" in event["queryStringParameters"]
             else None
         )
-        monthly_filter = (
+        month_filter = (
             event["queryStringParameters"]["1Mon"]
             if "1Mon" in event["queryStringParameters"]
             else None
         )
+        gchp_filter = (
+            event["queryStringParameters"]["GCHP"]
+            if "GCHP" in event["queryStringParameters"]
+            else None
+        )
+        gcc_filter = (
+            event["queryStringParameters"]["GCC"]
+            if "GCC" in event["queryStringParameters"]
+            else None
+        )
 
-        if not (hour_filter and monthly_filter):
-            time_period = hour_filter or monthly_filter or None
-            entries = [
-                entry
-                for entry in entries
-                if entry.primary_key_classification.time_period == time_period
-            ]
+        entries = apply_time_filters(entries, hour_filter, month_filter)
+        entries = apply_model_filters(entries, gcc_filter, gchp_filter)
+
         if search_string != "":
             entries = [entry for entry in entries if search_string in entry.primary_key]
 
+    return entries
+
+def apply_time_filters(entries, hour_filter, month_filter):
+    if not (hour_filter and month_filter):
+        time_period = hour_filter or month_filter or None
+        entries = [
+            entry
+            for entry in entries
+            if entry.primary_key_classification.time_period == time_period
+        ]
+    return entries
+
+def apply_model_filters(entries, gcc_filter, gchp_filter):
+    if not (gcc_filter and gchp_filter):
+        model_type = gcc_filter or gchp_filter or None
+        entries = [
+            entry
+            for entry in entries
+            if (model_type is not None) and (model_type in entry.primary_key.upper())
+        ]
     return entries
 
 
