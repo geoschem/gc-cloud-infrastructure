@@ -10,6 +10,7 @@ class UserEntry:
     affiliation: str = None
     site: str = None
     git_username: str = None
+    model_type: str = None
     research_interest: str = None
     dynamodb_scan_result: dataclasses.InitVar[dict] = None
 
@@ -23,4 +24,5 @@ class UserEntry:
             self.affiliation = dynamodb_scan_result.get("Affiliation")
             self.site = dynamodb_scan_result.get("Site")
             self.git_username = dynamodb_scan_result.get("GitUsername")
+            self.model_type = dynamodb_scan_result.get("ModelType")
             self.research_interest = dynamodb_scan_result.get("ResearchInterest")
