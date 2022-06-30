@@ -12,6 +12,7 @@ class UserEntry:
     git_username: str = None
     model_type: str = None
     research_interest: str = None
+    env_type: str = None
     dynamodb_scan_result: dataclasses.InitVar[dict] = None
 
     def __post_init__(self, dynamodb_scan_result):
@@ -25,4 +26,5 @@ class UserEntry:
             self.site = dynamodb_scan_result.get("Site")
             self.git_username = dynamodb_scan_result.get("GitUsername")
             self.model_type = dynamodb_scan_result.get("ModelType")
+            self.env_type = dynamodb_scan_result.get("EnvType")
             self.research_interest = dynamodb_scan_result.get("ResearchInterest")

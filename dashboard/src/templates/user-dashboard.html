@@ -33,6 +33,7 @@
             <th>Git Username</th>
             <th>Date Registered</th>
             <th>Model Type</th>
+            <th>Env Type</th>
             <th>Research Interest</th>
         </tr>
         {%- for entry in entries -%}
@@ -43,6 +44,7 @@
             <td>{{ entry.git_username }}</td>
             <td>{{ entry.creation_date }}</td>
             <td>{{ entry.model_type }}</td>
+            <td>{{ entry.env_type }}</td>
             <td>{{ entry.research_interest }}</td>
         </tr>
         {%- endfor -%}
