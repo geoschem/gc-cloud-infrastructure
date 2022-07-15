@@ -71,7 +71,7 @@ else
     exit 1
     else
         N=$(grep "CS_RES=" setCommonRunSettings.sh | cut -c 8- | xargs )    
-        mv gcchem_internal_checkpoint Restarts/GEOSChem.Restart.${new_start_str}z.c${GEOSCHEM_BENCHMARK_RESOLUTION}.nc4
+        mv gcchem_internal_checkpoint Restarts/GEOSChem.Restart.${new_start_str:0:13}z.c${GEOSCHEM_BENCHMARK_RESOLUTION}.nc4
         source setRestartLink.sh
     fi
     cd ${GEOSCHEM_BENCHMARK_WORKING_DIR}
