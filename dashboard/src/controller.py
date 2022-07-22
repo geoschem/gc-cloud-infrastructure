@@ -5,6 +5,7 @@ from .helpers.utilities import fill_template, apply_filters, parse_user_registra
 from .models.registry_entry_simulation import RegistryEntrySimulation
 from .models.registry_entry_diff import RegistryEntryDiff
 from .helpers.dynamodb import *
+from .helpers.emails import send_welcome_email
 
 
 def dashboard(event, context):
@@ -32,6 +33,7 @@ def difference(event, context):
 def registration(event, context):
     item = parse_user_registration(json.loads(event["body"]))
     put_item("geoschem_users", item)
+    send_welcome_email(json.loads(event["body"])["email"])
     return {
         "statusCode": 200,
         "headers": {
