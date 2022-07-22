@@ -103,7 +103,7 @@ def send_welcome_email(destination):
             <a href="https://geos-chem.readthedocs.io/">GEOS-Chem Classic</a>, which is the
             single-node mode of running GEOS-Chem. But if your research requires you to run simulations on extremely
             fine horizontal grids, or if you would like to use more than a single computational node, you will
-            definitely want to use <a href="https://gchp.readthedocs.io/">
+            want to use <a href="https://gchp.readthedocs.io/">
                 GEOS-Chem High Performance (GCHP)</a>, which is our multi-node mode of running GEOS-Chem.
             <o:p></o:p>
         </span></p>
