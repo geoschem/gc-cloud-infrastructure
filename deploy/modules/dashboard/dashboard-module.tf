@@ -5,7 +5,7 @@ module "dashboard_lambda" {
   code_path   = "../../../dashboard/"
   packages_path  = "../../../dashboard/packages"
   enable_lambda_function_url = true
-  additional_role_permissions = ["arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"]
+  additional_role_permissions = ["arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess", "arn:aws:iam::aws:policy/AmazonSESFullAccess"]
   code_zip_exclude = fileset("../../../dashboard/", "packages/**")
 }
 

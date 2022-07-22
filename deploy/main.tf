@@ -414,3 +414,10 @@ module "dashboard" {
   name_prefix = "gc-testing-dashboard"
   dns_name = "gc-dashboard.org"
 }
+
+module "email_service" {
+  source      = "./modules/ses"
+  count       = local.only_harvard
+  domain      = "gc-dashboard.org"
+  email       = "geos-chem-support@g.harvard.edu"
+}
