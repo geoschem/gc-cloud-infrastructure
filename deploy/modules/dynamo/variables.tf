@@ -9,6 +9,10 @@ variable billing_mode {
 variable hash_key {
     description = "The attribute to use as the hash (partition) key. Must also be defined as an attribute, see below"
 }
+variable point_in_time_recovery {
+    description = "whether to enable point in time recovery (defaults to true)"
+    default = true
+}
 
 variable attributes {
     description = "List of nested attribute definitions. Only required for hash_key and range_key attributes. https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#attribute"

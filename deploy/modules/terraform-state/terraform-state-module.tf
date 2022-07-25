@@ -13,6 +13,7 @@ module "state_lock_table" {
     table_name = var.lock_table_name
     billing_mode = "PAY_PER_REQUEST"
     hash_key = "LockID"
+    point_in_time_recovery = false
     attributes = [
         {
             name = "LockID"
