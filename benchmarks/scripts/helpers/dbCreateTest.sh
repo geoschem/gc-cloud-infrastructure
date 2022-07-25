@@ -20,6 +20,7 @@ item=$(cat << EOF
     "ExecStatus": {"S": "PENDING" },
     "Description": {"S": "${GEOSCHEM_BENCHMARK_INSTANCE_DESCRIPTION}" },
     "CreationDate": {"S": "$(date --iso-8601)" },
+    "EpochTimeCreateDate": {"N": "$(date +%s)" },
     "S3Uri": {"S": "${GEOSCHEM_BENCHMARK_S3_BUCKET}/${GEOSCHEM_BENCHMARK_INSTANCE_ID}" }
 }
 EOF

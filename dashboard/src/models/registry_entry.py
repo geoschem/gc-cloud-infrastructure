@@ -7,6 +7,7 @@ from ..helpers.model_helpers import dynamodb_decode_dict
 class RegistryEntry:
     primary_key: str = None
     creation_date: str = None
+    epoch_time: float = None
     execution_status: str = None
     execution_site: str = None
     s3_uri: str = None
@@ -23,6 +24,7 @@ class RegistryEntry:
             self.execution_site = dynamodb_scan_result.get("Site")
             self.s3_uri = dynamodb_scan_result.get("S3Uri")
             self.description = dynamodb_scan_result.get("Description")
+            self.epoch_time = float(dynamodb_scan_result.get("EpochTimeCreateDate"))
         self.primary_key_classification = PrimaryKeyClassification(
             primary_key=self.primary_key
         )

@@ -9,9 +9,9 @@ from .helpers.emails import send_welcome_email
 
 
 def dashboard(event, context):
-    expression = "InstanceID,CreationDate,ExecStatus,Site,Description"
+    expression = "InstanceID,CreationDate,ExecStatus,Site,Description,EpochTimeCreateDate"
     entries = apply_filters(event, scan_registry("geoschem_testing", expression))
-    entries.sort(key=lambda entry: entry.creation_date, reverse=True)
+    entries.sort(key=lambda entry: entry.epoch_time, reverse=True)
     html_page = fill_template("testing-dashboard.html", entries=entries)
     return render_page(html_page)
 
